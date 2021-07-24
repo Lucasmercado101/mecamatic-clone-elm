@@ -24,6 +24,11 @@ try {
   isDev && require("electron-reloader")(module);
 } catch (_) {}
 
+/**
+ * TODO another listener to load saved records / history
+ * TODO also load custom user lessons in this listener
+ * Loads user profile data (settings)
+ */
 ipcMain.handle(
   "load-user-data",
   /**
