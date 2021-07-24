@@ -27,7 +27,12 @@ try {
 /**
  * TODO another listener to load saved records / history
  * TODO also load custom user lessons in this listener
+ *
  * Loads user profile data (settings)
+ *
+ * NOTE It's assumed in this listener that the user profiles folder exists.
+ *      user profiles folder is created at:
+ * LINK ./electron.js#load-user-profiles-names-listener
  */
 ipcMain.handle(
   "load-user-data",
@@ -45,7 +50,6 @@ ipcMain.handle(
     const userSettingsDefaults = { timeLimitInSeconds: 600 };
 
     // TODO catch error if can't create folder
-    await createFolderIfNotExists(userProfilesPath);
     await createFolderIfNotExists(userFolderPath);
 
     const userSettingsExists = await dirOrFileExists(userSettingsPath);
@@ -71,6 +75,8 @@ ipcMain.handle(
 );
 
 /**
+ * ANCHOR[id=load-user-profiles-names-listener]
+ *
  * Return user profile names as a string array
  * if an error occurs at any moment, it shows an error dialog box
  * and returns "undefined"
