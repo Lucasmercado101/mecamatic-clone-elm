@@ -14,7 +14,7 @@ app.ports.sendRequestUserData.subscribe(function (userName) {
      */
     (userData) => {
       if (!userData) {
-        // TODO handle if undefined then it something went wrong
+        // TODO handle if undefined then something went wrong
       } else {
       }
     }
