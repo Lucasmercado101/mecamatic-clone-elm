@@ -11,7 +11,9 @@ const {
   createFile,
   dirOrFileExists,
   readFile,
-  createFolderIfNotExists
+  createFolderIfNotExists,
+  readDir,
+  createFolder
 } = require("./helpers");
 const path = require("path");
 const fs = require("fs");
@@ -27,7 +29,7 @@ ipcMain.handle(
   /**
    * @param {string} userName
    */
-  async (event, userName) => {
+  async (_, userName) => {
     const userFolderPath = path.join(userProfilesPath, userName);
     const userSettingsPath = path.join(
       userProfilesPath,
@@ -37,6 +39,7 @@ ipcMain.handle(
 
     const userSettingsDefaults = { timeLimitInSeconds: 600 };
 
+    // TODO catch error if can't create folder
     await createFolderIfNotExists(userProfilesPath);
     await createFolderIfNotExists(userFolderPath);
 
@@ -62,27 +65,36 @@ ipcMain.handle(
   }
 );
 
-ipcMain.handle("load-user-profiles-names", () => {
-  // check if directory userProfilesPath exists asynchronously
-  // if not create it
-  return new Promise((res, reject) => {
-    fs.stat(userProfilesPath, (err, stats) => {
-      if (err) {
-        fs.mkdir(userProfilesPath, (err) => {
-          if (err) {
-            reject(err);
-          }
-          res([]);
-        });
+/**
+ * Return user profile names as a string array
+ * if an error occurs at any moment, it shows an error dialog box
+ * and returns "undefined"
+ */
+ipcMain.handle("load-user-profiles-names", async () => {
+  const userProfilesFolderExists = await dirOrFileExists(userProfilesPath);
+
+  if (userProfilesFolderExists)
+    return await readDir(userProfilesPath).catch(
+      /**
+       * @param {NodeJS.ErrnoException} err
+       */
+      (err) => {
+        dialog.showErrorBox("Error", err.message);
+        return undefined;
       }
-      fs.readdir(userProfilesPath, (err, files) => {
-        if (err) {
-          reject(err);
+    );
+  else
+    return createFolder(userProfilesPath)
+      .then(() => [])
+      .catch(
+        /**
+         * @param {NodeJS.ErrnoException} err
+         */
+        (err) => {
+          dialog.showErrorBox("Error", err.message);
+          return undefined;
         }
-        res(files);
-      });
-    });
-  });
+      );
 });
 
 function createWindow() {
