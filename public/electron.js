@@ -1,11 +1,41 @@
-const { app, BrowserWindow, Menu, globalShortcut } = require("electron");
+const {
+  app,
+  BrowserWindow,
+  Menu,
+  globalShortcut,
+  ipcMain
+} = require("electron");
 // const { observable } = require("mobx");
-// const fs = require("fs");
-// const path = require("path");
+const path = require("path");
+const fs = require("fs");
+const userProfilesPath = path.join(app.getPath("userData"), "profiles");
 const isDev = require("electron-is-dev");
 try {
   isDev && require("electron-reloader")(module);
 } catch (_) {}
+
+ipcMain.handle("load-user-profiles-names", () => {
+  // check if directory userProfilesPath exists asynchronously
+  // if not create it
+  return new Promise((res, reject) => {
+    fs.stat(userProfilesPath, (err, stats) => {
+      if (err) {
+        fs.mkdir(userProfilesPath, (err) => {
+          if (err) {
+            reject(err);
+          }
+          res([]);
+        });
+      }
+      fs.readdir(userProfilesPath, (err, files) => {
+        if (err) {
+          reject(err);
+        }
+        res(files);
+      });
+    });
+  });
+});
 
 function createWindow() {
   // Create the browser window.
