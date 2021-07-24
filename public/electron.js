@@ -28,7 +28,7 @@ try {
  * TODO another listener to load saved records / history
  * TODO also load custom user lessons in this listener
  *
- * * -- Loads user profile data (settings) --
+ * * ---- Loads user profile data (settings) ----
  *
  * * Creates user profile folder if it does not exist
  * * Creates user's settings.json if it does not exist
@@ -94,9 +94,11 @@ ipcMain.handle(
 /**
  * ANCHOR[id=load-user-profiles-names-listener]
  *
- * Return user profile names as a string array
- * if an error occurs at any moment, it shows an error dialog box
- * and returns "undefined"
+ * * ---- Return user profile names as a string array ----
+ *
+ * * if an error occurs at any moment, it shows an error dialog box
+ * * and returns "undefined"
+ *
  */
 ipcMain.handle("load-user-profiles-names", async () => {
   const userProfilesFolderExists = await dirOrFileExists(userProfilesPath);
