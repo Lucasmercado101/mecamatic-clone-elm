@@ -28,7 +28,11 @@ try {
  * TODO another listener to load saved records / history
  * TODO also load custom user lessons in this listener
  *
- * Loads user profile data (settings)
+ * * -- Loads user profile data (settings) --
+ *
+ * * Creates user profile folder if it does not exist
+ * * Creates user's settings.json if it does not exist
+ * * Loads user's settings.json or the default if it doesn't exist
  *
  * NOTE It's assumed in this listener that the user profiles folder exists.
  *      user profiles folder is created at:
@@ -38,6 +42,7 @@ ipcMain.handle(
   "load-user-data",
   /**
    * @param {string} userName
+   * @returns {Promise<any | undefined>}
    */
   async (_, userName) => {
     const userFolderPath = path.join(userProfilesPath, userName);
@@ -49,8 +54,12 @@ ipcMain.handle(
 
     const userSettingsDefaults = { timeLimitInSeconds: 600 };
 
-    // TODO catch error if can't create folder
-    await createFolderIfNotExists(userFolderPath);
+    try {
+      await createFolderIfNotExists(userFolderPath);
+    } catch (err) {
+      dialog.showErrorBox("Error", err.message);
+      return undefined;
+    }
 
     const userSettingsExists = await dirOrFileExists(userSettingsPath);
 
@@ -69,7 +78,15 @@ ipcMain.handle(
           }
         );
     } else {
-      return readFile(userSettingsPath);
+      return readFile(userSettingsPath).catch(
+        /**
+         * @param {NodeJS.ErrnoException} err
+         */
+        (err) => {
+          dialog.showErrorBox("Error", err.message);
+          return undefined;
+        }
+      );
     }
   }
 );
