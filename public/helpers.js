@@ -24,6 +24,21 @@ const readFile = (path) =>
 
 /**
  * @param {string} path
+ * @returns {Promise<string[]>}
+ * if error rejects to an {NodeJS.ErrnoException} error
+ */
+const readDir = (path) =>
+  new Promise((res, rej) =>
+    fs.readdir(path, (err, files) => {
+      if (err) {
+        rej(err);
+      }
+      res(files);
+    })
+  );
+
+/**
+ * @param {string} path
  * @returns {Promise<undefined>}}
  * if error rejects to an {NodeJS.ErrnoException} error
  *
@@ -62,5 +77,6 @@ module.exports = {
   readFile,
   createFolder,
   createFile,
-  createFolderIfNotExists
+  createFolderIfNotExists,
+  readDir
 };
