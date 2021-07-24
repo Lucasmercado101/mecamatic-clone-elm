@@ -90,10 +90,7 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div
-        [ style "height" "100vh"
-        , style "width" "100vw"
-        , style "display" "grid"
-        , style "place-items" "center"
+        [ class "welcome-container"
         ]
         [ div
             [ class "input-container"
