@@ -10,7 +10,7 @@ const app = Elm.Main.init({
 app.ports.sendRequestUserData.subscribe(function (userName) {
   electron.ipcRenderer.invoke("load-user-data", userName).then(
     /**
-     * @param {undefined | import("./electron").defaultUserData} e
+     * @param {import("./electron").defaultUserData | undefined} userData
      */
     (userData) => {
       if (!userData) {
@@ -22,13 +22,16 @@ app.ports.sendRequestUserData.subscribe(function (userName) {
 });
 
 app.ports.sendRequestProfilesNames.subscribe(function () {
-  electron.ipcRenderer
-    .invoke("load-user-profiles-names")
-    .then((userProfilesArr) => {
+  electron.ipcRenderer.invoke("load-user-profiles-names").then(
+    /**
+     * @param {string[] | undefined} userProfilesArr
+     */
+    (userProfilesArr) => {
       if (!userProfilesArr) {
-        // TODO handle if undefined then it something went wrong
+        // TODO handle if undefined then something went wrong
       } else app.ports.userProfilesReceiver.send(userProfilesArr);
-    });
+    }
+  );
 });
 
 // app.ports.sendNewSettings.subscribe(function (data) {
