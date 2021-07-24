@@ -1,0 +1,41 @@
+{
+  "name": "Mecamatic-clone-elm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lucasmercado101/mecamatic-clone-elm.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Lucasmercado101/mecamatic-clone-elm/issues"
+  },
+  "homepage": "https://github.com/Lucasmercado101/mecamatic-clone-elm#readme",
+  "dependencies": {
+    "mobx": "6.3.2"
+  },
+  "build": {
+    "appId": "mecamatic.typing",
+    "productName": "Mecamatic",
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "./data",
+        "to": "data"
+      }
+    ]
+  },
+  "devDependencies": {
+    "elm": "0.19.1-5",
+    "elm-live": "4.0.2"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "text": "Para describir las instrucciones que se dan a un ordenador, así como su encadenamiento, se utilizan lenguajes de programación. El lenguaje máquina es un lenguaje binario interpretable directamente por los circuitos lógicos del ordenador, prácticamente se obtiene siempre a partir de lenguajes más simbólicos, que se traducen mediante ensambladores o compiladores. Los lenguajes máquina ensambladores son, por definición, especificos de un tipo de ordenador; se utilizan para la programación de procesos muy proximos a la estructura fósica  de la máquina; permiten obtener una optimización elevada de los programas. Los lenguajes algoritmicos tienen, en cambio, una estructura que se aleja de la máquina, y que se asemeja a la de un lenguaje más natural o a una formulación matemática más corriente, con ellos, la escritura de un algoritmo de un programa puede ser casi totalmente independiente del ordenador que la ejecutará. Un lenguaje algoritmico se caracteriza por un vocabulario, conjunto de caracteres y de palabras clave, adoptado de acuerdo con las reglas muy precisas de una sintaxis para  formar las frases que constituyen las instrucciones del programa.",
+  "isTutorActive": false,
+  "isKeyboardVisible": false,
+  "WPMNeededToPass": 270
+}

@@ -1,0 +1,6 @@
+{
+  "text": "La navegación de los aviones de transporte recurre a las ondas radioeléctricas, se han elaborado numerosos sistemas de ayuda a la navegación el más simple utiliza los radiofaros de emisión no dirigida, que emiten ondas en todas direcciones y que permiten fijar la posición por el mismo procedimiento seguido para los buques. Los radiofaros de alineación, por el contrario, materializan una ruta mediante la intersección de dos diagramas de emisión radioeléctricos; el avión es conducido por la ruta balizada de esta forma (a este tipo de navegación se le llama en homing) Finalmente los radiofaros omnidireccionales emiten una señal alterna cuya fase varía con el tiempo; la medida de la variación de fase en relación con una señal de referencia permite determinar la posición del avión en relación a la estación. Debido a las velocidades alcanzadas por los aviones de transporte, estos procedimientos son insuficientes y hay que recurrir a procesos completamente automáticos. Tal es el caso de los sistemas hiperbólicos, que miden la diferencia de posición entre el avión y dos estaciones diferentes y sitúan así el avión sobre una hipérbola; con dos pares de estaciones se obtiene la posición del avión por la intersección de dos hipérbolas.",
+  "isTutorActive": false,
+  "isKeyboardVisible": false,
+  "WPMNeededToPass": 290
+}
