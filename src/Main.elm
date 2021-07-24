@@ -1,9 +1,9 @@
 port module Main exposing (..)
 
 import Browser
-import Html exposing (Html, button, datalist, div, input, option, text)
+import Html exposing (Html, button, datalist, div, form, input, option, text)
 import Html.Attributes exposing (class, id, list, style, value)
-import Html.Events exposing (onInput)
+import Html.Events exposing (onInput, onSubmit)
 
 
 
@@ -74,7 +74,7 @@ update : Msg -> Model -> ( Model, Cmd msg )
 update msg model =
     case msg of
         ConfirmedUserProfile ->
-            ( model, Cmd.none )
+            ( model, sendRequestUserData model.selectedUser )
 
         ReceivedUserProfiles profiles ->
             ( { model | userProfiles = UsersLoaded profiles }, Cmd.none )
@@ -89,12 +89,10 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div
-        [ class "welcome-container"
-        ]
+    form
+        [ class "welcome-container", onSubmit ConfirmedUserProfile ]
         [ div
-            [ class "input-container"
-            ]
+            [ class "input-container" ]
             [ input
                 [ list "user-profiles"
                 , onInput ChangeSelectedUser
@@ -110,8 +108,7 @@ view model =
                         List.map (\l -> option [ value l ] []) usersProfiles
                 )
             , button []
-                [ text "Aceptar"
-                ]
+                [ text "Aceptar" ]
             ]
         ]
 
