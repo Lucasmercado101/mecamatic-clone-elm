@@ -4,12 +4,13 @@
   "description": "",
   "main": "public/electron.js",
   "scripts": {
-    "start": "concurrently \"npm run watch-elm\" \"npm run live-server\" \"electron .\"",
+    "start": "concurrently \"npm:watch-elm\" \"npm:live-server\" \"npm:watch-sass\" \"electron .\"",
     "prebuild": "elm make src/Main.elm --optimize --output=public/elm.js",
     "build": "uglifyjs public/elm.js --compress \"pure_funcs=[F2,F3,F4,F5,F6,F7,F8,F9,A2,A3,A4,A5,A6,A7,A8,A9],pure_getters,keep_fargs=false,unsafe_comps,unsafe\" --mangle --output elm.min.js",
     "watch-elm": "elm-live src/Main.elm --start-page=index.html -- --output=public/elm.js",
     "live-server": "live-server --no-browser --quiet --port=1234",
-    "e": "electron ."
+    "prewatch-sass": "node-sass public/styles.sass public/styles.css",
+    "watch-sass": "node-sass public/styles.sass public/styles.css -w public"
   },
   "repository": {
     "type": "git",
@@ -24,7 +25,8 @@
   "homepage": "https://github.com/Lucasmercado101/mecamatic-clone-elm#readme",
   "dependencies": {
     "electron-is-dev": "2.0.0",
-    "mobx": "6.3.2"
+    "mobx": "6.3.2",
+    "node-sass": "^6.0.1"
   },
   "build": {
     "appId": "mecamatic.typing",
