@@ -2,3 +2,4 @@ node_modules
 elm-stuff
 dist
 public/elm.js
+package-lock.json
