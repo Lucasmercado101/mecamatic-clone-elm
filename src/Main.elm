@@ -4,32 +4,79 @@ import Browser
 import Html exposing (Html, button, datalist, div, form, input, option, text)
 import Html.Attributes exposing (class, id, list, style, value)
 import Html.Events exposing (onInput, onSubmit)
+import Json.Decode as JD
 
 
 
 -- PORTS
+-- TODO handle when requesting returns undefined (error)
 
 
 port sendRequestUserData : String -> Cmd msg
+
+
+
+-- TODO handle when requesting returns undefined (error)
 
 
 port sendRequestProfilesNames : () -> Cmd msg
 
 
 
--- TODO handle when requesting users returns an error
+-- TODO handle when requesting returns undefined (error)
 
 
-port userProfilesReceiver : (List String -> msg) -> Sub msg
+port userProfilesReceiver : (JD.Value -> msg) -> Sub msg
 
 
 
+-- port userProfilesReceiver : (Maybe (List String) -> msg) -> Sub msg
 -- SUBSCRIPTIONS
+-- subscriptions : Model -> Sub Msg
+-- subscriptions _ =
+--     userProfilesReceiver
+--         (\l ->
+--             case l of
+--                 Just val ->
+--                     ReceivedUserProfiles val
+--                 Nothing ->
+--                     -- TODO
+--                     ReceivedUserProfiles [ "test" ]
+--         )
+-- * DECODERS
+
+
+type alias UserSettings =
+    { timeLimitInSeconds : Int
+    }
+
+
+
+-- userSettingsDecoder : JD.Decoder Int
+-- userSettingsDecoder =
+--     JD.field "data" JD.int
+
+
+userProfileNamesDecoder : JD.Decoder (List String)
+userProfileNamesDecoder =
+    JD.list JD.string
 
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    userProfilesReceiver ReceivedUserProfiles
+    userProfilesReceiver
+        (JD.decodeValue
+            userProfileNamesDecoder
+            >> (\l ->
+                    case l of
+                        Ok val ->
+                            ReceivedUserProfiles val
+
+                        Err _ ->
+                            -- TODO handle this error case
+                            ReceivedUserProfiles [ "a" ]
+               )
+        )
 
 
 
@@ -110,6 +157,7 @@ view model =
             , button []
                 [ text "Aceptar" ]
             ]
+        , div [] [ text (Debug.toString model) ]
         ]
 
 
