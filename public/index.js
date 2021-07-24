@@ -18,10 +18,9 @@ app.ports.sendRequestProfilesNames.subscribe(function () {
   electron.ipcRenderer
     .invoke("load-user-profiles-names")
     .then((userProfilesArr) => {
-      app.ports.userProfilesReceiver.send(userProfilesArr);
-    })
-    .catch(() => {
-      // TODO : handle errors
+      if (!userProfilesArr) {
+        // TODO handle if undefined then it something went wrong
+      } else app.ports.userProfilesReceiver.send(userProfilesArr);
     });
 });
 
