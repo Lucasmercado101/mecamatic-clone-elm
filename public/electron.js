@@ -53,7 +53,7 @@ app
     if (isDev) {
       globalShortcut.register("CommandOrControl+Shift+C", () => {
         const win = BrowserWindow.getFocusedWindow();
-        win.webContents.openDevTools();
+        win && win.webContents.openDevTools();
       });
     }
   })
