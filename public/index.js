@@ -8,10 +8,17 @@ const app = Elm.Main.init({
 });
 
 app.ports.sendRequestUserData.subscribe(function (userName) {
-  console.log("a");
-  electron.ipcRenderer.invoke("load-user-data", userName).then((e) => {
-    console.log(e);
-  });
+  electron.ipcRenderer.invoke("load-user-data", userName).then(
+    /**
+     * @param {undefined | import("./electron").defaultUserData} e
+     */
+    (userData) => {
+      if (!userData) {
+        // TODO handle if undefined then it something went wrong
+      } else {
+      }
+    }
+  );
 });
 
 app.ports.sendRequestProfilesNames.subscribe(function () {
