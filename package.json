@@ -4,12 +4,12 @@
   "description": "",
   "main": "public/electron.js",
   "scripts": {
-    "start": "concurrently \"npm run watch-elm\" \"electron .\"",
-    "start:dev": "concurrently \"npm run watch-elm\" \"electron .\"",
+    "start": "concurrently \"npm run watch-elm\" \"npm run live-server\" \"electron .\"",
     "prebuild": "elm make src/Main.elm --optimize --output=public/elm.js",
     "build": "uglifyjs public/elm.js --compress \"pure_funcs=[F2,F3,F4,F5,F6,F7,F8,F9,A2,A3,A4,A5,A6,A7,A8,A9],pure_getters,keep_fargs=false,unsafe_comps,unsafe\" --mangle --output elm.min.js",
-    "watch-elm": "elm-live src/Main.elm --start-page=index.html -- --output=public/elm.js",
-    "watch-elm:dev": "elm-live src/Main.elm --start-page=index.html -- --output=public/elm.js --debug"
+    "watch-elm": "elm-live src/Main.elm --start-page=index.html -- --output=public/elm.js --debug",
+    "live-server": "live-server --no-browser --quiet --port=1234",
+    "e": "electron ."
   },
   "repository": {
     "type": "git",
@@ -47,6 +47,7 @@
     "electron-reloader": "1.2.1",
     "elm": "0.19.1-5",
     "elm-live": "4.0.2",
-    "uglify-js": "^3.14.0"
+    "live-server": "1.2.1",
+    "uglify-js": "3.14.0"
   }
 }

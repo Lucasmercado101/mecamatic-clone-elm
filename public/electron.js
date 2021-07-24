@@ -1,8 +1,11 @@
 const { app, BrowserWindow, Menu, globalShortcut } = require("electron");
 // const { observable } = require("mobx");
 // const fs = require("fs");
-const path = require("path");
+// const path = require("path");
 const isDev = require("electron-is-dev");
+try {
+  isDev && require("electron-reloader")(module);
+} catch (_) {}
 
 function createWindow() {
   // Create the browser window.
@@ -20,8 +23,9 @@ function createWindow() {
     }
   });
   win.loadURL(
-    // TODO production files
-    `file://${path.join(__dirname, "./index.html")}`
+    "http://127.0.0.1:1234/public/index.html"
+    // TODO production files}
+    // `file://${path.join(__dirname, "./index.html")}`
   );
   // isDev
   //   ? "http://localhost:3000"
