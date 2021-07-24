@@ -25,6 +25,16 @@ try {
 } catch (_) {}
 
 /**
+ * @typedef defaultUserData
+ * @property {600} timeLimitInSeconds
+ */
+
+/**
+ * @type {defaultUserData}
+ */
+const defaultUserSettings = { timeLimitInSeconds: 600 };
+
+/**
  * TODO another listener to load saved records / history
  * TODO also load custom user lessons in this listener
  *
@@ -52,8 +62,6 @@ ipcMain.handle(
       "settings.json"
     );
 
-    const userSettingsDefaults = { timeLimitInSeconds: 600 };
-
     try {
       await createFolderIfNotExists(userFolderPath);
     } catch (err) {
@@ -64,9 +72,9 @@ ipcMain.handle(
     const userSettingsExists = await dirOrFileExists(userSettingsPath);
 
     if (!userSettingsExists) {
-      return createFile(userSettingsPath, JSON.stringify(userSettingsDefaults))
+      return createFile(userSettingsPath, JSON.stringify(defaultUserSettings))
         .then(() => {
-          return userSettingsDefaults;
+          return defaultUserSettings;
         })
         .catch(
           /**
