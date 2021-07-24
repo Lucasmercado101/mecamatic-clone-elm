@@ -3,16 +3,108 @@ const {
   BrowserWindow,
   Menu,
   globalShortcut,
-  ipcMain
+  ipcMain,
+  dialog
 } = require("electron");
 // const { observable } = require("mobx");
 const path = require("path");
 const fs = require("fs");
 const userProfilesPath = path.join(app.getPath("userData"), "profiles");
 const isDev = require("electron-is-dev");
+
 try {
   isDev && require("electron-reloader")(module);
 } catch (_) {}
+
+/**
+ * @param {string} path
+ * @returns {Promise<boolean>}
+ */
+const dirOrFileExists = (path) =>
+  new Promise((res) => fs.stat(path, (err) => (err ? res(false) : res(true))));
+
+/**
+ * @param {string} path
+ * @returns {Promise<string>}
+ */
+const readFile = (path) =>
+  new Promise((res, rej) =>
+    fs.readFile(path, { encoding: "utf8" }, (err, data) => {
+      if (err) rej(err);
+      res(data);
+    })
+  );
+
+/**
+ * @param {string} path
+ * @returns {Promise<undefined>}}
+ *
+ */
+const createFolder = (path) =>
+  new Promise((res, rej) =>
+    fs.mkdir(path, (err) => (err ? rej(err) : res(undefined)))
+  );
+
+/**
+ * @param {string} path
+ * @param {string} data
+ * @returns {Promise<undefined>}
+ */
+const createFile = (path, data) =>
+  new Promise((res, rej) =>
+    fs.writeFile(path, data, { encoding: "utf8" }, (err) =>
+      err ? rej(err) : res(undefined)
+    )
+  );
+
+ipcMain.handle(
+  "load-user-data",
+  /**
+   * @param {string} userName
+   */
+  async (event, userName) => {
+    const userFolderPath = path.join(userProfilesPath, userName);
+    const userSettingsPath = path.join(
+      userProfilesPath,
+      userName,
+      "settings.json"
+    );
+
+    const userSettingsDefaults = { timeLimitInSeconds: 600 };
+
+    await dirOrFileExists(userProfilesPath).then((exist) => {
+      if (!exist) {
+        return createFolder(userProfilesPath);
+      }
+    });
+
+    await dirOrFileExists(userFolderPath).then((exist) => {
+      if (!exist) {
+        return createFolder(userFolderPath);
+      }
+    });
+
+    const userSettingsExists = await dirOrFileExists(userSettingsPath);
+
+    if (!userSettingsExists) {
+      return createFile(userSettingsPath, JSON.stringify(userSettingsDefaults))
+        .then(() => {
+          return userSettingsDefaults;
+        })
+        .catch(
+          /**
+           * @param {NodeJS.ErrnoException} err
+           */
+          (err) => {
+            dialog.showErrorBox("Error", err.message);
+            return undefined;
+          }
+        );
+    } else {
+      return readFile(userSettingsPath);
+    }
+  }
+);
 
 ipcMain.handle("load-user-profiles-names", () => {
   // check if directory userProfilesPath exists asynchronously

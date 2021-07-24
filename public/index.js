@@ -1,3 +1,4 @@
+// @ts-ignore
 import { Elm } from "../src/Main.elm";
 
 const electron = window.require("electron");
@@ -6,11 +7,12 @@ const app = Elm.Main.init({
   node: document.getElementById("root")
 });
 
-// app.ports.requestUserData.subscribe(function (userName) {
-//   electron.ipcRenderer.invoke("load-user", userName).then((e) => {
-//     console.log(e);
-//   });
-// });
+app.ports.sendRequestUserData.subscribe(function (userName) {
+  console.log("a");
+  electron.ipcRenderer.invoke("load-user-data", userName).then((e) => {
+    console.log(e);
+  });
+});
 
 app.ports.sendRequestProfilesNames.subscribe(function () {
   electron.ipcRenderer
