@@ -96,8 +96,7 @@ view model =
         , style "place-items" "center"
         ]
         [ div
-            [ style "display" "flex"
-            , style "gap" "8px"
+            [ class "input-container"
             ]
             [ input
                 [ list "user-profiles"
