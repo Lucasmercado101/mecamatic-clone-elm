@@ -4,13 +4,9 @@
   "description": "",
   "main": "public/electron.js",
   "scripts": {
-    "start": "concurrently \"npm:watch-elm\" \"npm:live-server\" \"npm:watch-sass\" \"electron .\"",
-    "prebuild": "elm make src/Main.elm --optimize --output=public/elm.js",
-    "build": "uglifyjs public/elm.js --compress \"pure_funcs=[F2,F3,F4,F5,F6,F7,F8,F9,A2,A3,A4,A5,A6,A7,A8,A9],pure_getters,keep_fargs=false,unsafe_comps,unsafe\" --mangle --output elm.min.js",
-    "watch-elm": "elm-live src/Main.elm --start-page=index.html -- --output=public/elm.js",
-    "live-server": "live-server --no-browser --quiet --port=1234",
-    "prewatch-sass": "node-sass public/styles.sass public/styles.css",
-    "watch-sass": "node-sass public/styles.sass public/styles.css -w public"
+    "start": "concurrently \"npm:dev\" \"electron .\"",
+    "dev": "parcel public/index.html",
+    "electron-start": "electron ."
   },
   "repository": {
     "type": "git",
@@ -26,7 +22,7 @@
   "dependencies": {
     "electron-is-dev": "2.0.0",
     "mobx": "6.3.2",
-    "node-sass": "^6.0.1"
+    "node-sass": "6.0.1"
   },
   "build": {
     "appId": "mecamatic.typing",
@@ -43,6 +39,8 @@
     ]
   },
   "devDependencies": {
+    "@parcel/transformer-elm": "^2.0.0-beta.2",
+    "@parcel/transformer-sass": "^2.0.0-beta.2",
     "concurrently": "6.2.0",
     "electron": "13.1.6",
     "electron-builder": "22.11.7",
@@ -50,6 +48,8 @@
     "elm": "0.19.1-5",
     "elm-live": "4.0.2",
     "live-server": "1.2.1",
+    "node-elm-compiler": "^5.0.6",
+    "parcel": "^2.0.0-beta.2",
     "uglify-js": "3.14.0"
   }
 }

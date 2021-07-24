@@ -53,7 +53,7 @@ function createWindow() {
     }
   });
   win.loadURL(
-    "http://127.0.0.1:1234/public/index.html"
+    "http://localhost:1234"
     // TODO production files}
     // `file://${path.join(__dirname, "./index.html")}`
   );

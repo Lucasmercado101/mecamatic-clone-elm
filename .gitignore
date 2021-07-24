@@ -4,3 +4,5 @@ dist
 public/elm.js
 public/styles.css
 package-lock.json
+.cache
+.parcel-cache

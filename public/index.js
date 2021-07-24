@@ -1,4 +1,4 @@
-/* global Elm:false electron:false */
+import { Elm } from "../src/Main.elm";
 
 const electron = window.require("electron");
 
