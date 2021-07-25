@@ -4,7 +4,7 @@
   "description": "",
   "main": "electron/electron.js",
   "scripts": {
-    "start": "concurrently \"npm:dev\" \"electron .\"",
+    "start": "concurrently \"npm:ts:watch\" \"npm:dev\" \"electron .\"",
     "dev": "parcel public/index.html",
     "electron-start": "electron .",
     "ts:watch": "tsc -w"
