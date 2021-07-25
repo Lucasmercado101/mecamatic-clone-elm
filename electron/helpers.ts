@@ -3,9 +3,10 @@ import * as fs from "fs";
 export const dirOrFileExists = (path: string): Promise<boolean> =>
   new Promise((res) => fs.stat(path, (err) => (err ? res(false) : res(true))));
 
-export const readFile = (
-  path: string
-): Promise<NodeJS.ErrnoException | string> =>
+/**
+ * if error rejects to an {NodeJS.ErrnoException} error
+ */
+export const readFile = (path: string): Promise<string> =>
   new Promise((res, rej) =>
     fs.readFile(path, { encoding: "utf8" }, (err, data) => {
       if (err) rej(err);
@@ -13,9 +14,10 @@ export const readFile = (
     })
   );
 
-export const readDir = (
-  path: string
-): Promise<NodeJS.ErrnoException | string[]> =>
+/**
+ * if error rejects to an {NodeJS.ErrnoException} error
+ */
+export const readDir = (path: string): Promise<string[]> =>
   new Promise((res, rej) =>
     fs.readdir(path, (err, files) => {
       if (err) {
@@ -25,17 +27,18 @@ export const readDir = (
     })
   );
 
-export const createFolder = (
-  path: string
-): Promise<NodeJS.ErrnoException | undefined> =>
+/**
+ * if error rejects to an {NodeJS.ErrnoException} error
+ */
+export const createFolder = (path: string): Promise<undefined> =>
   new Promise((res, rej) =>
     fs.mkdir(path, (err) => (err ? rej(err) : res(undefined)))
   );
 
-export const createFile = (
-  path: string,
-  data: string
-): Promise<NodeJS.ErrnoException | undefined> =>
+/**
+ * if error rejects to an {NodeJS.ErrnoException} error
+ */
+export const createFile = (path: string, data: string): Promise<undefined> =>
   new Promise((res, rej) =>
     fs.writeFile(path, data, { encoding: "utf8" }, (err) =>
       err ? rej(err) : res(undefined)
