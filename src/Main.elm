@@ -24,6 +24,10 @@ port sendRequestUserData : String -> Cmd msg
 port sendRequestProfilesNames : () -> Cmd msg
 
 
+
+-- * port userProfilesReceiver = string[] | undefined
+
+
 port userProfilesReceiver : (JD.Value -> msg) -> Sub msg
 
 
@@ -95,6 +99,26 @@ type UserProfiles
     | IsLoadingSlowly
     | FailedToLoad
     | UsersLoaded (List String)
+
+
+
+-- TODO on welcome view
+-- type alias Data = {
+--     text: String
+-- }
+-- type ExerciseData
+--     = NotSelected
+--     | Selected (Data)
+-- type ExerciseProgress
+--     = NotStarted
+--     | Started
+--     | Paused
+--     | FinishedSuccessfully
+--     | FinishedUnsuccessfully
+-- type Timer
+--     = Started
+--     | NotStarted
+--     | Paused
 
 
 type alias Model =
