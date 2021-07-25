@@ -24,27 +24,10 @@ port sendRequestUserData : String -> Cmd msg
 port sendRequestProfilesNames : () -> Cmd msg
 
 
-
--- TODO handle when requesting returns undefined (error)
-
-
 port userProfilesReceiver : (JD.Value -> msg) -> Sub msg
 
 
 
--- port userProfilesReceiver : (Maybe (List String) -> msg) -> Sub msg
--- SUBSCRIPTIONS
--- subscriptions : Model -> Sub Msg
--- subscriptions _ =
---     userProfilesReceiver
---         (\l ->
---             case l of
---                 Just val ->
---                     ReceivedUserProfiles val
---                 Nothing ->
---                     -- TODO
---                     ReceivedUserProfiles [ "test" ]
---         )
 -- * ANCHOR DECODERS
 
 
