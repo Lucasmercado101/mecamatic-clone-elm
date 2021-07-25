@@ -45,6 +45,9 @@ export const createFile = (path: string, data: string): Promise<undefined> =>
     )
   );
 
+/**
+ * if error rejects to an {NodeJS.ErrnoException} error
+ */
 export const createFolderIfNotExists = async (path: string) => {
   const exists = await dirOrFileExists(path);
   if (!exists) return createFolder(path);

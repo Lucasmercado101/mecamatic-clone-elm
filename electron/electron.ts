@@ -40,56 +40,39 @@ const defaultUserSettings: DefaultUserSettings = { timeLimitInSeconds: 600 };
  *      user profiles folder is created at:
  * LINK ./electron.ts#load-user-profiles-names-listener
  */
-ipcMain.handle(
-  "load-user-data",
-  /**
-   * @param {string} userName
-   * @returns {Promise<any | undefined>}
-   */
-  async (_, userName) => {
-    const userFolderPath = path.join(userProfilesPath, userName);
-    const userSettingsPath = path.join(
-      userProfilesPath,
-      userName,
-      "settings.json"
-    );
+ipcMain.handle("load-user-data", async (_, userName: string) => {
+  const userFolderPath = path.join(userProfilesPath, userName);
+  const userSettingsPath = path.join(
+    userProfilesPath,
+    userName,
+    "settings.json"
+  );
 
-    try {
-      await createFolderIfNotExists(userFolderPath);
-    } catch (err) {
+  try {
+    await createFolderIfNotExists(userFolderPath);
+  } catch (err: any) {
+    dialog.showErrorBox("Error", (err as NodeJS.ErrnoException).message);
+    return undefined;
+  }
+
+  const userSettingsExists = await dirOrFileExists(userSettingsPath);
+
+  if (!userSettingsExists) {
+    return createFile(userSettingsPath, JSON.stringify(defaultUserSettings))
+      .then(() => {
+        return defaultUserSettings;
+      })
+      .catch((err: NodeJS.ErrnoException) => {
+        dialog.showErrorBox("Error", err.message);
+        return undefined;
+      });
+  } else {
+    return readFile(userSettingsPath).catch((err: NodeJS.ErrnoException) => {
       dialog.showErrorBox("Error", err.message);
       return undefined;
-    }
-
-    const userSettingsExists = await dirOrFileExists(userSettingsPath);
-
-    if (!userSettingsExists) {
-      return createFile(userSettingsPath, JSON.stringify(defaultUserSettings))
-        .then(() => {
-          return defaultUserSettings;
-        })
-        .catch(
-          /**
-           * @param {NodeJS.ErrnoException} err
-           */
-          (err) => {
-            dialog.showErrorBox("Error", err.message);
-            return undefined;
-          }
-        );
-    } else {
-      return readFile(userSettingsPath).catch(
-        /**
-         * @param {NodeJS.ErrnoException} err
-         */
-        (err) => {
-          dialog.showErrorBox("Error", err.message);
-          return undefined;
-        }
-      );
-    }
+    });
   }
-);
+});
 
 /**
  * ANCHOR[id=load-user-profiles-names-listener]
@@ -105,10 +88,7 @@ ipcMain.handle("load-user-profiles-names", async () => {
 
   if (userProfilesFolderExists)
     return await readDir(userProfilesPath).catch(
-      /**
-       * @param {NodeJS.ErrnoException} err
-       */
-      (err) => {
+      (err: NodeJS.ErrnoException) => {
         dialog.showErrorBox("Error", err.message);
         return undefined;
       }
@@ -116,15 +96,10 @@ ipcMain.handle("load-user-profiles-names", async () => {
   else
     return createFolder(userProfilesPath)
       .then(() => [])
-      .catch(
-        /**
-         * @param {NodeJS.ErrnoException} err
-         */
-        (err) => {
-          dialog.showErrorBox("Error", err.message);
-          return undefined;
-        }
-      );
+      .catch((err: NodeJS.ErrnoException) => {
+        dialog.showErrorBox("Error", err.message);
+        return undefined;
+      });
 });
 
 function createWindow() {
