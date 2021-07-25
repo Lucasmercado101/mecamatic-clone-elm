@@ -8,3 +8,22 @@
     display: flex
     flex-direction: row
     gap: 8px
+
+.home-input
+    position: relative
+
+.home-input--loading::after
+    content: "Cargando..."
+    position: absolute
+    top: 110%
+    left: 50%
+    transform: translateX(-50%)
+    animation: slow-flicker 2s infinite linear
+
+@keyframes slow-flicker
+    0%
+        opacity: 0
+    50%
+        opacity: 1
+    100%
+        opacity: 0
