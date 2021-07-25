@@ -33,6 +33,8 @@ app.ports.sendRequestProfilesNames.subscribe(function () {
      * @param {string[] | undefined} userProfilesArr
      */
     (userProfilesArr) => {
+      // TODO more explicit if this happens on catch
+      // ? throw error on the electron.js so it catches it here?
       if (!userProfilesArr) app.ports.userProfilesReceiver.send(undefined);
       else app.ports.userProfilesReceiver.send(userProfilesArr);
     }
