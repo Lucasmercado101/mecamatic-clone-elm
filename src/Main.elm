@@ -2,13 +2,15 @@ port module Main exposing (..)
 
 import Browser
 import Html exposing (Html, button, datalist, div, form, input, option, text)
-import Html.Attributes exposing (class, id, list, style, value)
+import Html.Attributes exposing (class, classList, id, list, style, value)
 import Html.Events exposing (onInput, onSubmit)
 import Json.Decode as JD
+import Process
+import Task
 
 
 
--- PORTS
+--* ANCHOR PORTS
 -- TODO handle when requesting returns undefined (error)
 
 
@@ -43,7 +45,7 @@ port userProfilesReceiver : (JD.Value -> msg) -> Sub msg
 --                     -- TODO
 --                     ReceivedUserProfiles [ "test" ]
 --         )
--- * DECODERS
+-- * ANCHOR DECODERS
 
 
 type alias UserSettings =
@@ -62,42 +64,53 @@ userProfileNamesDecoder =
     JD.list JD.string
 
 
+
+-- * ANCHOR SUBSCRIPTIONS
+
+
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    userProfilesReceiver
-        (JD.decodeValue
-            userProfileNamesDecoder
-            >> (\l ->
-                    case l of
-                        Ok val ->
-                            ReceivedUserProfiles val
+    Sub.batch
+        [ userProfilesReceiver
+            (JD.decodeValue
+                userProfileNamesDecoder
+                >> (\l ->
+                        case l of
+                            Ok val ->
+                                ReceivedUserProfiles val
 
-                        Err _ ->
-                            -- TODO handle this error case
-                            ReceivedUserProfiles [ "a" ]
-               )
-        )
-
-
-
--- INIT
+                            Err _ ->
+                                -- TODO handle this error case
+                                ReceivedUserProfiles [ "a" ]
+                   )
+            )
+        ]
 
 
-init : () -> ( Model, Cmd msg )
+
+--* ANCHOR INIT
+
+
+init : () -> ( Model, Cmd Msg )
 init _ =
     ( { selectedUser = ""
       , userProfiles = IsLoading
       }
-    , sendRequestProfilesNames ()
+    , Cmd.batch
+        [ sendRequestProfilesNames ()
+        , Process.sleep 200
+            |> Task.perform (\l -> ShowIsLoadingText)
+        ]
     )
 
 
 
--- MODEL
+--* ANCHOR MODEL
 
 
 type UserProfiles
     = IsLoading
+    | IsLoadingSlowly
     | UsersLoaded (List String)
 
 
@@ -108,13 +121,14 @@ type alias Model =
 
 
 
--- UPDATE
+--* ANCHOR UPDATE
 
 
 type Msg
     = ConfirmedUserProfile
     | ReceivedUserProfiles (List String)
     | ChangeSelectedUser String
+    | ShowIsLoadingText
 
 
 update : Msg -> Model -> ( Model, Cmd msg )
@@ -129,9 +143,20 @@ update msg model =
         ChangeSelectedUser userName ->
             ( { model | selectedUser = userName }, Cmd.none )
 
+        ShowIsLoadingText ->
+            case model.userProfiles of
+                IsLoading ->
+                    ( { model | userProfiles = IsLoadingSlowly }, Cmd.none )
+
+                UsersLoaded _ ->
+                    ( model, Cmd.none )
+
+                IsLoadingSlowly ->
+                    ( model, Cmd.none )
 
 
--- VIEW
+
+--* ANCHOR VIEW
 
 
 view : Model -> Html Msg
@@ -140,19 +165,21 @@ view model =
         [ class "welcome-container", onSubmit ConfirmedUserProfile ]
         [ div
             [ class "input-container" ]
-            [ input
-                [ list "user-profiles"
-                , onInput ChangeSelectedUser
-                , value model.selectedUser
+            [ div [ classList [ ( "home-input", True ), ( "home-input--loading", model.userProfiles == IsLoadingSlowly ) ] ]
+                [ input
+                    [ list "user-profiles"
+                    , onInput ChangeSelectedUser
+                    , value model.selectedUser
+                    ]
+                    []
                 ]
-                []
             , datalist [ id "user-profiles" ]
                 (case model.userProfiles of
-                    IsLoading ->
-                        []
-
                     UsersLoaded usersProfiles ->
                         List.map (\l -> option [ value l ] []) usersProfiles
+
+                    _ ->
+                        []
                 )
             , button []
                 [ text "Aceptar" ]
