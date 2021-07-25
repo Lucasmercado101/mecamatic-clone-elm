@@ -16,8 +16,9 @@
     content: "Cargando..."
     position: absolute
     top: 110%
-    left: 50%
-    transform: translateX(-50%)
+    left: 0
+    width: 100%
+    text-align: center
     animation: slow-flicker 2s infinite linear
 
 @keyframes slow-flicker
@@ -27,3 +28,11 @@
         opacity: 1
     100%
         opacity: 0
+
+.home-input--failed-load::after
+    content: "Ha ocurrido un error"
+    position: absolute
+    top: 110%
+    left: 0
+    width: 100%
+    text-align: center
