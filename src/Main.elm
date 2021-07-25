@@ -63,8 +63,7 @@ subscriptions _ =
                                 ReceivedUserProfiles val
 
                             Err _ ->
-                                -- TODO handle this error case
-                                ReceivedUserProfiles [ "a" ]
+                                FailedToLoadUsers
                    )
             )
         ]
@@ -94,6 +93,7 @@ init _ =
 type UserProfiles
     = IsLoading
     | IsLoadingSlowly
+    | FailedToLoad
     | UsersLoaded (List String)
 
 
@@ -112,6 +112,7 @@ type Msg
     | ReceivedUserProfiles (List String)
     | ChangeSelectedUser String
     | ShowIsLoadingText
+    | FailedToLoadUsers
 
 
 update : Msg -> Model -> ( Model, Cmd msg )
@@ -131,11 +132,11 @@ update msg model =
                 IsLoading ->
                     ( { model | userProfiles = IsLoadingSlowly }, Cmd.none )
 
-                UsersLoaded _ ->
+                _ ->
                     ( model, Cmd.none )
 
-                IsLoadingSlowly ->
-                    ( model, Cmd.none )
+        FailedToLoadUsers ->
+            ( { model | userProfiles = FailedToLoad }, Cmd.none )
 
 
 
@@ -148,7 +149,7 @@ view model =
         [ class "welcome-container", onSubmit ConfirmedUserProfile ]
         [ div
             [ class "input-container" ]
-            [ div [ classList [ ( "home-input", True ), ( "home-input--loading", model.userProfiles == IsLoadingSlowly ) ] ]
+            [ div [ classList [ ( "home-input", True ), ( "home-input--loading", model.userProfiles == IsLoadingSlowly ), ( "home-input--failed-load", model.userProfiles == FailedToLoad ) ] ]
                 [ input
                     [ list "user-profiles"
                     , onInput ChangeSelectedUser
@@ -167,7 +168,6 @@ view model =
             , button []
                 [ text "Aceptar" ]
             ]
-        , div [] [ text (Debug.toString model) ]
         ]
 
 
