@@ -21,15 +21,20 @@ app.ports.sendRequestUserData.subscribe(function (userName) {
   );
 });
 
+/**
+ * * Request users profiles names.
+ *
+ * * If successful sends an array of strings
+ * * Else sends undefined
+ */
 app.ports.sendRequestProfilesNames.subscribe(function () {
   electron.ipcRenderer.invoke("load-user-profiles-names").then(
     /**
      * @param {string[] | undefined} userProfilesArr
      */
     (userProfilesArr) => {
-      if (!userProfilesArr) {
-        // TODO handle if undefined then something went wrong
-      } else app.ports.userProfilesReceiver.send(userProfilesArr);
+      if (!userProfilesArr) app.ports.userProfilesReceiver.send(undefined);
+      else app.ports.userProfilesReceiver.send(userProfilesArr);
     }
   );
 });
