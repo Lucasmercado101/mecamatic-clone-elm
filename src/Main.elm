@@ -11,13 +11,9 @@ import Task
 
 
 --* ANCHOR PORTS
+-- TODO add this and
 -- TODO handle when requesting returns undefined (error)
-
-
-port sendRequestUserData : String -> Cmd msg
-
-
-
+-- port sendRequestUserData : String -> Cmd msg
 -- TODO handle when requesting returns undefined (error)
 
 
@@ -143,8 +139,9 @@ update : Msg -> Model -> ( Model, Cmd msg )
 update msg model =
     case msg of
         ConfirmedUserProfile ->
-            ( model, sendRequestUserData model.selectedUser )
+            Debug.todo "Request user data and load main view"
 
+        -- ( model, sendRequestUserData model.selectedUser )
         ReceivedUserProfiles profiles ->
             ( { model | userProfiles = UsersLoaded profiles }, Cmd.none )
 

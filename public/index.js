@@ -7,19 +7,20 @@ const app = Elm.Main.init({
   node: document.getElementById("root")
 });
 
-app.ports.sendRequestUserData.subscribe(function (userName) {
-  electron.ipcRenderer.invoke("load-user-data", userName).then(
-    /**
-     * @param {import("./electron").defaultUserData | undefined} userData
-     */
-    (userData) => {
-      if (!userData) {
-        // TODO handle if undefined then something went wrong
-      } else {
-      }
-    }
-  );
-});
+// TODO
+// app.ports.sendRequestUserData.subscribe(function (userName) {
+//   electron.ipcRenderer.invoke("load-user-data", userName).then(
+//     /**
+//      * @param {import("./electron").defaultUserData | undefined} userData
+//      */
+//     (userData) => {
+//       if (!userData) {
+//         // TODO handle if undefined then something went wrong
+//       } else {
+//       }
+//     }
+//   );
+// });
 
 /**
  * * Request users profiles names.
@@ -28,6 +29,7 @@ app.ports.sendRequestUserData.subscribe(function (userName) {
  * * Else sends undefined
  */
 app.ports.sendRequestProfilesNames.subscribe(function () {
+  console.log("here");
   electron.ipcRenderer.invoke("load-user-profiles-names").then(
     /**
      * @param {string[] | undefined} userProfilesArr
