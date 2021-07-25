@@ -30,17 +30,14 @@ const app = Elm.Main.init({
  */
 app.ports.sendRequestProfilesNames.subscribe(function () {
   console.log("here");
-  electron.ipcRenderer.invoke("load-user-profiles-names").then(
-    /**
-     * @param {string[] | undefined} userProfilesArr
-     */
-    (userProfilesArr) => {
+  electron.ipcRenderer
+    .invoke("load-user-profiles-names")
+    .then((userProfilesArr: string[] | undefined) => {
       // TODO more explicit if this happens on catch
       // ? throw error on the electron.js so it catches it here?
       if (!userProfilesArr) app.ports.userProfilesReceiver.send(undefined);
       else app.ports.userProfilesReceiver.send(userProfilesArr);
-    }
-  );
+    });
 });
 
 // app.ports.sendNewSettings.subscribe(function (data) {
