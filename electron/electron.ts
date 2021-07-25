@@ -16,6 +16,7 @@ import {
   createFolder
 } from "./helpers";
 import * as isDev from "electron-is-dev";
+import { DefaultUserSettings } from "./data.models";
 
 const userProfilesPath = path.join(app.getPath("userData"), "profiles");
 
@@ -23,15 +24,7 @@ try {
   isDev && require("electron-reloader")(module);
 } catch (_) {}
 
-/**
- * @typedef defaultUserData
- * @property {600} timeLimitInSeconds
- */
-
-/**
- * @type {defaultUserData}
- */
-const defaultUserSettings = { timeLimitInSeconds: 600 };
+const defaultUserSettings: DefaultUserSettings = { timeLimitInSeconds: 600 };
 
 /**
  * TODO another listener to load saved records / history
