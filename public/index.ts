@@ -29,7 +29,6 @@ const app = Elm.Main.init({
  * * Else sends undefined
  */
 app.ports.sendRequestProfilesNames.subscribe(function () {
-  console.log("here");
   electron.ipcRenderer
     .invoke("load-user-profiles-names")
     .then((userProfilesArr: string[] | undefined) => {
