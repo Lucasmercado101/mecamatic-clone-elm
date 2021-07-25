@@ -2,11 +2,12 @@
   "name": "Mecamatic-clone-elm",
   "version": "1.0.0",
   "description": "",
-  "main": "public/electron.js",
+  "main": "electron/electron.js",
   "scripts": {
     "start": "concurrently \"npm:dev\" \"electron .\"",
     "dev": "parcel public/index.html",
-    "electron-start": "electron ."
+    "electron-start": "electron .",
+    "ts:watch": "tsc -w"
   },
   "repository": {
     "type": "git",
@@ -49,6 +50,7 @@
     "live-server": "1.2.1",
     "node-elm-compiler": "5.0.6",
     "parcel": "2.0.0-beta.2",
+    "typescript": "^4.3.5",
     "uglify-js": "3.14.0"
   }
 }

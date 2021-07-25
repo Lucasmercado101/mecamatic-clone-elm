@@ -14,7 +14,7 @@ const {
   createFolderIfNotExists,
   readDir,
   createFolder
-} = require("./helpers");
+} = require("./helpers.js");
 const path = require("path");
 const fs = require("fs");
 const userProfilesPath = path.join(app.getPath("userData"), "profiles");
