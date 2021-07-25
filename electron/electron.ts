@@ -38,7 +38,7 @@ const defaultUserSettings: DefaultUserSettings = { timeLimitInSeconds: 600 };
  *
  * NOTE It's assumed in this listener that the user profiles folder exists.
  *      user profiles folder is created at:
- * LINK ./electron.js#load-user-profiles-names-listener
+ * LINK ./electron.ts#load-user-profiles-names-listener
  */
 ipcMain.handle(
   "load-user-data",
