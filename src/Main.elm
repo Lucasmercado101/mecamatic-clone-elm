@@ -63,6 +63,7 @@ subscriptions _ =
                                 ReceivedUserProfiles val
 
                             Err _ ->
+                                -- NOTE if it fails then it doesn't re-request again or anything (todo?)
                                 FailedToLoadUsers
                    )
             )
