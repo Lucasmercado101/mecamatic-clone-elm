@@ -30,6 +30,7 @@ try {
 const defaultUserSettings: DefaultUserSettings = { timeLimitInSeconds: 600 };
 
 /**
+ * ANCHOR[id=load-user-data]
  * TODO another listener to load saved records / history
  * TODO also load custom user lessons in this listener
  *
