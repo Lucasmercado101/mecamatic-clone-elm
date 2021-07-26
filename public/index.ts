@@ -23,7 +23,8 @@ const app = Elm.Main.init({
 // });
 
 /**
- * * Request users profiles names.
+ * * Request users profiles names. LINK electron/electron.ts#load-user-profiles-names-listener
+ *
  *
  * * If successful sends an array of strings
  * * Else sends undefined
