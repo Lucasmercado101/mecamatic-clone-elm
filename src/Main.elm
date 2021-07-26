@@ -37,7 +37,6 @@ userProfileNamesDecoder =
 
 
 
---* ANCHOR INIT
 --* ANCHOR MODEL
 -- TODO on welcome view
 -- type alias Data = {
@@ -56,13 +55,6 @@ userProfileNamesDecoder =
 --     = Started
 --     | NotStarted
 --     | Paused
--- TODO
--- type MainType
---     = MainApp MainView
---     | SettingsWindow
--- type MainView
---     = WelcomeView
---     | MainView
 
 
 type Model
