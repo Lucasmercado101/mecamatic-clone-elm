@@ -1,31 +1,9 @@
-port module Main exposing (..)
+module Main exposing (..)
 
 import Browser
 import Html exposing (Html)
 import Json.Decode as JD
 import Windows.Main.Welcome as Welcome
-
-
-
---* ANCHOR PORTS
--- TODO add this and
--- TODO handle when requesting returns undefined (error)
--- port sendRequestUserData : String -> Cmd msg
--- TODO handle when requesting returns undefined (error)
-
-
-port sendRequestProfilesNames : () -> Cmd msg
-
-
-
--- * port userProfilesReceiver = string[] | undefined
-
-
-port userProfilesReceiver : (JD.Value -> msg) -> Sub msg
-
-
-
--- * ANCHOR SUBSCRIPTIONS
 
 
 subscriptions : Model -> Sub Msg
