@@ -1,4 +1,4 @@
-port module Windows.Main.Welcome exposing (Model, Msg, init, initial, subscriptions, update, view)
+port module Windows.Main.Welcome exposing (Model, Msg, init, initial, sendRequestProfilesNames, subscriptions, update, view)
 
 import Html exposing (Html, button, datalist, div, form, input, option, text)
 import Html.Attributes exposing (class, classList, id, list, value)
@@ -35,12 +35,6 @@ port userProfilesReceiver : (JD.Value -> msg) -> Sub msg
 
 
 -- * ANCHOR DECODERS
--- type alias UserSettings =
---     { timeLimitInSeconds : Int
---     }
--- userSettingsDecoder : JD.Decoder Int
--- userSettingsDecoder =
---     JD.field "data" JD.int
 
 
 userProfileNamesDecoder : JD.Decoder (List String)
@@ -81,7 +75,7 @@ init _ =
     , Cmd.batch
         [ sendRequestProfilesNames ()
         , Process.sleep 200
-            |> Task.perform (\l -> ShowIsLoadingText)
+            |> Task.perform (\_ -> ShowIsLoadingText)
         ]
     )
 

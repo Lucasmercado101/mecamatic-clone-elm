@@ -57,18 +57,6 @@ userProfileNamesDecoder =
 
 
 --* ANCHOR INIT
-
-
-init : () -> ( Model, Cmd Msg )
-init _ =
-    ( WelcomeView
-        -- TODO
-        Welcome.initial
-    , Cmd.none
-    )
-
-
-
 --* ANCHOR MODEL
 -- TODO on welcome view
 -- type alias Data = {
@@ -119,10 +107,6 @@ update msg model =
 
 
 
--- case msg of
---     GotWelcomeMsg welcomeMsg ->
---         Welcome.update welcomeMsg model
--- ( Welcome.update, Cmd.none )
 --* ANCHOR VIEW
 
 
@@ -136,7 +120,7 @@ view model =
 main : Program () Model Msg
 main =
     Browser.element
-        { init = init
+        { init = Welcome.init >> (\( model, cmd ) -> ( WelcomeView model, Cmd.map GotWelcomeMsg cmd ))
         , view = view
         , update = update
         , subscriptions = subscriptions
