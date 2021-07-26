@@ -19,5 +19,5 @@ export const userProfilesFolderPath = path.join(
 export const getUserProfileFolderPath = (userName: string) =>
   path.join(userProfilesFolderPath, userName);
 
-export const getUserSettingsFilePath = (userName: string): string =>
-  path.join(getUserSettingsFilePath(userName), "settings.json");
+export const getUserSettingsFilePath = (userName: string) =>
+  path.join(getUserProfileFolderPath(userName), "settings.json");
