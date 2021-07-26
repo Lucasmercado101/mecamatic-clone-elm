@@ -1,5 +1,6 @@
 // @ts-ignore
 import { Elm } from "../src/Main.elm";
+import { DefaultUserSettings } from "../electron/data.models";
 
 const electron = window.require("electron");
 
@@ -7,24 +8,22 @@ const app = Elm.Main.init({
   node: document.getElementById("root")
 });
 
-// TODO
-// app.ports.sendRequestUserData.subscribe(function (userName) {
-//   electron.ipcRenderer.invoke("load-user-data", userName).then(
-//     /**
-//      * @param {import("./electron").defaultUserData | undefined} userData
-//      */
-//     (userData) => {
-//       if (!userData) {
-//         // TODO handle if undefined then something went wrong
-//       } else {
-//       }
-//     }
-//   );
-// });
+/**
+ * * Request users' data. LINK electron/electron.ts#load-user-data
+ */
+app.ports.sendRequestUserData.subscribe(function (userName) {
+  electron.ipcRenderer
+    .invoke("load-user-data", userName)
+    .then((userData: DefaultUserSettings) => {
+      app.ports.userProfilesReceiver.send(userData);
+    })
+    .catch((e) => {
+      app.ports.userProfilesReceiver.send(undefined);
+    });
+});
 
 /**
  * * Request users profiles names. LINK electron/electron.ts#load-user-profiles-names-listener
- *
  *
  * * If successful sends an array of strings
  * * Else sends undefined
@@ -32,7 +31,7 @@ const app = Elm.Main.init({
 app.ports.sendRequestProfilesNames.subscribe(function () {
   electron.ipcRenderer
     .invoke("load-user-profiles-names")
-    .then((userProfilesArr: string[] | undefined) => {
+    .then((userProfilesArr: string[]) => {
       app.ports.userProfilesReceiver.send(userProfilesArr);
     })
     .catch(() => app.ports.userProfilesReceiver.send(undefined));
