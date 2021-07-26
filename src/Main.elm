@@ -115,6 +115,13 @@ type UserProfiles
 --     = Started
 --     | NotStarted
 --     | Paused
+-- TODO
+-- type MainType
+--     = MainApp MainView
+--     | SettingsWindow
+-- type MainView
+--     = WelcomeView
+--     | MainView
 
 
 type alias Model =
