@@ -42,6 +42,8 @@ const defaultUserSettings: DefaultUserSettings = { timeLimitInSeconds: 600 };
  * NOTE It's assumed in this listener that the user profiles folder exists.
  *      user profiles folder is created at:
  * LINK ./electron.ts#load-user-profiles-names-listener
+ *
+ * NOTE This creates user settings file if it doesn't exist
  */
 ipcMain.handle("load-user-data", async (_, userName: string) => {
   const userFolderPath = getUserProfileFolderPath(userName);
@@ -51,24 +53,22 @@ ipcMain.handle("load-user-data", async (_, userName: string) => {
     await createFolderIfNotExists(userFolderPath);
   } catch (err: any) {
     dialog.showErrorBox("Error", (err as NodeJS.ErrnoException).message);
-    return undefined;
+    throw new Error();
   }
 
   const userSettingsExists = await dirOrFileExists(userSettingsPath);
 
   if (!userSettingsExists) {
     return createFile(userSettingsPath, JSON.stringify(defaultUserSettings))
-      .then(() => {
-        return defaultUserSettings;
-      })
+      .then(() => defaultUserSettings)
       .catch((err: NodeJS.ErrnoException) => {
         dialog.showErrorBox("Error", err.message);
-        return undefined;
+        throw new Error();
       });
   } else {
     return readFile(userSettingsPath).catch((err: NodeJS.ErrnoException) => {
       dialog.showErrorBox("Error", err.message);
-      return undefined;
+      throw new Error();
     });
   }
 });
