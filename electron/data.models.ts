@@ -14,6 +14,8 @@ export interface UserSettings {
 
 export interface UserData {
   settings: UserSettings;
+  // ? also username
+  // userName: string
   // TODO user theme settings
   //   themeSettings?: themeSettings;
   // TODO users' custom lessons
