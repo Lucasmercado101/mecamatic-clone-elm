@@ -1,4 +1,4 @@
-port module Windows.Main.Welcome exposing (Model, Msg, init, initial, sendRequestProfilesNames, subscriptions, update, view)
+port module Windows.Main.Welcome exposing (Model, Msg, init, sendRequestProfilesNames, subscriptions, update, view)
 
 import Html exposing (Html, button, datalist, div, form, input, option, text)
 import Html.Attributes exposing (class, classList, id, list, value)
@@ -6,13 +6,6 @@ import Html.Events exposing (onInput, onSubmit)
 import Json.Decode as JD
 import Process
 import Task
-
-
-initial : Model
-initial =
-    { selectedUser = ""
-    , userProfiles = IsLoading
-    }
 
 
 
