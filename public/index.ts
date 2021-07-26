@@ -15,10 +15,10 @@ app.ports.sendRequestUserData.subscribe(function (userName) {
   electron.ipcRenderer
     .invoke("load-user-data", userName)
     .then((userData: DefaultUserSettings) => {
-      app.ports.userProfilesReceiver.send(userData);
+      app.ports.userDataReceiver.send(userData);
     })
-    .catch((e) => {
-      app.ports.userProfilesReceiver.send(undefined);
+    .catch(() => {
+      app.ports.userDataReceiver.send(undefined);
     });
 });
 

@@ -1,9 +1,9 @@
 module Main exposing (..)
 
 import Browser
-import Html exposing (Html)
+import Html exposing (Html, text)
 import Json.Decode as JD
-import Windows.Main.Welcome as Welcome
+import Windows.Main.Welcome as Welcome exposing (UserData(..))
 
 
 subscriptions : Model -> Sub Msg
@@ -11,6 +11,9 @@ subscriptions model =
     case model of
         WelcomeView welcomeModel ->
             Sub.map GotWelcomeMsg (Welcome.subscriptions welcomeModel)
+
+        MainView ->
+            Sub.none
 
 
 
@@ -64,6 +67,7 @@ userProfileNamesDecoder =
 
 type Model
     = WelcomeView Welcome.Model
+    | MainView
 
 
 
@@ -81,7 +85,18 @@ update msg model =
         GotWelcomeMsg welcomeMsg ->
             case model of
                 WelcomeView welcomeModel ->
-                    Welcome.update welcomeMsg welcomeModel |> (\( m, cmd ) -> ( WelcomeView m, cmd ))
+                    Welcome.update welcomeMsg welcomeModel
+                        |> (\( m, cmd ) ->
+                                case m.userData of
+                                    SuccessfullyGotUserData userData ->
+                                        ( MainView, cmd )
+
+                                    _ ->
+                                        ( WelcomeView m, cmd )
+                           )
+
+                _ ->
+                    ( model, Cmd.none )
 
 
 
@@ -93,6 +108,9 @@ view model =
     case model of
         WelcomeView welcomeModel ->
             Html.map GotWelcomeMsg (Welcome.view welcomeModel)
+
+        MainView ->
+            Html.div [] [ text "on main view" ]
 
 
 main : Program () Model Msg

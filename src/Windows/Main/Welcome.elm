@@ -1,4 +1,4 @@
-port module Windows.Main.Welcome exposing (Model, Msg, init, sendRequestProfilesNames, subscriptions, update, view)
+port module Windows.Main.Welcome exposing (Model, Msg, UserData(..), init, sendRequestProfilesNames, subscriptions, update, view)
 
 import Html exposing (Html, button, datalist, div, form, input, option, text)
 import Html.Attributes exposing (class, classList, disabled, id, list, value)
@@ -66,19 +66,33 @@ userDataDecoder =
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    userProfilesReceiver
-        (JD.decodeValue
-            userProfileNamesDecoder
-            >> (\l ->
-                    case l of
-                        Ok val ->
-                            ReceivedUserProfiles val
+    Sub.batch
+        [ userProfilesReceiver
+            (JD.decodeValue
+                userProfileNamesDecoder
+                >> (\l ->
+                        case l of
+                            Ok val ->
+                                ReceivedUserProfiles val
 
-                        Err _ ->
-                            -- NOTE if it fails then it doesn't re-request again or anything (todo?)
-                            FailedToLoadUsers
-               )
-        )
+                            Err _ ->
+                                -- NOTE if it fails then it doesn't re-request again or anything (todo?)
+                                FailedToLoadUsers
+                   )
+            )
+        , userDataReceiver
+            (JD.decodeValue
+                userDataDecoder
+                >> (\l ->
+                        case l of
+                            Ok val ->
+                                ReceivedUserData val
+
+                            Err _ ->
+                                FailedToLoadUserData
+                   )
+            )
+        ]
 
 
 
@@ -89,6 +103,7 @@ init : () -> ( Model, Cmd Msg )
 init _ =
     ( { selectedUser = ""
       , userProfiles = IsLoading
+      , userData = NotRequestedUserData
       }
     , Cmd.batch
         [ sendRequestProfilesNames ()
@@ -102,6 +117,13 @@ init _ =
 --* ANCHOR MODEL
 
 
+type UserData
+    = NotRequestedUserData
+    | RequestedUserData
+    | ErrorRequestingUserData
+    | SuccessfullyGotUserData UserSettings
+
+
 type UserProfiles
     = IsLoading
     | IsLoadingSlowly
@@ -112,6 +134,7 @@ type UserProfiles
 type alias Model =
     { selectedUser : String
     , userProfiles : UserProfiles
+    , userData : UserData
     }
 
 
@@ -125,19 +148,19 @@ type Msg
     | ChangeSelectedUser String
     | ShowIsLoadingText
     | FailedToLoadUsers
+    | ReceivedUserData UserSettings
+    | FailedToLoadUserData
 
 
 update : Msg -> Model -> ( Model, Cmd msg )
 update msg model =
     case msg of
         ConfirmedUserProfile ->
-            ( model
-            , if model.selectedUser == "" then
-                Cmd.none
+            if model.selectedUser == "" then
+                ( model, Cmd.none )
 
-              else
-                sendRequestUserData model.selectedUser
-            )
+            else
+                ( { model | userData = RequestedUserData }, sendRequestUserData model.selectedUser )
 
         ReceivedUserProfiles profiles ->
             ( { model | userProfiles = UsersLoaded profiles }, Cmd.none )
@@ -156,6 +179,12 @@ update msg model =
         FailedToLoadUsers ->
             ( { model | userProfiles = FailedToLoad }, Cmd.none )
 
+        ReceivedUserData data ->
+            ( { model | userData = SuccessfullyGotUserData data }, Cmd.none )
+
+        FailedToLoadUserData ->
+            ( { model | userData = ErrorRequestingUserData }, Cmd.none )
+
 
 
 --* ANCHOR VIEW
@@ -167,7 +196,15 @@ view model =
         [ class "welcome-container", onSubmit ConfirmedUserProfile ]
         [ div
             [ class "input-container" ]
-            [ div [ classList [ ( "home-input", True ), ( "home-input--loading", model.userProfiles == IsLoadingSlowly ), ( "home-input--failed-load", model.userProfiles == FailedToLoad ) ] ]
+            [ div
+                [ classList
+                    [ ( "home-input", True )
+                    , ( "home-input--loading", model.userProfiles == IsLoadingSlowly )
+                    , ( "home-input--failed-load", model.userProfiles == FailedToLoad )
+
+                    -- TODO error message if failed to load userData
+                    ]
+                ]
                 [ input
                     [ list "user-profiles"
                     , onInput ChangeSelectedUser
