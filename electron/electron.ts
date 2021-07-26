@@ -67,10 +67,12 @@ ipcMain.handle("load-user-data", async (_, userName: string) => {
         throw new Error();
       });
   } else {
-    return readFile(userSettingsPath).catch((err: NodeJS.ErrnoException) => {
-      dialog.showErrorBox("Error", err.message);
-      throw new Error();
-    });
+    return readFile(userSettingsPath)
+      .then(JSON.parse)
+      .catch((err: NodeJS.ErrnoException) => {
+        dialog.showErrorBox("Error", err.message);
+        throw new Error();
+      });
   }
 });
 
