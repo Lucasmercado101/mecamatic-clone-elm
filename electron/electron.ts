@@ -17,8 +17,11 @@ import {
 } from "./helpers";
 import * as isDev from "electron-is-dev";
 import { DefaultUserSettings } from "./data.models";
-
-const userProfilesPath = path.join(app.getPath("userData"), "profiles");
+import {
+  getUserProfileFolderPath,
+  getUserSettingsFilePath,
+  userProfilesFolderPath
+} from "./paths";
 
 try {
   isDev && require("electron-reloader")(module);
@@ -41,12 +44,8 @@ const defaultUserSettings: DefaultUserSettings = { timeLimitInSeconds: 600 };
  * LINK ./electron.ts#load-user-profiles-names-listener
  */
 ipcMain.handle("load-user-data", async (_, userName: string) => {
-  const userFolderPath = path.join(userProfilesPath, userName);
-  const userSettingsPath = path.join(
-    userProfilesPath,
-    userName,
-    "settings.json"
-  );
+  const userFolderPath = getUserProfileFolderPath(userName);
+  const userSettingsPath = getUserSettingsFilePath(userName);
 
   try {
     await createFolderIfNotExists(userFolderPath);
@@ -82,19 +81,23 @@ ipcMain.handle("load-user-data", async (_, userName: string) => {
  * * if an error occurs at any moment, it shows an error dialog box
  * * and returns "undefined"
  *
+ * NOTE creates userProfilesFolder if it does not exist
+ *
  */
 ipcMain.handle("load-user-profiles-names", async () => {
-  const userProfilesFolderExists = await dirOrFileExists(userProfilesPath);
+  const userProfilesFolderExists = await dirOrFileExists(
+    userProfilesFolderPath
+  );
 
   if (userProfilesFolderExists)
-    return await readDir(userProfilesPath).catch(
+    return await readDir(userProfilesFolderPath).catch(
       (err: NodeJS.ErrnoException) => {
         dialog.showErrorBox("Error", err.message);
         throw new Error();
       }
     );
   else
-    return createFolder(userProfilesPath)
+    return createFolder(userProfilesFolderPath)
       .then(() => [])
       .catch((err: NodeJS.ErrnoException) => {
         dialog.showErrorBox("Error", err.message);
