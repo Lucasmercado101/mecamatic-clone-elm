@@ -32,11 +32,9 @@ app.ports.sendRequestProfilesNames.subscribe(function () {
   electron.ipcRenderer
     .invoke("load-user-profiles-names")
     .then((userProfilesArr: string[] | undefined) => {
-      // TODO more explicit if this happens on catch
-      // ? throw error on the electron.js so it catches it here?
-      if (!userProfilesArr) app.ports.userProfilesReceiver.send(undefined);
-      else app.ports.userProfilesReceiver.send(userProfilesArr);
-    });
+      app.ports.userProfilesReceiver.send(userProfilesArr);
+    })
+    .catch(() => app.ports.userProfilesReceiver.send(undefined));
 });
 
 // app.ports.sendNewSettings.subscribe(function (data) {

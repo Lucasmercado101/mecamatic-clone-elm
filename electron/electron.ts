@@ -90,7 +90,7 @@ ipcMain.handle("load-user-profiles-names", async () => {
     return await readDir(userProfilesPath).catch(
       (err: NodeJS.ErrnoException) => {
         dialog.showErrorBox("Error", err.message);
-        return undefined;
+        throw new Error(err.message);
       }
     );
   else
@@ -98,7 +98,7 @@ ipcMain.handle("load-user-profiles-names", async () => {
       .then(() => [])
       .catch((err: NodeJS.ErrnoException) => {
         dialog.showErrorBox("Error", err.message);
-        return undefined;
+        throw new Error(err.message);
       });
 });
 
