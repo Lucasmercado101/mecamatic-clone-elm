@@ -1,8 +1,9 @@
 module Main exposing (..)
 
 import Browser
-import Html exposing (Html, text)
+import Html exposing (Html)
 import Json.Decode as JD
+import Windows.Main.MainView as Main
 import Windows.Main.Welcome as Welcome exposing (UserData(..))
 
 
@@ -12,7 +13,7 @@ subscriptions model =
         WelcomeView welcomeModel ->
             Sub.map GotWelcomeMsg (Welcome.subscriptions welcomeModel)
 
-        MainView ->
+        MainView _ ->
             Sub.none
 
 
@@ -38,28 +39,11 @@ userProfileNamesDecoder =
 
 
 --* ANCHOR MODEL
--- TODO on welcome view
--- type alias Data = {
---     text: String
--- }
--- type ExerciseData
---     = NotSelected
---     | Selected (Data)
--- type ExerciseProgress
---     = NotStarted
---     | Started
---     | Paused
---     | FinishedSuccessfully
---     | FinishedUnsuccessfully
--- type Timer
---     = Started
---     | NotStarted
---     | Paused
 
 
 type Model
     = WelcomeView Welcome.Model
-    | MainView
+    | MainView Main.Model
 
 
 
@@ -69,6 +53,7 @@ type Model
 
 type Msg
     = GotWelcomeMsg Welcome.Msg
+    | GotMainMsg Main.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd msg )
@@ -81,7 +66,7 @@ update msg model =
                         |> (\( m, cmd ) ->
                                 case m.userData of
                                     SuccessfullyGotUserData userData ->
-                                        ( MainView, cmd )
+                                        ( MainView (Main.init userData), cmd )
 
                                     _ ->
                                         ( WelcomeView m, cmd )
@@ -90,8 +75,13 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
+        GotMainMsg _ ->
+            ( model, Cmd.none )
 
 
+
+-- Debug.todo
+-- ( model, Cmd.none )
 --* ANCHOR VIEW
 
 
@@ -101,8 +91,8 @@ view model =
         WelcomeView welcomeModel ->
             Html.map GotWelcomeMsg (Welcome.view welcomeModel)
 
-        MainView ->
-            Html.div [] [ text "on main view" ]
+        MainView mainModel ->
+            Html.map GotMainMsg (Main.view mainModel)
 
 
 main : Program () Model Msg

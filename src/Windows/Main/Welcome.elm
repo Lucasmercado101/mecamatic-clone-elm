@@ -1,4 +1,4 @@
-port module Windows.Main.Welcome exposing (Model, Msg, UserData(..), init, sendRequestProfilesNames, subscriptions, update, view)
+port module Windows.Main.Welcome exposing (Model, Msg, UserData(..), UserSettings, init, sendRequestProfilesNames, subscriptions, update, view)
 
 import Html exposing (Html, button, datalist, div, form, input, option, text)
 import Html.Attributes exposing (class, classList, disabled, id, list, value)
