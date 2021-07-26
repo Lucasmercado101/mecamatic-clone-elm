@@ -1,7 +1,7 @@
 port module Windows.Main.Welcome exposing (Model, Msg, init, sendRequestProfilesNames, subscriptions, update, view)
 
 import Html exposing (Html, button, datalist, div, form, input, option, text)
-import Html.Attributes exposing (class, classList, id, list, value)
+import Html.Attributes exposing (class, classList, disabled, id, list, value)
 import Html.Events exposing (onInput, onSubmit)
 import Json.Decode as JD
 import Process
@@ -10,10 +10,10 @@ import Task
 
 
 --* ANCHOR PORTS
--- TODO add this and
 -- TODO handle when requesting returns undefined (error)
--- port sendRequestUserData : String -> Cmd msg
--- TODO handle when requesting returns undefined (error)
+
+
+port sendRequestUserData : String -> Cmd msg
 
 
 port sendRequestProfilesNames : () -> Cmd msg
@@ -106,7 +106,13 @@ update : Msg -> Model -> ( Model, Cmd msg )
 update msg model =
     case msg of
         ConfirmedUserProfile ->
-            Debug.todo "Request user data and load main view"
+            ( model
+            , if model.selectedUser == "" then
+                Cmd.none
+
+              else
+                sendRequestUserData model.selectedUser
+            )
 
         -- ( model, sendRequestUserData model.selectedUser )
         ReceivedUserProfiles profiles ->
@@ -153,7 +159,7 @@ view model =
                     _ ->
                         []
                 )
-            , button []
+            , button [ disabled (model.selectedUser == "") ]
                 [ text "Aceptar" ]
             ]
         ]
