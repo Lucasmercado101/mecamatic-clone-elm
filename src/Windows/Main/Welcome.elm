@@ -10,7 +10,6 @@ import Task
 
 
 --* ANCHOR PORTS
--- TODO handle when requesting returns undefined (error)
 
 
 port sendRequestUserData : String -> Cmd msg
@@ -27,12 +26,38 @@ port userProfilesReceiver : (JD.Value -> msg) -> Sub msg
 
 
 
+-- * port userData = UserData | undefined
+
+
+port userDataReceiver : (JD.Value -> msg) -> Sub msg
+
+
+
 -- * ANCHOR DECODERS
 
 
 userProfileNamesDecoder : JD.Decoder (List String)
 userProfileNamesDecoder =
     JD.list JD.string
+
+
+type alias UserSettings =
+    { errorsCoefficient : Maybe Float
+    , timeLimitInSeconds : Int
+    , isTutorGloballyActive : Maybe Bool
+    , isKeyboardGloballyVisible : Maybe Bool
+    , minimumWPM : Maybe Int
+    }
+
+
+userDataDecoder : JD.Decoder UserSettings
+userDataDecoder =
+    JD.map5 UserSettings
+        (JD.maybe (JD.field "errorsCoefficient" JD.float))
+        (JD.field "timeLimitInSeconds" JD.int)
+        (JD.maybe (JD.field "isTutorGloballyActive" JD.bool))
+        (JD.maybe (JD.field "isKeyboardGloballyVisible" JD.bool))
+        (JD.maybe (JD.field "minimumWPM" JD.int))
 
 
 
@@ -114,7 +139,6 @@ update msg model =
                 sendRequestUserData model.selectedUser
             )
 
-        -- ( model, sendRequestUserData model.selectedUser )
         ReceivedUserProfiles profiles ->
             ( { model | userProfiles = UsersLoaded profiles }, Cmd.none )
 
