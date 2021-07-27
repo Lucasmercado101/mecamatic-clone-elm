@@ -378,7 +378,7 @@ mainViewUpdate msg model =
 
 mainViewView : MainViewModel -> Html MainViewMsg
 mainViewView model =
-    div [ class "main-container" ] [ textBox model, text (Debug.toString model) ]
+    div [ class "main-view" ] [ textBox model, text (Debug.toString model) ]
 
 
 textBox : MainViewModel -> Html MainViewMsg
