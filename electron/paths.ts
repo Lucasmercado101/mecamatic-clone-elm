@@ -13,6 +13,16 @@ export const learningLessonsFolderPath = path.join(
   "learning"
 );
 
+export const perfectingLessonsFolderPath = path.join(
+  lessonsFolderPath,
+  "perfecting"
+);
+
+export const practiceLessonsFolderPath = path.join(
+  lessonsFolderPath,
+  "practice"
+);
+
 /**
  * * Structure:
  *  Profiles
