@@ -11,16 +11,24 @@ import Task
 
 
 --* ANCHOR PORTS
--- TODO add this and
--- TODO handle when requesting returns undefined (error)
--- port sendRequestUserData : String -> Cmd msg
+
+
+port sendRequestUserData : () -> Cmd msg
 
 
 port sendRequestProfilesNames : () -> Cmd msg
 
 
 
--- * port userProfilesReceiver = string[] | undefined
+-- TODO
+-- * PORT userDataReceiver = userData | undefined
+
+
+port userDataReceiver : (JD.Value -> msg) -> Sub msg
+
+
+
+-- * PORT userProfilesReceiver = string[] | undefined
 
 
 port userProfilesReceiver : (JD.Value -> msg) -> Sub msg
