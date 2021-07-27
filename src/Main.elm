@@ -191,7 +191,7 @@ update msg model =
                     ( WelcomeView { welcomeModel | requestedUserData = ErrorRequestingUserData }, Cmd.none )
 
                 ReceivedUserData data ->
-                    ( MainView { userSettings = data, exercise = ExerciseNotSelected }, Cmd.none )
+                    ( MainView { userSettings = data, exercise = ExerciseNotSelected }, sendOnMainView () )
 
         ( GotWelcomeMsg _, MainView mainViewModel ) ->
             ( MainView mainViewModel, Cmd.none )
@@ -258,6 +258,16 @@ main =
 
 
 -- *********** MAIN VIEW *************
+-- * SUBSCRIPTIONS
+-- NOTE on entering the main view, we need to inform electron to show different menu messages
+
+
+port sendOnMainView : () -> Cmd msg
+
+
+
+-- subscriptions : Model -> Sub Msg
+-- subscriptions _ =
 -- * MODEL
 
 
