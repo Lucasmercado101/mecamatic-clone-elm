@@ -2,18 +2,20 @@ import { ipcMain, Menu } from "electron";
 import { MenuItem } from "electron/main";
 import * as path from "path";
 import { readDir } from "../helpers";
-import { learningLessonsFolderPath } from "../paths";
+import {
+  learningLessonsFolderPath,
+  perfectingLessonsFolderPath,
+  practiceLessonsFolderPath
+} from "../paths";
 
-// * Changes main window menu options
-ipcMain.on("is-on-main-view", async () => {
-  const learningSubmenus: Electron.MenuItemConstructorOptions[] = [];
-  const learningLessonFolders = await readDir(learningLessonsFolderPath).then(
-    (folders) =>
-      folders.sort((a, b) => +a.split("lesson")[1] - +b.split("lesson")[1])
+const getOptionMenuSubmenus = async (lessonsFolder: string) => {
+  const submenus: Electron.MenuItemConstructorOptions[] = [];
+  const lessonFolders = await readDir(lessonsFolder).then((folders) =>
+    folders.sort((a, b) => +a.split("lesson")[1] - +b.split("lesson")[1])
   );
 
-  for (let i = 0; i < learningLessonFolders.length; i++) {
-    const lessonFolder = learningLessonFolders[i];
+  for (let i = 0; i < lessonFolders.length; i++) {
+    const lessonFolder = lessonFolders[i];
     let lessonSubmenu: Electron.MenuItemConstructorOptions[] = [];
     const exerciseFiles = await readDir(
       path.join(learningLessonsFolderPath, lessonFolder)
@@ -27,33 +29,38 @@ ipcMain.on("is-on-main-view", async () => {
         label: `EJERCICIO ${exercise.split(".json")[0]}`,
         click() {
           // TODO
+          console.log(
+            `clicked on lesson ${lessonFolder} - exercise ${exercise}`
+          );
         }
       });
     }
 
-    learningSubmenus.push({
+    submenus.push({
       label: `LECCION ${lessonFolder.split("lesson")[1]}`,
       submenu: lessonSubmenu
     });
     lessonSubmenu = [];
   }
-  //               click() {
-  //                 fs.readFile(
-  //                   path.join(learningLessonsPath, lessonsFolder, exercise),
-  //                   "utf8",
-  //                   (err, data) => {
-  //                     win.webContents.send("exercise", {
-  //                       category: "Aprendizaje",
-  //                       lesson: lessonNumber,
-  //                       exercise: exerciseNumber,
-  //                       ...JSON.parse(data)
-  //                     });
-  //                   }
-  //                 );
-  //               }
-  //             };
+
+  return submenus;
+};
+
+// * Changes main window menu options
+ipcMain.on("is-on-main-view", async () => {
   const menu = Menu.buildFromTemplate([
-    { label: "a", submenu: learningSubmenus }
+    {
+      label: "Aprendizaje",
+      submenu: await getOptionMenuSubmenus(learningLessonsFolderPath)
+    },
+    {
+      label: "Practica",
+      submenu: await getOptionMenuSubmenus(practiceLessonsFolderPath)
+    },
+    {
+      label: "Perfeccionamiento",
+      submenu: await getOptionMenuSubmenus(perfectingLessonsFolderPath)
+    }
   ]);
   Menu.setApplicationMenu(menu);
 });
