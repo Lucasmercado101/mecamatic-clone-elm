@@ -66,34 +66,39 @@ userDataDecoder =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions _ =
-    Sub.batch
-        [ userProfilesReceiver
-            (JD.decodeValue
-                userProfileNamesDecoder
-                >> (\l ->
-                        case l of
-                            Ok val ->
-                                GotWelcomeMsg (ReceivedUserProfiles val)
+subscriptions model =
+    case model of
+        WelcomeView _ ->
+            Sub.batch
+                [ userProfilesReceiver
+                    (JD.decodeValue
+                        userProfileNamesDecoder
+                        >> (\l ->
+                                case l of
+                                    Ok val ->
+                                        GotWelcomeMsg (ReceivedUserProfiles val)
 
-                            Err _ ->
-                                -- NOTE if it fails then it doesn't re-request again or anything (todo?)
-                                GotWelcomeMsg FailedToLoadUsers
-                   )
-            )
-        , userDataReceiver
-            (JD.decodeValue
-                userDataDecoder
-                >> (\l ->
-                        case l of
-                            Ok val ->
-                                GotWelcomeMsg (ReceivedUserData val)
+                                    Err _ ->
+                                        -- NOTE if it fails then it doesn't re-request again or anything (todo?)
+                                        GotWelcomeMsg FailedToLoadUsers
+                           )
+                    )
+                , userDataReceiver
+                    (JD.decodeValue
+                        userDataDecoder
+                        >> (\l ->
+                                case l of
+                                    Ok val ->
+                                        GotWelcomeMsg (ReceivedUserData val)
 
-                            Err _ ->
-                                GotWelcomeMsg FailedToLoadUserData
-                   )
-            )
-        ]
+                                    Err _ ->
+                                        GotWelcomeMsg FailedToLoadUserData
+                           )
+                    )
+                ]
+
+        MainView mainViewModel ->
+            mainViewsubscriptions mainViewModel
 
 
 
@@ -160,9 +165,10 @@ type WelcomeMsg
 
 type Msg
     = GotWelcomeMsg WelcomeMsg
+    | GotMainViewMsg MainViewMsg
 
 
-update : Msg -> Model -> ( Model, Cmd msg )
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case ( msg, model ) of
         ( GotWelcomeMsg welcomeMsg, WelcomeView welcomeModel ) ->
@@ -193,8 +199,17 @@ update msg model =
                 ReceivedUserData data ->
                     ( MainView { userSettings = data, exercise = ExerciseNotSelected }, sendOnMainView () )
 
-        ( GotWelcomeMsg _, MainView mainViewModel ) ->
-            ( MainView mainViewModel, Cmd.none )
+        ( GotMainViewMsg mainViewMsg, MainView mainModel ) ->
+            case mainViewMsg of
+                ReceivedExerciseData exerciseData ->
+                    ( MainView { mainModel | exercise = ExerciseSelected exerciseData NotStarted }, Cmd.none )
+
+                FailedToLoadExerciseData ->
+                    -- TODO handle happens when an exercise is already selected and we try to load another one and fail
+                    ( MainView { mainModel | exercise = FailedToLoadEData }, Cmd.none )
+
+        _ ->
+            ( model, Cmd.none )
 
 
 
@@ -289,6 +304,26 @@ exerciseDataDecoder =
 
 
 
+-- * SUBSCRIPTIONS
+
+
+mainViewsubscriptions : MainViewModel -> Sub Msg
+mainViewsubscriptions model =
+    receiveExerciseData
+        (JD.decodeValue
+            exerciseDataDecoder
+            >> (\l ->
+                    case l of
+                        Ok val ->
+                            GotMainViewMsg (ReceivedExerciseData val)
+
+                        Err _ ->
+                            GotMainViewMsg FailedToLoadExerciseData
+               )
+        )
+
+
+
 -- * MODEL
 
 
@@ -312,6 +347,7 @@ type alias ExerciseData =
 
 type Exercise
     = ExerciseNotSelected
+    | FailedToLoadEData
     | ExerciseSelected ExerciseData ExerciseStatus
 
 
@@ -319,6 +355,15 @@ type alias MainViewModel =
     { userSettings : UserSettings
     , exercise : Exercise
     }
+
+
+
+-- * UPDATE
+
+
+type MainViewMsg
+    = ReceivedExerciseData ExerciseData
+    | FailedToLoadExerciseData
 
 
 
