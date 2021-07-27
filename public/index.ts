@@ -43,6 +43,7 @@ app.ports.sendOnMainView.subscribe(() => {
 });
 
 // TODO handle "delete user" button
-// electron.ipcRenderer.on("settings-conf-json-sent", (_, data) => {
-//   app.ports.settingsReceiver.send(data);
-// });
+electron.ipcRenderer.on("exercise-picked-data", (_, data) => {
+  console.log(data);
+  // app.ports.settingsReceiver.send(data);
+});

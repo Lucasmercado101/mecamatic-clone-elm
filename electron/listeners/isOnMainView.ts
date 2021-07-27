@@ -1,13 +1,20 @@
-import { ipcMain, Menu } from "electron";
+import { BrowserWindow, ipcMain, Menu } from "electron";
 import * as path from "path";
-import { readDir } from "../helpers";
+import { LessonData, LessonDataDTO } from "../data.models";
+import { readDir, readFile } from "../helpers";
 import {
   learningLessonsFolderPath,
+  lessonsFolderPath,
   perfectingLessonsFolderPath,
   practiceLessonsFolderPath
 } from "../paths";
 
-const getOptionMenuSubmenus = async (lessonsFolder: string) => {
+const getOptionMenuSubmenus = async (
+  lessonsFolder: string,
+  categoryNameFolder: string,
+  category: LessonDataDTO["exerciseCategory"]
+) => {
+  const currentWindow = BrowserWindow.getFocusedWindow()!;
   const submenus: Electron.MenuItemConstructorOptions[] = [];
   const lessonFolders = await readDir(lessonsFolder).then((folders) =>
     folders.sort((a, b) => +a.split("lesson")[1] - +b.split("lesson")[1])
@@ -27,10 +34,26 @@ const getOptionMenuSubmenus = async (lessonsFolder: string) => {
       lessonSubmenu.push({
         label: `EJERCICIO ${exercise.split(".json")[0]}`,
         click() {
-          // TODO
-          console.log(
-            `clicked on lesson ${lessonFolder} - exercise ${exercise}`
-          );
+          readFile(
+            path.join(
+              lessonsFolderPath,
+              categoryNameFolder,
+              lessonFolder,
+              exercise
+            )
+          ).then((data) => {
+            const lessonData: LessonData = JSON.parse(data);
+            const lessonDataDTO: LessonDataDTO = {
+              exerciseCategory: category,
+              exerciseNumber: +exercise.split(".json")[0],
+              lessonNumber: +lessonFolder.split("lesson")[1],
+              lessonData
+            };
+            currentWindow.webContents.send(
+              "exercise-picked-data",
+              lessonDataDTO
+            );
+          });
         }
       });
     }
@@ -50,15 +73,27 @@ ipcMain.on("is-on-main-view", async () => {
   const menu = Menu.buildFromTemplate([
     {
       label: "Aprendizaje",
-      submenu: await getOptionMenuSubmenus(learningLessonsFolderPath)
+      submenu: await getOptionMenuSubmenus(
+        learningLessonsFolderPath,
+        "learning",
+        "Aprendizaje"
+      )
     },
     {
       label: "Practica",
-      submenu: await getOptionMenuSubmenus(practiceLessonsFolderPath)
+      submenu: await getOptionMenuSubmenus(
+        practiceLessonsFolderPath,
+        "practice",
+        "Practica"
+      )
     },
     {
       label: "Perfeccionamiento",
-      submenu: await getOptionMenuSubmenus(perfectingLessonsFolderPath)
+      submenu: await getOptionMenuSubmenus(
+        perfectingLessonsFolderPath,
+        "perfecting",
+        "Perfeccionamiento"
+      )
     }
   ]);
   Menu.setApplicationMenu(menu);
