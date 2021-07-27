@@ -83,9 +83,10 @@ subscriptions _ =
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( { selectedUser = ""
-      , userProfiles = IsLoading
-      }
+    ( WelcomeView
+        { selectedUser = ""
+        , userProfiles = IsLoading
+        }
     , Cmd.batch
         [ sendRequestProfilesNames ()
         , Process.sleep 200
@@ -103,6 +104,104 @@ type UserProfiles
     | IsLoadingSlowly
     | FailedToLoad
     | UsersLoaded (List String)
+
+
+type alias WelcomeModel =
+    { selectedUser : String
+    , userProfiles : UserProfiles
+    }
+
+
+type Model
+    = WelcomeView WelcomeModel
+
+
+
+--* ANCHOR UPDATE
+
+
+type Msg
+    = ConfirmedUserProfile
+    | ReceivedUserProfiles (List String)
+    | ChangeSelectedUser String
+    | ShowIsLoadingText
+    | FailedToLoadUsers
+
+
+update : Msg -> Model -> ( Model, Cmd msg )
+update msg model =
+    case model of
+        WelcomeView welcomeModel ->
+            case msg of
+                ConfirmedUserProfile ->
+                    Debug.todo "Request user data and load main view"
+
+                -- ( model, sendRequestUserData model.selectedUser )
+                ReceivedUserProfiles profiles ->
+                    ( WelcomeView { welcomeModel | userProfiles = UsersLoaded profiles }, Cmd.none )
+
+                ChangeSelectedUser userName ->
+                    ( WelcomeView { welcomeModel | selectedUser = userName }, Cmd.none )
+
+                ShowIsLoadingText ->
+                    case welcomeModel.userProfiles of
+                        IsLoading ->
+                            ( WelcomeView { welcomeModel | userProfiles = IsLoadingSlowly }, Cmd.none )
+
+                        _ ->
+                            ( WelcomeView welcomeModel, Cmd.none )
+
+                FailedToLoadUsers ->
+                    ( WelcomeView { welcomeModel | userProfiles = FailedToLoad }, Cmd.none )
+
+
+
+--* ANCHOR VIEW
+
+
+welcomeView : WelcomeModel -> Html Msg
+welcomeView model =
+    form
+        [ class "welcome-container", onSubmit ConfirmedUserProfile ]
+        [ div
+            [ class "input-container" ]
+            [ div [ classList [ ( "home-input", True ), ( "home-input--loading", model.userProfiles == IsLoadingSlowly ), ( "home-input--failed-load", model.userProfiles == FailedToLoad ) ] ]
+                [ input
+                    [ list "user-profiles"
+                    , onInput ChangeSelectedUser
+                    , value model.selectedUser
+                    ]
+                    []
+                ]
+            , datalist [ id "user-profiles" ]
+                (case model.userProfiles of
+                    UsersLoaded usersProfiles ->
+                        List.map (\l -> option [ value l ] []) usersProfiles
+
+                    _ ->
+                        []
+                )
+            , button [ disabled (model.selectedUser == "") ]
+                [ text "Aceptar" ]
+            ]
+        ]
+
+
+view : Model -> Html Msg
+view model =
+    case model of
+        WelcomeView welcomeModel ->
+            welcomeView welcomeModel
+
+
+main : Program () Model Msg
+main =
+    Browser.element
+        { init = init
+        , view = view
+        , update = update
+        , subscriptions = subscriptions
+        }
 
 
 
@@ -130,88 +229,3 @@ type UserProfiles
 -- type MainView
 --     = WelcomeView
 --     | MainView
-
-
-type alias Model =
-    { selectedUser : String
-    , userProfiles : UserProfiles
-    }
-
-
-
---* ANCHOR UPDATE
-
-
-type Msg
-    = ConfirmedUserProfile
-    | ReceivedUserProfiles (List String)
-    | ChangeSelectedUser String
-    | ShowIsLoadingText
-    | FailedToLoadUsers
-
-
-update : Msg -> Model -> ( Model, Cmd msg )
-update msg model =
-    case msg of
-        ConfirmedUserProfile ->
-            Debug.todo "Request user data and load main view"
-
-        -- ( model, sendRequestUserData model.selectedUser )
-        ReceivedUserProfiles profiles ->
-            ( { model | userProfiles = UsersLoaded profiles }, Cmd.none )
-
-        ChangeSelectedUser userName ->
-            ( { model | selectedUser = userName }, Cmd.none )
-
-        ShowIsLoadingText ->
-            case model.userProfiles of
-                IsLoading ->
-                    ( { model | userProfiles = IsLoadingSlowly }, Cmd.none )
-
-                _ ->
-                    ( model, Cmd.none )
-
-        FailedToLoadUsers ->
-            ( { model | userProfiles = FailedToLoad }, Cmd.none )
-
-
-
---* ANCHOR VIEW
-
-
-view : Model -> Html Msg
-view model =
-    form
-        [ class "welcome-container", onSubmit ConfirmedUserProfile ]
-        [ div
-            [ class "input-container" ]
-            [ div [ classList [ ( "home-input", True ), ( "home-input--loading", model.userProfiles == IsLoadingSlowly ), ( "home-input--failed-load", model.userProfiles == FailedToLoad ) ] ]
-                [ input
-                    [ list "user-profiles"
-                    , onInput ChangeSelectedUser
-                    , value model.selectedUser
-                    ]
-                    []
-                ]
-            , datalist [ id "user-profiles" ]
-                (case model.userProfiles of
-                    UsersLoaded usersProfiles ->
-                        List.map (\l -> option [ value l ] []) usersProfiles
-
-                    _ ->
-                        []
-                )
-            , button [ disabled (model.selectedUser == "") ]
-                [ text "Aceptar" ]
-            ]
-        ]
-
-
-main : Program () Model Msg
-main =
-    Browser.element
-        { init = init
-        , view = view
-        , update = update
-        , subscriptions = subscriptions
-        }
