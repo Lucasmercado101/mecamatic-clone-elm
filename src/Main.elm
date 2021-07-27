@@ -1,7 +1,7 @@
 port module Main exposing (..)
 
 import Browser
-import Html exposing (Html, button, datalist, div, form, input, option, text)
+import Html exposing (Html, button, datalist, div, form, input, option, span, text)
 import Html.Attributes exposing (class, classList, disabled, id, list, value)
 import Html.Events exposing (onInput, onSubmit)
 import Json.Decode as JD
@@ -384,14 +384,28 @@ mainViewView model =
 textBox : MainViewModel -> Html MainViewMsg
 textBox model =
     div [ class "text-box-container" ]
-        [ case model.exercise of
+        (case model.exercise of
             ExerciseNotSelected ->
-                div [ class "text-box__welcome-text" ] [ text "Bienvenido a MecaMatic 3.0" ]
+                [ div [ class "text-box__welcome-text" ] [ text "Bienvenido a MecaMatic 3.0" ] ]
 
-            _ ->
-                -- TODO
-                div [] []
-        ]
+            ExerciseSelected data status ->
+                [ div [ class "text-box-chars__container" ]
+                    (List.map
+                        (\l ->
+                            let
+                                char =
+                                    String.fromChar l
+                            in
+                            span [ class "text-box-chars__char" ] [ text char ]
+                        )
+                        (String.toList data.text)
+                    )
+                ]
+
+            FailedToLoadEData ->
+                -- TODO if there is already an exercise selected and we try to load another one and fails
+                [ div [] [] ]
+        )
 
 
 
