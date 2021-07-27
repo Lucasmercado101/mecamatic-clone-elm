@@ -1,5 +1,4 @@
 import { ipcMain, Menu } from "electron";
-import { MenuItem } from "electron/main";
 import * as path from "path";
 import { readDir } from "../helpers";
 import {
