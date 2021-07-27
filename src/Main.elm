@@ -408,6 +408,7 @@ mainViewUpdate msg model =
                                             case currentChar of
                                                 Just ( _, char ) ->
                                                     -- NOTE this won't be "Enter" or something that isn't a single char, otherwise this doesn't work
+                                                    -- i KNOW it won't be enter as none of the lessons have \n or \r or \r\n in them
                                                     if keyPressed == String.fromChar char then
                                                         ExerciseSelected exerciseData (Ongoing (cursor + 1))
 
