@@ -199,14 +199,9 @@ update msg model =
                 ReceivedUserData data ->
                     ( MainView { userSettings = data, exercise = ExerciseNotSelected }, sendOnMainView () )
 
-        ( GotMainViewMsg mainViewMsg, MainView mainModel ) ->
-            case mainViewMsg of
-                ReceivedExerciseData exerciseData ->
-                    ( MainView { mainModel | exercise = ExerciseSelected exerciseData NotStarted }, Cmd.none )
-
-                FailedToLoadExerciseData ->
-                    -- TODO handle happens when an exercise is already selected and we try to load another one and fail
-                    ( MainView { mainModel | exercise = FailedToLoadEData }, Cmd.none )
+        ( GotMainViewMsg mainViewMsg, MainView mainViewModel ) ->
+            mainViewUpdate mainViewMsg mainViewModel
+                |> (\( mainModel, mainMsg ) -> ( MainView mainModel, Cmd.map GotMainViewMsg mainMsg ))
 
         _ ->
             ( model, Cmd.none )
@@ -364,6 +359,17 @@ type alias MainViewModel =
 type MainViewMsg
     = ReceivedExerciseData ExerciseData
     | FailedToLoadExerciseData
+
+
+mainViewUpdate : MainViewMsg -> MainViewModel -> ( MainViewModel, Cmd MainViewMsg )
+mainViewUpdate msg model =
+    case msg of
+        ReceivedExerciseData exerciseData ->
+            ( { model | exercise = ExerciseSelected exerciseData NotStarted }, Cmd.none )
+
+        FailedToLoadExerciseData ->
+            -- TODO handle happens when an exercise is already selected and we try to load another one and fail
+            ( { model | exercise = FailedToLoadEData }, Cmd.none )
 
 
 
