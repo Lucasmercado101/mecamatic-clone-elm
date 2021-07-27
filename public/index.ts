@@ -42,9 +42,8 @@ app.ports.sendOnMainView.subscribe(() => {
   electron.ipcRenderer.send("is-on-main-view");
 });
 
-electron.ipcRenderer.on("exercise-picked-data", (_, data: LessonDataDTO) => {
-  console.log(data);
-  // app.ports.settingsReceiver.send(data);
-});
+electron.ipcRenderer.on("exercise-picked-data", (_, data: LessonDataDTO) =>
+  app.ports.exerciseDataDecoder.send(data)
+);
 
 // TODO handle "delete user" button
