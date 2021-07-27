@@ -28,3 +28,11 @@ export interface LessonData {
   isKeyboardVisible: boolean;
   WPMNeededToPass: number;
 }
+
+// TODO
+// * What actually gets sent to the Elm app
+export interface lessonDataSent extends LessonData {
+  exerciseCategory: "Aprendizaje" | "Practica" | "Perfeccionamiento";
+  exerciseNumber: number;
+  lessonNumber: number;
+}
