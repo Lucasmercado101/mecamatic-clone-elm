@@ -2,7 +2,7 @@ port module Main exposing (..)
 
 import Browser
 import Html exposing (Html, button, datalist, div, form, input, option, text)
-import Html.Attributes exposing (class, classList, id, list, style, value)
+import Html.Attributes exposing (class, classList, disabled, id, list, style, value)
 import Html.Events exposing (onInput, onSubmit)
 import Json.Decode as JD
 import Process
@@ -193,7 +193,7 @@ view model =
                     _ ->
                         []
                 )
-            , button []
+            , button [ disabled (model.selectedUser == "") ]
                 [ text "Aceptar" ]
             ]
         ]
