@@ -43,7 +43,7 @@ app.ports.sendOnMainView.subscribe(() => {
 });
 
 electron.ipcRenderer.on("exercise-picked-data", (_, data: LessonDataDTO) =>
-  app.ports.exerciseDataDecoder.send(data)
+  app.ports.receiveExerciseData.send(data)
 );
 
 // TODO handle "delete user" button
