@@ -1,20 +1,29 @@
-module Main exposing (..)
+port module Main exposing (..)
 
 import Browser
-import Html exposing (Html)
+import Html exposing (Html, button, datalist, div, form, input, option, text)
+import Html.Attributes exposing (class, classList, id, list, style, value)
+import Html.Events exposing (onInput, onSubmit)
 import Json.Decode as JD
-import Windows.Main.MainView as Main
-import Windows.Main.Welcome as Welcome exposing (UserData(..))
+import Process
+import Task
 
 
-subscriptions : Model -> Sub Msg
-subscriptions model =
-    case model of
-        WelcomeView welcomeModel ->
-            Sub.map GotWelcomeMsg (Welcome.subscriptions welcomeModel)
 
-        MainView _ ->
-            Sub.none
+--* ANCHOR PORTS
+-- TODO add this and
+-- TODO handle when requesting returns undefined (error)
+-- port sendRequestUserData : String -> Cmd msg
+
+
+port sendRequestProfilesNames : () -> Cmd msg
+
+
+
+-- * port userProfilesReceiver = string[] | undefined
+
+
+port userProfilesReceiver : (JD.Value -> msg) -> Sub msg
 
 
 
@@ -38,67 +47,162 @@ userProfileNamesDecoder =
 
 
 
+-- * ANCHOR SUBSCRIPTIONS
+
+
+subscriptions : Model -> Sub Msg
+subscriptions _ =
+    Sub.batch
+        [ userProfilesReceiver
+            (JD.decodeValue
+                userProfileNamesDecoder
+                >> (\l ->
+                        case l of
+                            Ok val ->
+                                ReceivedUserProfiles val
+
+                            Err _ ->
+                                -- NOTE if it fails then it doesn't re-request again or anything (todo?)
+                                FailedToLoadUsers
+                   )
+            )
+        ]
+
+
+
+--* ANCHOR INIT
+
+
+init : () -> ( Model, Cmd Msg )
+init _ =
+    ( { selectedUser = ""
+      , userProfiles = IsLoading
+      }
+    , Cmd.batch
+        [ sendRequestProfilesNames ()
+        , Process.sleep 200
+            |> Task.perform (\l -> ShowIsLoadingText)
+        ]
+    )
+
+
+
 --* ANCHOR MODEL
 
 
-type Model
-    = WelcomeView Welcome.Model
-    | MainView Main.Model
+type UserProfiles
+    = IsLoading
+    | IsLoadingSlowly
+    | FailedToLoad
+    | UsersLoaded (List String)
 
 
 
--- | MainView
+-- TODO on welcome view
+-- type alias Data = {
+--     text: String
+-- }
+-- type ExerciseData
+--     = NotSelected
+--     | Selected (Data)
+-- type ExerciseProgress
+--     = NotStarted
+--     | Started
+--     | Paused
+--     | FinishedSuccessfully
+--     | FinishedUnsuccessfully
+-- type Timer
+--     = Started
+--     | NotStarted
+--     | Paused
+-- TODO
+-- type MainType
+--     = MainApp MainView
+--     | SettingsWindow
+-- type MainView
+--     = WelcomeView
+--     | MainView
+
+
+type alias Model =
+    { selectedUser : String
+    , userProfiles : UserProfiles
+    }
+
+
+
 --* ANCHOR UPDATE
 
 
 type Msg
-    = GotWelcomeMsg Welcome.Msg
-    | GotMainMsg Main.Msg
+    = ConfirmedUserProfile
+    | ReceivedUserProfiles (List String)
+    | ChangeSelectedUser String
+    | ShowIsLoadingText
+    | FailedToLoadUsers
 
 
 update : Msg -> Model -> ( Model, Cmd msg )
 update msg model =
     case msg of
-        GotWelcomeMsg welcomeMsg ->
-            case model of
-                WelcomeView welcomeModel ->
-                    Welcome.update welcomeMsg welcomeModel
-                        |> (\( m, cmd ) ->
-                                case m.userData of
-                                    SuccessfullyGotUserData userData ->
-                                        ( MainView (Main.init userData), cmd )
+        ConfirmedUserProfile ->
+            Debug.todo "Request user data and load main view"
 
-                                    _ ->
-                                        ( WelcomeView m, cmd )
-                           )
+        -- ( model, sendRequestUserData model.selectedUser )
+        ReceivedUserProfiles profiles ->
+            ( { model | userProfiles = UsersLoaded profiles }, Cmd.none )
+
+        ChangeSelectedUser userName ->
+            ( { model | selectedUser = userName }, Cmd.none )
+
+        ShowIsLoadingText ->
+            case model.userProfiles of
+                IsLoading ->
+                    ( { model | userProfiles = IsLoadingSlowly }, Cmd.none )
 
                 _ ->
                     ( model, Cmd.none )
 
-        GotMainMsg _ ->
-            ( model, Cmd.none )
+        FailedToLoadUsers ->
+            ( { model | userProfiles = FailedToLoad }, Cmd.none )
 
 
 
--- Debug.todo
--- ( model, Cmd.none )
 --* ANCHOR VIEW
 
 
 view : Model -> Html Msg
 view model =
-    case model of
-        WelcomeView welcomeModel ->
-            Html.map GotWelcomeMsg (Welcome.view welcomeModel)
+    form
+        [ class "welcome-container", onSubmit ConfirmedUserProfile ]
+        [ div
+            [ class "input-container" ]
+            [ div [ classList [ ( "home-input", True ), ( "home-input--loading", model.userProfiles == IsLoadingSlowly ), ( "home-input--failed-load", model.userProfiles == FailedToLoad ) ] ]
+                [ input
+                    [ list "user-profiles"
+                    , onInput ChangeSelectedUser
+                    , value model.selectedUser
+                    ]
+                    []
+                ]
+            , datalist [ id "user-profiles" ]
+                (case model.userProfiles of
+                    UsersLoaded usersProfiles ->
+                        List.map (\l -> option [ value l ] []) usersProfiles
 
-        MainView mainModel ->
-            Html.map GotMainMsg (Main.view mainModel)
+                    _ ->
+                        []
+                )
+            , button []
+                [ text "Aceptar" ]
+            ]
+        ]
 
 
 main : Program () Model Msg
 main =
     Browser.element
-        { init = Welcome.init >> (\( model, cmd ) -> ( WelcomeView model, Cmd.map GotWelcomeMsg cmd ))
+        { init = init
         , view = view
         , update = update
         , subscriptions = subscriptions
