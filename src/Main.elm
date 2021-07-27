@@ -13,7 +13,7 @@ import Task
 --* ANCHOR PORTS
 
 
-port sendRequestUserData : () -> Cmd msg
+port sendRequestUserData : String -> Cmd msg
 
 
 port sendRequestProfilesNames : () -> Cmd msg
@@ -40,18 +40,26 @@ port userProfilesReceiver : (JD.Value -> msg) -> Sub msg
 
 type alias UserSettings =
     { timeLimitInSeconds : Int
+    , errorsCoefficient : Maybe Float
+    , isTutorGloballyActive : Maybe Bool
+    , isKeyboardGloballyVisible : Maybe Bool
+    , minimumWPM : Maybe Int
     }
-
-
-
--- userSettingsDecoder : JD.Decoder Int
--- userSettingsDecoder =
---     JD.field "data" JD.int
 
 
 userProfileNamesDecoder : JD.Decoder (List String)
 userProfileNamesDecoder =
     JD.list JD.string
+
+
+userDataDecoder : JD.Decoder UserSettings
+userDataDecoder =
+    JD.map5 UserSettings
+        (JD.field "timeLimitInSeconds" JD.int)
+        (JD.maybe (JD.field "errorsCoefficient" JD.float))
+        (JD.maybe (JD.field "isTutorGloballyActive" JD.bool))
+        (JD.maybe (JD.field "isKeyboardGloballyVisible" JD.bool))
+        (JD.maybe (JD.field "minimumWPM" JD.int))
 
 
 
@@ -67,11 +75,23 @@ subscriptions _ =
                 >> (\l ->
                         case l of
                             Ok val ->
-                                ReceivedUserProfiles val
+                                GotWelcomeMsg (ReceivedUserProfiles val)
 
                             Err _ ->
                                 -- NOTE if it fails then it doesn't re-request again or anything (todo?)
-                                FailedToLoadUsers
+                                GotWelcomeMsg FailedToLoadUsers
+                   )
+            )
+        , userDataReceiver
+            (JD.decodeValue
+                userDataDecoder
+                >> (\l ->
+                        case l of
+                            Ok val ->
+                                GotWelcomeMsg (ReceivedUserData val)
+
+                            Err _ ->
+                                GotWelcomeMsg FailedToLoadUserData
                    )
             )
         ]
@@ -86,11 +106,12 @@ init _ =
     ( WelcomeView
         { selectedUser = ""
         , userProfiles = IsLoading
+        , requestedUserData = ErrorRequestingUserData
         }
     , Cmd.batch
         [ sendRequestProfilesNames ()
         , Process.sleep 200
-            |> Task.perform (\l -> ShowIsLoadingText)
+            |> Task.perform (\_ -> GotWelcomeMsg ShowIsLoadingText)
         ]
     )
 
@@ -106,42 +127,58 @@ type UserProfiles
     | UsersLoaded (List String)
 
 
+type RequestedUserData
+    = NotRequested
+    | Requested
+    | ErrorRequestingUserData
+
+
 type alias WelcomeModel =
     { selectedUser : String
     , userProfiles : UserProfiles
+    , requestedUserData : RequestedUserData
     }
 
 
 type Model
     = WelcomeView WelcomeModel
+    | MainView MainViewModel
 
 
 
 --* ANCHOR UPDATE
 
 
-type Msg
+type WelcomeMsg
     = ConfirmedUserProfile
     | ReceivedUserProfiles (List String)
     | ChangeSelectedUser String
     | ShowIsLoadingText
     | FailedToLoadUsers
+    | ReceivedUserData UserSettings
+    | FailedToLoadUserData
+
+
+type Msg
+    = GotWelcomeMsg WelcomeMsg
 
 
 update : Msg -> Model -> ( Model, Cmd msg )
 update msg model =
-    case model of
-        WelcomeView welcomeModel ->
-            case msg of
+    case ( msg, model ) of
+        ( GotWelcomeMsg welcomeMsg, WelcomeView welcomeModel ) ->
+            case welcomeMsg of
                 ConfirmedUserProfile ->
-                    Debug.todo "Request user data and load main view"
-
-                -- ( model, sendRequestUserData model.selectedUser )
-                ReceivedUserProfiles profiles ->
-                    ( WelcomeView { welcomeModel | userProfiles = UsersLoaded profiles }, Cmd.none )
+                    ( WelcomeView welcomeModel, sendRequestUserData welcomeModel.selectedUser )
 
                 ChangeSelectedUser userName ->
                     ( WelcomeView { welcomeModel | selectedUser = userName }, Cmd.none )
+
+                ReceivedUserProfiles profiles ->
+                    ( WelcomeView { welcomeModel | userProfiles = UsersLoaded profiles }, Cmd.none )
+
+                FailedToLoadUsers ->
+                    ( WelcomeView { welcomeModel | userProfiles = FailedToLoad }, Cmd.none )
 
                 ShowIsLoadingText ->
                     case welcomeModel.userProfiles of
@@ -151,15 +188,21 @@ update msg model =
                         _ ->
                             ( WelcomeView welcomeModel, Cmd.none )
 
-                FailedToLoadUsers ->
-                    ( WelcomeView { welcomeModel | userProfiles = FailedToLoad }, Cmd.none )
+                FailedToLoadUserData ->
+                    ( WelcomeView { welcomeModel | requestedUserData = ErrorRequestingUserData }, Cmd.none )
+
+                ReceivedUserData data ->
+                    ( MainView { userSettings = data }, Cmd.none )
+
+        ( GotWelcomeMsg welcomeMsg, MainView mainViewModel ) ->
+            ( MainView mainViewModel, Cmd.none )
 
 
 
 --* ANCHOR VIEW
 
 
-welcomeView : WelcomeModel -> Html Msg
+welcomeView : WelcomeModel -> Html WelcomeMsg
 welcomeView model =
     form
         [ class "welcome-container", onSubmit ConfirmedUserProfile ]
@@ -191,7 +234,10 @@ view : Model -> Html Msg
 view model =
     case model of
         WelcomeView welcomeModel ->
-            welcomeView welcomeModel
+            welcomeView welcomeModel |> Html.map GotWelcomeMsg
+
+        MainView mainViewModel ->
+            mainViewView mainViewModel
 
 
 main : Program () Model Msg
@@ -229,3 +275,19 @@ main =
 -- type MainView
 --     = WelcomeView
 --     | MainView
+--  MAIN VIEW
+-- * MODEL
+
+
+type alias MainViewModel =
+    { userSettings : UserSettings
+    }
+
+
+
+-- * VIEW
+
+
+mainViewView : MainViewModel -> Html msg
+mainViewView model =
+    div [ class "main-container" ] [ text (Debug.toString model) ]
