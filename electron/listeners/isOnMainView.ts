@@ -47,7 +47,7 @@ const getOptionMenuSubmenus = async (
               exerciseCategory: category,
               exerciseNumber: +exercise.split(".json")[0],
               lessonNumber: +lessonFolder.split("lesson")[1],
-              lessonData
+              ...lessonData
             };
             currentWindow.webContents.send(
               "exercise-picked-data",
