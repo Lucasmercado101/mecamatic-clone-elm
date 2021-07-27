@@ -482,6 +482,20 @@ textBox model =
                                             ExerciseFinishedSuccessfully ->
                                                 False
                                       )
+                                    , ( "text-box-chars__char--typed"
+                                      , case status of
+                                            Ongoing cursor ->
+                                                i < cursor
+
+                                            Paused cursor ->
+                                                i < cursor
+
+                                            NotStarted ->
+                                                False
+
+                                            ExerciseFinishedSuccessfully ->
+                                                False
+                                      )
                                     ]
                                 ]
                                 [ text char ]
