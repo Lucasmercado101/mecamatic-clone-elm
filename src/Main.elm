@@ -6,6 +6,7 @@ import Html.Attributes exposing (class, classList, disabled, id, list, tabindex,
 import Html.Events exposing (on, onInput, onSubmit)
 import Json.Decode as JD
 import Keyboard.Event exposing (KeyboardEvent, decodeKeyboardEvent)
+import List.Extra
 import Process
 import Task
 
@@ -383,14 +384,41 @@ mainViewUpdate msg model =
                         FailedToLoadEData ->
                             model.exercise
 
-                        ExerciseSelected data status ->
+                        ExerciseSelected exerciseData status ->
                             case event.key of
                                 Just keyPressed ->
-                                    if status == NotStarted && keyPressed == "Enter" then
-                                        ExerciseSelected data (Ongoing 0)
+                                    case status of
+                                        NotStarted ->
+                                            if keyPressed == "Enter" then
+                                                ExerciseSelected exerciseData (Ongoing 0)
 
-                                    else
-                                        model.exercise
+                                            else
+                                                model.exercise
+
+                                        Ongoing cursor ->
+                                            let
+                                                textCharsList : List ( Int, Char )
+                                                textCharsList =
+                                                    List.indexedMap (\i c -> Tuple.pair i c) (String.toList exerciseData.text)
+
+                                                currentChar : Maybe ( Int, Char )
+                                                currentChar =
+                                                    List.Extra.find (\( i, _ ) -> cursor == i) textCharsList
+                                            in
+                                            case currentChar of
+                                                Just ( _, char ) ->
+                                                    -- NOTE this won't be "Enter" or something that isn't a single char, otherwise this doesn't work
+                                                    if keyPressed == String.fromChar char then
+                                                        ExerciseSelected exerciseData (Ongoing (cursor + 1))
+
+                                                    else
+                                                        model.exercise
+
+                                                Nothing ->
+                                                    model.exercise
+
+                                        _ ->
+                                            model.exercise
 
                                 Nothing ->
                                     model.exercise
