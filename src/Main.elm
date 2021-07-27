@@ -268,14 +268,7 @@ main =
 --     = Started
 --     | NotStarted
 --     | Paused
--- TODO
--- type MainType
---     = MainApp MainView
---     | SettingsWindow
--- type MainView
---     = WelcomeView
---     | MainView
---  MAIN VIEW
+-- *********** MAIN VIEW *************
 -- * MODEL
 
 
