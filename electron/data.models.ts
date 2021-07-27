@@ -29,7 +29,6 @@ export interface LessonData {
   WPMNeededToPass: number;
 }
 
-// TODO
 // * What actually gets sent to the Elm app
 export interface LessonDataDTO extends LessonData {
   exerciseCategory: "Aprendizaje" | "Practica" | "Perfeccionamiento";
