@@ -2,9 +2,10 @@ port module Main exposing (..)
 
 import Browser
 import Html exposing (Html, button, datalist, div, form, input, option, span, text)
-import Html.Attributes exposing (class, classList, disabled, id, list, value)
-import Html.Events exposing (onInput, onSubmit)
+import Html.Attributes exposing (class, classList, disabled, id, list, tabindex, value)
+import Html.Events exposing (on, onInput, onSubmit)
 import Json.Decode as JD
+import Keyboard.Event exposing (KeyboardEvent, decodeKeyboardEvent)
 import Process
 import Task
 
@@ -324,8 +325,8 @@ mainViewsubscriptions _ =
 
 type ExerciseStatus
     = NotStarted
-    | Ongoing
-    | Paused
+    | Ongoing Int -- Cursor
+    | Paused Int -- Cursor
     | FinishedSuccessfully
 
 
@@ -359,6 +360,7 @@ type alias MainViewModel =
 type MainViewMsg
     = ReceivedExerciseData ExerciseData
     | FailedToLoadExerciseData
+    | KeyPressed KeyboardEvent
 
 
 mainViewUpdate : MainViewMsg -> MainViewModel -> ( MainViewModel, Cmd MainViewMsg )
@@ -371,6 +373,32 @@ mainViewUpdate msg model =
             -- TODO handle happens when an exercise is already selected and we try to load another one and fail
             ( { model | exercise = FailedToLoadEData }, Cmd.none )
 
+        KeyPressed event ->
+            let
+                exercise =
+                    case model.exercise of
+                        ExerciseNotSelected ->
+                            model.exercise
+
+                        FailedToLoadEData ->
+                            model.exercise
+
+                        ExerciseSelected data status ->
+                            case event.key of
+                                Just keyPressed ->
+                                    if status == NotStarted && keyPressed == "Enter" then
+                                        ExerciseSelected data (Ongoing 0)
+
+                                    else
+                                        model.exercise
+
+                                Nothing ->
+                                    model.exercise
+
+                -- model.exercise
+            in
+            ( { model | exercise = exercise }, Cmd.none )
+
 
 
 -- * VIEW
@@ -378,25 +406,52 @@ mainViewUpdate msg model =
 
 mainViewView : MainViewModel -> Html MainViewMsg
 mainViewView model =
-    div [ class "main-view" ] [ textBox model, text (Debug.toString model) ]
+    div
+        [ class "main-view"
+        , tabindex 0
+        , on "keydown" <|
+            JD.map KeyPressed decodeKeyboardEvent
+        ]
+        [ textBox model, text (Debug.toString model.exercise) ]
 
 
 textBox : MainViewModel -> Html MainViewMsg
 textBox model =
-    div [ class "text-box-container" ]
+    div
+        [ class "text-box-container"
+        ]
         (case model.exercise of
             ExerciseNotSelected ->
                 [ div [ class "text-box__welcome-text" ] [ text "Bienvenido a MecaMatic 3.0" ] ]
 
             ExerciseSelected data status ->
                 [ div [ class "text-box-chars__container" ]
-                    (List.map
-                        (\l ->
+                    (List.indexedMap
+                        (\i el ->
                             let
                                 char =
-                                    String.fromChar l
+                                    String.fromChar el
                             in
-                            span [ class "text-box-chars__char" ] [ text char ]
+                            span
+                                [ classList
+                                    [ ( "text-box-chars__char", True )
+                                    , ( "text-box-chars__char--highlighted"
+                                      , case status of
+                                            Ongoing cursor ->
+                                                i == cursor
+
+                                            Paused cursor ->
+                                                i == cursor
+
+                                            NotStarted ->
+                                                False
+
+                                            FinishedSuccessfully ->
+                                                False
+                                      )
+                                    ]
+                                ]
+                                [ text char ]
                         )
                         (String.toList data.text)
                     )
@@ -406,57 +461,3 @@ textBox model =
                 -- TODO if there is already an exercise selected and we try to load another one and fails
                 [ div [] [] ]
         )
-
-
-
---            <div
---               ref={textContainerDiv}
---               style={{
---                 backgroundColor: "#008282",
---                 color: "white",
---                 overflow: "auto",
---                 height: 210,
---                 width: 570,
---                 border: "thin solid",
---                 borderStyle: "inset"
---               }}
---             >
---               {selectedLessonText ? (
---                 <div
---                   style={{
---                     fontSize: "1.3rem",
---                     padding: 4
---                   }}
---                 >
---                   {Array.from(selectedLessonText).map((letter, i) => (
---                     <span
---                       key={i}
---                       style={{
---                         color: exerciseCursorPosition > i ? "black" : "",
---                         backgroundColor:
---                           exerciseCursorPosition === i
---                             ? "#ff8a7e"
---                             : "transparent",
---                         whiteSpace: "break-spaces",
---                         fontFamily: `monospace`
---                       }}
---                       ref={exerciseCursorPosition === i ? myRef : null}
---                     >
---                       {letter}
---                     </span>
---                   ))}
---                 </div>
---               ) : (
---                 <div
---                   style={{
---                     fontSize: "1.5rem",
---                     width: "100%",
---                     height: "100%",
---                     display: "grid",
---                     placeItems: "center"
---                   }}
---                 >
---                   Bienvenido a MecaMatic 3.0
---                 </div>
---               )}
---             </div>
