@@ -134,15 +134,16 @@ function createWindow() {
 
   if (isDev) win.webContents.openDevTools();
 
-  const menu = Menu.buildFromTemplate([
-    {
-      label: "Eliminar Usuario",
-      click() {
-        win.webContents.send("get-selected-user");
-      }
-    }
-  ]);
-  Menu.setApplicationMenu(menu);
+  // TODO
+  // const menu = Menu.buildFromTemplate([
+  //   {
+  //     label: "Eliminar Usuario",
+  //     click() {
+  //       win.webContents.send("get-selected-user");
+  //     }
+  //   }
+  // ]);
+  // Menu.setApplicationMenu(menu);
 }
 
 // This method will be called when Electron has finished
