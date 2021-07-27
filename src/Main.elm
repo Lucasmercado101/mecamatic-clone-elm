@@ -2,7 +2,7 @@ port module Main exposing (..)
 
 import Browser
 import Html exposing (Html, button, datalist, div, form, input, option, text)
-import Html.Attributes exposing (class, classList, disabled, id, list, style, value)
+import Html.Attributes exposing (class, classList, disabled, id, list, value)
 import Html.Events exposing (onInput, onSubmit)
 import Json.Decode as JD
 import Process
@@ -20,7 +20,6 @@ port sendRequestProfilesNames : () -> Cmd msg
 
 
 
--- TODO
 -- * PORT userDataReceiver = userData | undefined
 
 
@@ -194,7 +193,7 @@ update msg model =
                 ReceivedUserData data ->
                     ( MainView { userSettings = data }, Cmd.none )
 
-        ( GotWelcomeMsg welcomeMsg, MainView mainViewModel ) ->
+        ( GotWelcomeMsg _, MainView mainViewModel ) ->
             ( MainView mainViewModel, Cmd.none )
 
 
@@ -205,10 +204,17 @@ update msg model =
 welcomeView : WelcomeModel -> Html WelcomeMsg
 welcomeView model =
     form
+        -- TODO handle what happens when this fails to load user data
         [ class "welcome-container", onSubmit ConfirmedUserProfile ]
         [ div
             [ class "input-container" ]
-            [ div [ classList [ ( "home-input", True ), ( "home-input--loading", model.userProfiles == IsLoadingSlowly ), ( "home-input--failed-load", model.userProfiles == FailedToLoad ) ] ]
+            [ div
+                [ classList
+                    [ ( "home-input", True )
+                    , ( "home-input--loading", model.userProfiles == IsLoadingSlowly )
+                    , ( "home-input--failed-load", model.userProfiles == FailedToLoad )
+                    ]
+                ]
                 [ input
                     [ list "user-profiles"
                     , onInput ChangeSelectedUser
