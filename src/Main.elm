@@ -258,7 +258,7 @@ view model =
             welcomeView welcomeModel |> Html.map GotWelcomeMsg
 
         MainView mainViewModel ->
-            mainViewView mainViewModel
+            Html.map GotMainViewMsg (mainViewView mainViewModel)
 
 
 main : Program () Model Msg
@@ -370,6 +370,6 @@ type MainViewMsg
 -- * VIEW
 
 
-mainViewView : MainViewModel -> Html msg
+mainViewView : MainViewModel -> Html MainViewMsg
 mainViewView model =
     div [ class "main-container" ] [ text (Debug.toString model) ]
