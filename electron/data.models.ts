@@ -31,7 +31,7 @@ export interface LessonData {
 
 // TODO
 // * What actually gets sent to the Elm app
-export interface LessonDataSent {
+export interface LessonDataDTO {
   exerciseCategory: "Aprendizaje" | "Practica" | "Perfeccionamiento";
   exerciseNumber: number;
   lessonNumber: number;
