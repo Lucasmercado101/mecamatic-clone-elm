@@ -6,4 +6,4 @@ public/styles.css
 package-lock.json
 .cache
 .parcel-cache
-electron/*.js
+electron/**/*.js
