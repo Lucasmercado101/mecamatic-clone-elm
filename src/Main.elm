@@ -378,4 +378,71 @@ mainViewUpdate msg model =
 
 mainViewView : MainViewModel -> Html MainViewMsg
 mainViewView model =
-    div [ class "main-container" ] [ text (Debug.toString model) ]
+    div [ class "main-container" ] [ textBox model, text (Debug.toString model) ]
+
+
+textBox : MainViewModel -> Html MainViewMsg
+textBox model =
+    div [ class "text-box-container" ]
+        [ case model.exercise of
+            ExerciseNotSelected ->
+                div [ class "text-box__welcome-text" ] [ text "Bienvenido a MecaMatic 3.0" ]
+
+            _ ->
+                -- TODO
+                div [] []
+        ]
+
+
+
+--            <div
+--               ref={textContainerDiv}
+--               style={{
+--                 backgroundColor: "#008282",
+--                 color: "white",
+--                 overflow: "auto",
+--                 height: 210,
+--                 width: 570,
+--                 border: "thin solid",
+--                 borderStyle: "inset"
+--               }}
+--             >
+--               {selectedLessonText ? (
+--                 <div
+--                   style={{
+--                     fontSize: "1.3rem",
+--                     padding: 4
+--                   }}
+--                 >
+--                   {Array.from(selectedLessonText).map((letter, i) => (
+--                     <span
+--                       key={i}
+--                       style={{
+--                         color: exerciseCursorPosition > i ? "black" : "",
+--                         backgroundColor:
+--                           exerciseCursorPosition === i
+--                             ? "#ff8a7e"
+--                             : "transparent",
+--                         whiteSpace: "break-spaces",
+--                         fontFamily: `monospace`
+--                       }}
+--                       ref={exerciseCursorPosition === i ? myRef : null}
+--                     >
+--                       {letter}
+--                     </span>
+--                   ))}
+--                 </div>
+--               ) : (
+--                 <div
+--                   style={{
+--                     fontSize: "1.5rem",
+--                     width: "100%",
+--                     height: "100%",
+--                     display: "grid",
+--                     placeItems: "center"
+--                   }}
+--                 >
+--                   Bienvenido a MecaMatic 3.0
+--                 </div>
+--               )}
+--             </div>
