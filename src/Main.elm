@@ -328,7 +328,7 @@ type ExerciseStatus
     = NotStarted
     | Ongoing Int -- Cursor
     | Paused Int -- Cursor
-    | FinishedSuccessfully
+    | ExerciseFinishedSuccessfully
 
 
 type alias ExerciseData =
@@ -409,7 +409,11 @@ mainViewUpdate msg model =
                                                 Just ( _, char ) ->
                                                     -- NOTE this won't be "Enter" or something that isn't a single char, otherwise this doesn't work
                                                     -- i KNOW it won't be enter as none of the lessons have \n or \r or \r\n in them
-                                                    if keyPressed == String.fromChar char then
+                                                    if cursor == (String.length exerciseData.text - 1) then
+                                                        -- TODO check if succeded or failed
+                                                        ExerciseSelected exerciseData ExerciseFinishedSuccessfully
+
+                                                    else if keyPressed == String.fromChar char then
                                                         ExerciseSelected exerciseData (Ongoing (cursor + 1))
 
                                                     else
@@ -475,7 +479,7 @@ textBox model =
                                             NotStarted ->
                                                 False
 
-                                            FinishedSuccessfully ->
+                                            ExerciseFinishedSuccessfully ->
                                                 False
                                       )
                                     ]
