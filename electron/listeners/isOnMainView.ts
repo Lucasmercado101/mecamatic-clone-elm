@@ -42,12 +42,14 @@ const getOptionMenuSubmenus = async (
               exercise
             )
           ).then((data) => {
-            const lessonData: LessonData = JSON.parse(data);
+            const { WPMNeededToPass, ...otherLessonData }: LessonData =
+              JSON.parse(data);
             const lessonDataDTO: LessonDataDTO = {
               exerciseCategory: category,
               exerciseNumber: +exercise.split(".json")[0],
               lessonNumber: +lessonFolder.split("lesson")[1],
-              ...lessonData
+              wordsPerMinuteNeededToPass: WPMNeededToPass,
+              ...otherLessonData
             };
             currentWindow.webContents.send(
               "exercise-picked-data",
