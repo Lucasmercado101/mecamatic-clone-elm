@@ -37,6 +37,11 @@ app.ports.sendRequestUserData.subscribe(function (userName) {
     });
 });
 
+// * Inform electron that it's on main view LINK electron/listeners/isOnMainView.ts
+app.ports.sendOnMainView.subscribe(() => {
+  electron.ipcRenderer.send("is-on-main-view");
+});
+
 // TODO handle "delete user" button
 // electron.ipcRenderer.on("settings-conf-json-sent", (_, data) => {
 //   app.ports.settingsReceiver.send(data);

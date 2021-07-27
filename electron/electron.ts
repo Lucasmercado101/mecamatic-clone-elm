@@ -22,6 +22,7 @@ import {
   getUserSettingsFilePath,
   userProfilesFolderPath
 } from "./paths";
+import "./listeners/isOnMainView";
 
 try {
   isDev && require("electron-reloader")(module);
