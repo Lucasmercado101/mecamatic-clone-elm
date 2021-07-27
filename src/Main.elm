@@ -266,8 +266,29 @@ port sendOnMainView : () -> Cmd msg
 
 
 
--- subscriptions : Model -> Sub Msg
--- subscriptions _ =
+-- * Receives LINK electron/data.models.ts:33
+
+
+port receiveExerciseData : (JD.Value -> msg) -> Sub msg
+
+
+
+-- * DECODERS
+
+
+exerciseDataDecoder : JD.Decoder ExerciseData
+exerciseDataDecoder =
+    JD.map7 ExerciseData
+        (JD.field "text" JD.string)
+        (JD.field "isTutorActive" JD.bool)
+        (JD.field "isKeyboardVisible" JD.bool)
+        (JD.field "wordsPerMinuteNeededToPass" JD.int)
+        (JD.field "exerciseCategory" JD.string)
+        (JD.field "exerciseNumber" JD.int)
+        (JD.field "lessonNumber" JD.int)
+
+
+
 -- * MODEL
 
 
@@ -283,6 +304,9 @@ type alias ExerciseData =
     , isTutorActive : Bool
     , isKeyboardVisible : Bool
     , wordsPerMinuteNeededToPass : Int
+    , exerciseCategory : String
+    , exerciseNumber : Int
+    , lessonNumber : Int
     }
 
 
@@ -303,4 +327,4 @@ type alias MainViewModel =
 
 mainViewView : MainViewModel -> Html msg
 mainViewView model =
-    div [ class "main-container" ] []
+    div [ class "main-container" ] [ text (Debug.toString model) ]
