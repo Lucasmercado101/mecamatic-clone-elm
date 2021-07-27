@@ -257,7 +257,6 @@ main =
 
 
 
--- TODO on welcome view
 -- *********** MAIN VIEW *************
 -- * MODEL
 
