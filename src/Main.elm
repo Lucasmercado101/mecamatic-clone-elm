@@ -191,7 +191,7 @@ update msg model =
                     ( WelcomeView { welcomeModel | requestedUserData = ErrorRequestingUserData }, Cmd.none )
 
                 ReceivedUserData data ->
-                    ( MainView { userSettings = data }, Cmd.none )
+                    ( MainView { userSettings = data, exercise = ExerciseNotSelected }, Cmd.none )
 
         ( GotWelcomeMsg _, MainView mainViewModel ) ->
             ( MainView mainViewModel, Cmd.none )
@@ -258,28 +258,33 @@ main =
 
 
 -- TODO on welcome view
--- type alias Data = {
---     text: String
--- }
--- type ExerciseData
---     = NotSelected
---     | Selected (Data)
--- type ExerciseProgress
---     = NotStarted
---     | Started
---     | Paused
---     | FinishedSuccessfully
---     | FinishedUnsuccessfully
--- type Timer
---     = Started
---     | NotStarted
---     | Paused
 -- *********** MAIN VIEW *************
 -- * MODEL
 
 
+type ExerciseStatus
+    = NotStarted
+    | Ongoing
+    | Paused
+    | FinishedSuccessfully
+
+
+type alias ExerciseData =
+    { text : String
+    , isTutorActive : Bool
+    , isKeyboardVisible : Bool
+    , wordsPerMinuteNeededToPass : Int
+    }
+
+
+type Exercise
+    = ExerciseNotSelected
+    | ExerciseSelected ExerciseData ExerciseStatus
+
+
 type alias MainViewModel =
     { userSettings : UserSettings
+    , exercise : Exercise
     }
 
 
@@ -289,4 +294,4 @@ type alias MainViewModel =
 
 mainViewView : MainViewModel -> Html msg
 mainViewView model =
-    div [ class "main-container" ] [ text (Debug.toString model) ]
+    div [ class "main-container" ] []
