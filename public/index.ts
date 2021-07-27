@@ -1,6 +1,6 @@
 // @ts-ignore
 import { Elm } from "../src/Main.elm";
-import { DefaultUserSettings } from "../electron/data.models";
+import { DefaultUserSettings, LessonDataDTO } from "../electron/data.models";
 
 const electron = window.require("electron");
 
@@ -42,7 +42,7 @@ app.ports.sendOnMainView.subscribe(() => {
   electron.ipcRenderer.send("is-on-main-view");
 });
 
-electron.ipcRenderer.on("exercise-picked-data", (_, data) => {
+electron.ipcRenderer.on("exercise-picked-data", (_, data: LessonDataDTO) => {
   console.log(data);
   // app.ports.settingsReceiver.send(data);
 });
