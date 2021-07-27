@@ -98,7 +98,7 @@ subscriptions model =
                 ]
 
         MainView mainViewModel ->
-            mainViewsubscriptions mainViewModel
+            Sub.map GotMainViewMsg (mainViewsubscriptions mainViewModel)
 
 
 
@@ -307,18 +307,18 @@ exerciseDataDecoder =
 -- * SUBSCRIPTIONS
 
 
-mainViewsubscriptions : MainViewModel -> Sub Msg
-mainViewsubscriptions model =
+mainViewsubscriptions : MainViewModel -> Sub MainViewMsg
+mainViewsubscriptions _ =
     receiveExerciseData
         (JD.decodeValue
             exerciseDataDecoder
             >> (\l ->
                     case l of
                         Ok val ->
-                            GotMainViewMsg (ReceivedExerciseData val)
+                            ReceivedExerciseData val
 
                         Err _ ->
-                            GotMainViewMsg FailedToLoadExerciseData
+                            FailedToLoadExerciseData
                )
         )
 
