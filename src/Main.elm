@@ -1,8 +1,8 @@
 port module Main exposing (..)
 
 import Browser
-import Html exposing (Html, button, datalist, div, form, input, option, span, text)
-import Html.Attributes exposing (class, classList, disabled, id, list, tabindex, value)
+import Html exposing (Html, br, button, datalist, div, form, input, option, span, text)
+import Html.Attributes exposing (class, classList, disabled, id, list, style, tabindex, value)
 import Html.Events exposing (on, onInput, onSubmit)
 import Json.Decode as JD
 import Keyboard.Event exposing (KeyboardEvent, decodeKeyboardEvent)
@@ -445,7 +445,8 @@ mainViewView model =
         , on "keydown" <|
             JD.map KeyPressed decodeKeyboardEvent
         ]
-        [ textBox model, text (Debug.toString model.exercise) ]
+        [ div [ class "main-view-content" ] [ textBox model, infoPanel model ]
+        ]
 
 
 textBox : MainViewModel -> Html MainViewMsg
@@ -508,3 +509,33 @@ textBox model =
                 -- TODO if there is already an exercise selected and we try to load another one and fails
                 [ div [] [] ]
         )
+
+
+centerText =
+    style "text-align" "center"
+
+
+infoPanel : MainViewModel -> Html MainViewMsg
+infoPanel model =
+    div []
+        [ div
+            [ centerText ]
+            ([ text "Alumno y nivel actual"
+             , br [] []
+
+             --  TODO model.userName
+             , text "Lucas"
+             ]
+                ++ (case model.exercise of
+                        ExerciseSelected exerciseData exerciseStatus ->
+                            [ br [] []
+                            , text "Perfeccionamiento"
+                            , br [] []
+                            , text "Lección 10 - Ejercicio 10"
+                            ]
+
+                        _ ->
+                            []
+                   )
+            )
+        ]
