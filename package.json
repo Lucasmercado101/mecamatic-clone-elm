@@ -5,9 +5,9 @@
   "main": "electron/electron.js",
   "scripts": {
     "prestart": "tsc",
-    "start": "concurrently \"npm:ts:watch\" \"npm:dev\" \"electron .\"",
+    "start": "concurrently \"npm:ts:watch\" \"npm:dev\" \"npm:electron\"",
     "dev": "parcel public/index.html",
-    "electron-start": "electron .",
+    "electron": "electron .",
     "ts:watch": "tsc -w"
   },
   "repository": {
