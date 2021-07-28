@@ -199,7 +199,15 @@ update msg model =
                     ( WelcomeView { welcomeModel | requestedUserData = ErrorRequestingUserData }, Cmd.none )
 
                 ReceivedUserData data ->
-                    ( MainView { userSettings = data, exercise = ExerciseNotSelected }, sendOnMainView () )
+                    ( MainView
+                        { userData =
+                            { userSettings = data
+                            , userName = welcomeModel.selectedUser
+                            }
+                        , exercise = ExerciseNotSelected
+                        }
+                    , sendOnMainView ()
+                    )
 
         ( GotMainViewMsg mainViewMsg, MainView mainViewModel ) ->
             mainViewUpdate mainViewMsg mainViewModel
@@ -348,8 +356,14 @@ type Exercise
     | ExerciseSelected ExerciseData ExerciseStatus
 
 
+type alias UserData =
+    { userName : String
+    , userSettings : UserSettings
+    }
+
+
 type alias MainViewModel =
-    { userSettings : UserSettings
+    { userData : UserData
     , exercise : Exercise
     }
 
@@ -522,9 +536,7 @@ infoPanel model =
             [ centerText ]
             ([ text "Alumno y nivel actual"
              , br [] []
-
-             --  TODO model.userName
-             , text "Lucas"
+             , text model.userData.userName
              ]
                 ++ (case model.exercise of
                         ExerciseSelected exerciseData exerciseStatus ->
