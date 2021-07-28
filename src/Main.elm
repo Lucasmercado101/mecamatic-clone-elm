@@ -282,7 +282,8 @@ main =
 
 -- *********** MAIN VIEW *************
 -- * SUBSCRIPTIONS
--- NOTE on entering the main view, we need to inform electron to show different menu messages
+-- NOTE on entering the main view, we need to inform electron to show different menu messages, hence:
+-- this way it actually changes the menu items and exercises can be loaded
 
 
 port sendOnMainView : () -> Cmd msg
