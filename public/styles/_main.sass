@@ -44,6 +44,9 @@
     height: 489px
     border: 2px inset
     padding: 16px 8px 0 8px
+    display: flex
+    flex-direction: column
+    gap: 23px
 
 .info-panel-box
     position: relative
@@ -52,6 +55,8 @@
     padding-bottom: 6px
     border: thin solid #a0a0a0
     z-index: 2
+    &--padded
+        padding: 12px 7px 8px 8px
     &__title
         position: absolute
         top: 0
@@ -80,3 +85,24 @@
         height: 100%
         border-top: thin solid white
         border-left: thin solid white
+
+.info-panel-boxes-col
+    display: flex
+    flex-direction: column
+    gap: 5px
+
+.info-panel-box-inner-boxes
+    display: flex
+    &__box
+        background-color: e0e0e0
+        height: 19px
+        border: 2px solid
+        border-style: inset
+        background-color: e0e0e0
+        padding-top: 1px
+    &__long-box
+        padding-left: 4px
+        width: 96px
+    &__short-box
+        text-align: center
+        width: 42px

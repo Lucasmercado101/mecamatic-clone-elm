@@ -554,9 +554,20 @@ infoPanel model =
                             []
                    )
             )
-        , div []
-            [ text "Valores establecidos"
-            , text "Coefi M.e.p."
-            , text (String.fromFloat (Maybe.withDefault 2 userSettings.errorsCoefficient))
+        , div [ class "info-panel-box info-panel-box--padded", style "min-height" "64px", style "max-height" "64px" ]
+            [ p [ class "info-panel-box__title" ] [ text "Valores establecidos" ]
+            , div [ class "info-panel-boxes-col" ]
+                [ div [ class "info-panel-box-inner-boxes" ]
+                    [ div [ class "info-panel-box-inner-boxes__long-box info-panel-box-inner-boxes__box" ] [ text "Coefi M.e.p." ]
+                    , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ] [ text (String.fromFloat (Maybe.withDefault 2 userSettings.errorsCoefficient) ++ " %") ]
+                    ]
+                , div [ class "info-panel-box-inner-boxes" ]
+                    [ div [ class "info-panel-box-inner-boxes__long-box info-panel-box-inner-boxes__box" ] [ text "Velocidad" ]
+                    , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ] [ text (String.fromInt (Maybe.withDefault 20 userSettings.minimumWPM)) ]
+                    ]
+                ]
+
+            -- , text "Coefi M.e.p."
+            -- , text (String.fromFloat (Maybe.withDefault 2 userSettings.errorsCoefficient))
             ]
         ]
