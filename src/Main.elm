@@ -758,8 +758,6 @@ infoPanel model =
                     ]
                 , div [ class "info-panel-box-inner-boxes" ]
                     [ div [ class "info-panel-box-inner-boxes__long-box info-panel-box-inner-boxes__box" ] [ text "% Errores" ]
-
-                    --! FIXME can give infinity
                     , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ]
                         [ let
                             isWholeNumber : Float -> Bool
@@ -783,13 +781,31 @@ infoPanel model =
                                         text "0"
 
                                     Ongoing cursor errors ->
-                                        text (getErrorPercentageString (calculatePercentageOfErrors errors cursor))
+                                        text
+                                            (if cursor == 0 && errors > 0 then
+                                                "100.00"
+
+                                             else
+                                                getErrorPercentageString (calculatePercentageOfErrors errors cursor)
+                                            )
 
                                     Paused cursor errors ->
-                                        text (getErrorPercentageString (calculatePercentageOfErrors errors cursor))
+                                        text
+                                            (if cursor == 0 && errors > 0 then
+                                                "100.00"
+
+                                             else
+                                                getErrorPercentageString (calculatePercentageOfErrors errors cursor)
+                                            )
 
                                     ExerciseFinishedSuccessfully cursor errors ->
-                                        text (getErrorPercentageString (calculatePercentageOfErrors errors cursor))
+                                        text
+                                            (if cursor == 0 && errors > 0 then
+                                                "100.00"
+
+                                             else
+                                                getErrorPercentageString (calculatePercentageOfErrors errors cursor)
+                                            )
 
                             _ ->
                                 text ""
