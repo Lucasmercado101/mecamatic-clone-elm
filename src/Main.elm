@@ -811,8 +811,6 @@ infoPanel model =
                                 text ""
                         ]
                     ]
-
-                -- TODO
                 , div [ class "info-panel-box-inner-boxes" ]
                     [ div [ class "info-panel-box-inner-boxes__long-box info-panel-box-inner-boxes__box" ] [ text "P. p. m." ]
                     , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ]
