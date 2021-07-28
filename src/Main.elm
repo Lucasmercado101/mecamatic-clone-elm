@@ -806,8 +806,7 @@ infoPanel model =
 
                     --! FIXME can give infinity
                     , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ]
-                        [ -- [ text
-                          case model.exercise of
+                        [ case model.exercise of
                             ExerciseSelected _ status ->
                                 case status of
                                     NotStarted ->
