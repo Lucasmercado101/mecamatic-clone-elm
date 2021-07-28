@@ -687,10 +687,6 @@ infoPanel model =
         , div
             [ class "info-panel-box info-panel-box--padded"
             , style "padding-top" "20px"
-
-            -- TODO
-            -- , style "min-height" "64px"
-            -- , style "max-height" "64px"
             ]
             [ p [ class "info-panel-box__title" ] [ text "Resultados obtenidos" ]
             , div [ class "info-panel-boxes-col" ]
