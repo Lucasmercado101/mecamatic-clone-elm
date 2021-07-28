@@ -8,6 +8,7 @@ import Json.Decode as JD
 import Keyboard.Event exposing (KeyboardEvent, decodeKeyboardEvent)
 import List.Extra
 import Process
+import Round
 import Task
 
 
@@ -587,6 +588,15 @@ totalGrossKeystrokesTyped totalKeystrokes errors =
     totalKeystrokes + errors
 
 
+calculatePercentageOfErrors : Int -> Int -> Float
+calculatePercentageOfErrors errors cursor =
+    if errors == 0 then
+        0.0
+
+    else
+        100.0 * (toFloat errors / toFloat cursor)
+
+
 centerText =
     style "text-align" "center"
 
@@ -699,6 +709,43 @@ infoPanel model =
 
                                     ExerciseFinishedSuccessfully _ errors ->
                                         text (String.fromInt errors)
+
+                            _ ->
+                                text ""
+                        ]
+                    ]
+                , div [ class "info-panel-box-inner-boxes" ]
+                    [ div [ class "info-panel-box-inner-boxes__long-box info-panel-box-inner-boxes__box" ] [ text "% Errores" ]
+                    , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ]
+                        [ let
+                            isWholeNumber : Float -> Bool
+                            isWholeNumber num =
+                                String.fromFloat num
+                                    |> String.filter (\l -> l == '.')
+                                    |> (\l -> String.length l == 1)
+
+                            getErrorPercentageString : Float -> String
+                            getErrorPercentageString num =
+                                if isWholeNumber num then
+                                    Round.round 2 num
+
+                                else
+                                    String.fromFloat num
+                          in
+                          case model.exercise of
+                            ExerciseSelected _ status ->
+                                case status of
+                                    NotStarted ->
+                                        text "0"
+
+                                    Ongoing cursor errors ->
+                                        text (getErrorPercentageString (calculatePercentageOfErrors errors cursor))
+
+                                    Paused cursor errors ->
+                                        text (getErrorPercentageString (calculatePercentageOfErrors errors cursor))
+
+                                    ExerciseFinishedSuccessfully cursor errors ->
+                                        text (getErrorPercentageString (calculatePercentageOfErrors errors cursor))
 
                             _ ->
                                 text ""
