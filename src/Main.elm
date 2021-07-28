@@ -221,7 +221,7 @@ update msg model =
 
 
 
---* ANCHOR VIEW
+--* VIEW
 
 
 welcomeView : WelcomeModel -> Html WelcomeMsg
