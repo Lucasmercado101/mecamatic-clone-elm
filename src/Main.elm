@@ -14,7 +14,7 @@ import Time
 
 
 
---* ANCHOR PORTS
+--* PORTS
 
 
 port sendRequestUserData : String -> Cmd msg
@@ -38,7 +38,7 @@ port userProfilesReceiver : (JD.Value -> msg) -> Sub msg
 
 
 
--- * ANCHOR DECODERS
+-- * DECODERS
 
 
 type alias UserSettings =
@@ -66,7 +66,7 @@ userDataDecoder =
 
 
 
--- * ANCHOR SUBSCRIPTIONS
+-- * SUBSCRIPTIONS
 
 
 subscriptions : Model -> Sub Msg
@@ -106,7 +106,7 @@ subscriptions model =
 
 
 
---* ANCHOR INIT
+--* INIT
 
 
 init : () -> ( Model, Cmd Msg )
@@ -125,7 +125,7 @@ init _ =
 
 
 
---* ANCHOR MODEL
+--* MODEL
 
 
 type UserProfiles
@@ -154,7 +154,7 @@ type Model
 
 
 
---* ANCHOR UPDATE
+--* UPDATE
 
 
 type WelcomeMsg
