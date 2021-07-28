@@ -334,9 +334,9 @@ mainViewsubscriptions _ =
 
 type ExerciseStatus
     = NotStarted
-    | Ongoing Int -- Cursor
-    | Paused Int -- Cursor
-    | ExerciseFinishedSuccessfully
+    | Ongoing Int Int -- Cursor, errors committed
+    | Paused Int Int -- Cursor, errors committed
+    | ExerciseFinishedSuccessfully Int Int -- Cursor, errors committed
 
 
 type alias ExerciseData =
@@ -404,12 +404,12 @@ mainViewUpdate msg model =
                                     case status of
                                         NotStarted ->
                                             if keyPressed == "Enter" then
-                                                ExerciseSelected exerciseData (Ongoing 0)
+                                                ExerciseSelected exerciseData (Ongoing 0 0)
 
                                             else
                                                 model.exercise
 
-                                        Ongoing cursor ->
+                                        Ongoing cursor errors ->
                                             let
                                                 textCharsList : List ( Int, Char )
                                                 textCharsList =
@@ -419,19 +419,19 @@ mainViewUpdate msg model =
                                                 currentChar =
                                                     List.Extra.find (\( i, _ ) -> cursor == i) textCharsList
                                             in
+                                            -- NOTE this won't be "Enter" or something that isn't a single char, otherwise this doesn't work
+                                            -- i KNOW it won't be enter as none of the lessons have \n or \r or \r\n in them
                                             case currentChar of
                                                 Just ( _, char ) ->
-                                                    -- NOTE this won't be "Enter" or something that isn't a single char, otherwise this doesn't work
-                                                    -- i KNOW it won't be enter as none of the lessons have \n or \r or \r\n in them
                                                     if cursor == (String.length exerciseData.text - 1) then
                                                         -- TODO check if succeded or failed
-                                                        ExerciseSelected exerciseData ExerciseFinishedSuccessfully
+                                                        ExerciseSelected exerciseData (ExerciseFinishedSuccessfully cursor errors)
 
                                                     else if keyPressed == String.fromChar char then
-                                                        ExerciseSelected exerciseData (Ongoing (cursor + 1))
+                                                        ExerciseSelected exerciseData (Ongoing (cursor + 1) errors)
 
                                                     else
-                                                        model.exercise
+                                                        ExerciseSelected exerciseData (Ongoing cursor (errors + 1))
 
                                                 Nothing ->
                                                     model.exercise
@@ -485,30 +485,30 @@ textBox model =
                                     [ ( "text-box-chars__char", True )
                                     , ( "text-box-chars__char--highlighted"
                                       , case status of
-                                            Ongoing cursor ->
+                                            Ongoing cursor _ ->
                                                 i == cursor
 
-                                            Paused cursor ->
+                                            Paused cursor _ ->
                                                 i == cursor
 
                                             NotStarted ->
                                                 False
 
-                                            ExerciseFinishedSuccessfully ->
+                                            ExerciseFinishedSuccessfully _ _ ->
                                                 False
                                       )
                                     , ( "text-box-chars__char--typed"
                                       , case status of
-                                            Ongoing cursor ->
+                                            Ongoing cursor _ ->
                                                 i < cursor
 
-                                            Paused cursor ->
+                                            Paused cursor _ ->
                                                 i < cursor
 
                                             NotStarted ->
                                                 False
 
-                                            ExerciseFinishedSuccessfully ->
+                                            ExerciseFinishedSuccessfully _ _ ->
                                                 False
                                       )
                                     ]
@@ -523,6 +523,16 @@ textBox model =
                 -- TODO if there is already an exercise selected and we try to load another one and fails
                 [ div [] [] ]
         )
+
+
+totalNetKeystrokesTyped : Int -> Int -> Int
+totalNetKeystrokesTyped totalKeystrokes errors =
+    totalKeystrokes - errors
+
+
+totalGrossKeystrokesTyped : Int -> Int -> Int
+totalGrossKeystrokesTyped totalKeystrokes errors =
+    totalKeystrokes + errors
 
 
 centerText =
@@ -566,8 +576,43 @@ infoPanel model =
                     , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ] [ text (String.fromInt (Maybe.withDefault 20 userSettings.minimumWPM)) ]
                     ]
                 ]
+            ]
+        , div
+            [ class "info-panel-box info-panel-box--padded"
+            , style "padding-top" "20px"
 
-            -- , text "Coefi M.e.p."
-            -- , text (String.fromFloat (Maybe.withDefault 2 userSettings.errorsCoefficient))
+            -- , style "min-height" "64px"
+            -- , style "max-height" "64px"
+            ]
+            [ p [ class "info-panel-box__title" ] [ text "Resultados obtenidos" ]
+            , div [ class "info-panel-boxes-col" ]
+                [ div [ class "info-panel-box-inner-boxes" ]
+                    [ div [ class "info-panel-box-inner-boxes__long-box info-panel-box-inner-boxes__box" ] [ text "P. Brutas" ]
+                    , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ]
+                        [ case model.exercise of
+                            ExerciseSelected data status ->
+                                case status of
+                                    NotStarted ->
+                                        text "0"
+
+                                    Ongoing cursor errors ->
+                                        text (String.fromInt (totalGrossKeystrokesTyped cursor errors))
+
+                                    Paused cursor errors ->
+                                        text (String.fromInt (totalGrossKeystrokesTyped cursor errors))
+
+                                    ExerciseFinishedSuccessfully cursor errors ->
+                                        text (String.fromInt (totalGrossKeystrokesTyped cursor errors))
+
+                            _ ->
+                                text ""
+                        ]
+                    ]
+
+                -- , div [ class "info-panel-box-inner-boxes" ]
+                --     [ div [ class "info-panel-box-inner-boxes__long-box info-panel-box-inner-boxes__box" ] [ text "Velocidad" ]
+                --     , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ] [ text (String.fromInt (Maybe.withDefault 20 userSettings.minimumWPM)) ]
+                --     ]
+                ]
             ]
         ]
