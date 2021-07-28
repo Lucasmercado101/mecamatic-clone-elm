@@ -418,6 +418,54 @@ mainViewUpdate msg model =
                                                 currentChar : Maybe ( Int, Char )
                                                 currentChar =
                                                     List.Extra.find (\( i, _ ) -> cursor == i) textCharsList
+
+                                                -- ------- Modifier keys --------
+                                                -- https://www.w3.org/TR/uievents-key/#keys-modifier
+                                                modifierKeys =
+                                                    [ "Alt"
+                                                    , "AltGraph"
+                                                    , "CapsLock"
+                                                    , "Control"
+                                                    , "Fn"
+                                                    , "FnLock"
+                                                    , "Meta"
+                                                    , "NumLock"
+                                                    , "ScrollLock"
+                                                    , "Shift"
+                                                    , "Symbol"
+                                                    , "SymbolLock"
+                                                    ]
+
+                                                -- https://www.w3.org/TR/uievents-key/#keys-composition
+                                                iMEAndCompositionKeys =
+                                                    [ "AllCandidates"
+                                                    , "Alphanumeric"
+                                                    , "CodeInput"
+                                                    , "Compose"
+                                                    , "Convert"
+                                                    , "Dead"
+                                                    , "FinalMode"
+                                                    , "GroupFirst"
+                                                    , "GroupLast"
+                                                    , "GroupNext"
+                                                    , "GroupPrevious"
+                                                    , "ModeChange"
+                                                    , "NextCandidate"
+                                                    , "NonConvert"
+                                                    , "PreviousCandidate"
+                                                    , "Process"
+                                                    , "SingleCandidate"
+                                                    ]
+
+                                                -- NOTE this check is not exhaustive
+                                                isModifierKey : String -> Bool
+                                                isModifierKey key =
+                                                    List.member key modifierKeys
+                                                        || List.member key iMEAndCompositionKeys
+                                                        || event.altKey
+                                                        || event.ctrlKey
+                                                        || event.metaKey
+                                                        || event.shiftKey
                                             in
                                             -- NOTE this won't be "Enter" or something that isn't a single char, otherwise this doesn't work
                                             -- i KNOW it won't be enter as none of the lessons have \n or \r or \r\n in them
@@ -429,6 +477,10 @@ mainViewUpdate msg model =
 
                                                     else if keyPressed == String.fromChar char then
                                                         ExerciseSelected exerciseData (Ongoing (cursor + 1) errors)
+                                                        -- TODO check if key is not modifier key
+
+                                                    else if isModifierKey keyPressed then
+                                                        ExerciseSelected exerciseData (Ongoing cursor errors)
 
                                                     else
                                                         ExerciseSelected exerciseData (Ongoing cursor (errors + 1))
@@ -590,7 +642,7 @@ infoPanel model =
                     [ div [ class "info-panel-box-inner-boxes__long-box info-panel-box-inner-boxes__box" ] [ text "P. Brutas" ]
                     , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ]
                         [ case model.exercise of
-                            ExerciseSelected data status ->
+                            ExerciseSelected _ status ->
                                 case status of
                                     NotStarted ->
                                         text "0"
@@ -603,6 +655,28 @@ infoPanel model =
 
                                     ExerciseFinishedSuccessfully cursor errors ->
                                         text (String.fromInt (totalGrossKeystrokesTyped cursor errors))
+
+                            _ ->
+                                text ""
+                        ]
+                    ]
+                , div [ class "info-panel-box-inner-boxes" ]
+                    [ div [ class "info-panel-box-inner-boxes__long-box info-panel-box-inner-boxes__box" ] [ text "P. Netas" ]
+                    , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ]
+                        [ case model.exercise of
+                            ExerciseSelected _ status ->
+                                case status of
+                                    NotStarted ->
+                                        text "0"
+
+                                    Ongoing cursor errors ->
+                                        text (String.fromInt (totalNetKeystrokesTyped cursor errors))
+
+                                    Paused cursor errors ->
+                                        text (String.fromInt (totalNetKeystrokesTyped cursor errors))
+
+                                    ExerciseFinishedSuccessfully cursor errors ->
+                                        text (String.fromInt (totalNetKeystrokesTyped cursor errors))
 
                             _ ->
                                 text ""
