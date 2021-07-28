@@ -799,23 +799,25 @@ infoPanel model =
                 -- TODO
                 , div [ class "info-panel-box-inner-boxes" ]
                     [ div [ class "info-panel-box-inner-boxes__long-box info-panel-box-inner-boxes__box" ] [ text "P. p. m." ]
-
-                    --! FIXME can give infinity
                     , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ]
                         [ case model.exercise of
                             ExerciseSelected _ status ->
-                                case status of
-                                    NotStarted ->
-                                        text "0"
+                                if model.elapsedSeconds == 0 then
+                                    text "0"
 
-                                    Ongoing cursor errors ->
-                                        text (String.fromInt (calcNetWPM cursor model.elapsedSeconds errors))
+                                else
+                                    case status of
+                                        NotStarted ->
+                                            text "0"
 
-                                    Paused cursor errors ->
-                                        text (String.fromInt (calcNetWPM cursor model.elapsedSeconds errors))
+                                        Ongoing cursor errors ->
+                                            text (String.fromInt (max 0 (calcNetWPM cursor model.elapsedSeconds errors)))
 
-                                    ExerciseFinishedSuccessfully cursor errors ->
-                                        text (String.fromInt (calcNetWPM cursor model.elapsedSeconds errors))
+                                        Paused cursor errors ->
+                                            text (String.fromInt (max 0 (calcNetWPM cursor model.elapsedSeconds errors)))
+
+                                        ExerciseFinishedSuccessfully cursor errors ->
+                                            text (String.fromInt (max 0 (calcNetWPM cursor model.elapsedSeconds errors)))
 
                             _ ->
                                 text ""
