@@ -537,7 +537,7 @@ infoPanel model =
     in
     div [ class "info-panel-container" ]
         [ div
-            [ centerText ]
+            [ centerText, class "info-panel-box" ]
             ([ text "Alumno y nivel actual"
              , br [] []
              , text model.userData.userName
