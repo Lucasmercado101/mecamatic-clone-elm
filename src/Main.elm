@@ -531,6 +531,10 @@ centerText =
 
 infoPanel : MainViewModel -> Html MainViewMsg
 infoPanel model =
+    let
+        userSettings =
+            model.userData.userSettings
+    in
     div []
         [ div
             [ centerText ]
@@ -550,4 +554,9 @@ infoPanel model =
                             []
                    )
             )
+        , div []
+            [ text "Valores establecidos"
+            , text "Coefi M.e.p."
+            , text (String.fromFloat (Maybe.withDefault 2 userSettings.errorsCoefficient))
+            ]
         ]
