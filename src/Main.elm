@@ -535,7 +535,7 @@ infoPanel model =
         userSettings =
             model.userData.userSettings
     in
-    div []
+    div [ class "info-panel-container" ]
         [ div
             [ centerText ]
             ([ text "Alumno y nivel actual"
