@@ -682,11 +682,28 @@ infoPanel model =
                                 text ""
                         ]
                     ]
+                , div [ class "info-panel-box-inner-boxes" ]
+                    [ div [ class "info-panel-box-inner-boxes__long-box info-panel-box-inner-boxes__box" ] [ text "Errores" ]
+                    , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ]
+                        [ case model.exercise of
+                            ExerciseSelected _ status ->
+                                case status of
+                                    NotStarted ->
+                                        text "0"
 
-                -- , div [ class "info-panel-box-inner-boxes" ]
-                --     [ div [ class "info-panel-box-inner-boxes__long-box info-panel-box-inner-boxes__box" ] [ text "Velocidad" ]
-                --     , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ] [ text (String.fromInt (Maybe.withDefault 20 userSettings.minimumWPM)) ]
-                --     ]
+                                    Ongoing _ errors ->
+                                        text (String.fromInt errors)
+
+                                    Paused _ errors ->
+                                        text (String.fromInt errors)
+
+                                    ExerciseFinishedSuccessfully _ errors ->
+                                        text (String.fromInt errors)
+
+                            _ ->
+                                text ""
+                        ]
+                    ]
                 ]
             ]
         ]
