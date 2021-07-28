@@ -597,6 +597,15 @@ calculatePercentageOfErrors errors cursor =
         100.0 * (toFloat errors / toFloat cursor)
 
 
+calcNetWPM : Int -> Int -> Int -> Int
+calcNetWPM cursor seconds errors =
+    if cursor == 0 then
+        0
+
+    else
+        round ((toFloat cursor / 5 - toFloat errors) / (toFloat seconds / 60))
+
+
 centerText =
     style "text-align" "center"
 
@@ -643,6 +652,7 @@ infoPanel model =
             [ class "info-panel-box info-panel-box--padded"
             , style "padding-top" "20px"
 
+            -- TODO
             -- , style "min-height" "64px"
             -- , style "max-height" "64px"
             ]
@@ -751,6 +761,39 @@ infoPanel model =
                                 text ""
                         ]
                     ]
+
+                -- TODO
+                -- , div [ class "info-panel-box-inner-boxes" ]
+                --     [ div [ class "info-panel-box-inner-boxes__long-box info-panel-box-inner-boxes__box" ] [ text "P. p. m." ]
+                --     , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ]
+                --         [ let
+                --             isWholeNumber : Float -> Bool
+                --             isWholeNumber num =
+                --                 String.fromFloat num
+                --                     |> String.filter (\l -> l == '.')
+                --                     |> (\l -> String.length l == 1)
+                --             getErrorPercentageString : Float -> String
+                --             getErrorPercentageString num =
+                --                 if isWholeNumber num then
+                --                     Round.round 2 num
+                --                 else
+                --                     String.fromFloat num
+                --           in
+                --           case model.exercise of
+                --             ExerciseSelected _ status ->
+                --                 case status of
+                --                     NotStarted ->
+                --                         text "0"
+                --                     Ongoing cursor errors ->
+                --                         text (getErrorPercentageString (calculatePercentageOfErrors errors cursor))
+                --                     Paused cursor errors ->
+                --                         text (getErrorPercentageString (calculatePercentageOfErrors errors cursor))
+                --                     ExerciseFinishedSuccessfully cursor errors ->
+                --                         text (getErrorPercentageString (calculatePercentageOfErrors errors cursor))
+                --             _ ->
+                --                 text ""
+                --         ]
+                --     ]
                 ]
             ]
         ]
