@@ -537,15 +537,15 @@ infoPanel model =
     in
     div [ class "info-panel-container" ]
         [ div
-            [ centerText, class "info-panel-box" ]
+            [ centerText, class "info-panel-box", style "min-height" "69px", style "max-height" "69px" ]
             ([ p [ class "info-panel-box__title" ] [ text "Alumno y nivel actual" ]
              , br [] []
              , text model.userData.userName
              ]
                 ++ (case model.exercise of
-                        ExerciseSelected exerciseData exerciseStatus ->
+                        ExerciseSelected exerciseData _ ->
                             [ br [] []
-                            , text exerciseData.exerciseCategory
+                            , div [ style "display" "inline-block", style "margin-top" "5px" ] [ text exerciseData.exerciseCategory ]
                             , br [] []
                             , text ("Lección " ++ String.fromInt exerciseData.lessonNumber ++ " - Ejercicio " ++ String.fromInt exerciseData.exerciseNumber)
                             ]
