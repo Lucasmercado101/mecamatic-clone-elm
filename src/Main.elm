@@ -401,12 +401,13 @@ mainViewUpdate : MainViewMsg -> MainViewModel -> ( MainViewModel, Cmd MainViewMs
 mainViewUpdate msg model =
     case msg of
         ReceivedExerciseData exerciseData ->
-            ( { model | exercise = ExerciseSelected exerciseData NotStarted }, Cmd.none )
+            ( { model | exercise = ExerciseSelected exerciseData NotStarted, elapsedSeconds = 0 }, Cmd.none )
 
         FailedToLoadExerciseData ->
             -- TODO handle happens when an exercise is already selected and we try to load another one and fail
             ( { model | exercise = FailedToLoadEData }, Cmd.none )
 
+        -- TODO handle time has run out
         SecondHasElapsed ->
             let
                 elapsedSeconds =
@@ -646,6 +647,10 @@ centerText =
     style "text-align" "center"
 
 
+
+-- TODO add "title" property with descriptiosn to info boxes
+
+
 infoPanel : MainViewModel -> Html MainViewMsg
 infoPanel model =
     let
@@ -837,6 +842,35 @@ infoPanel model =
                                 text ""
                         ]
                     ]
+                ]
+            ]
+        , div [ class "info-panel-time" ]
+            [ div [ class "info-panel-time__box info-panel-time__box--big-box" ] [ text "Tiempo dis." ]
+            , div [ class "info-panel-time__box info-panel-time__box--small-box" ]
+                [ let
+                    minutesRemaining =
+                        let
+                            minutes =
+                                (model.userData.userSettings.timeLimitInSeconds - model.elapsedSeconds) // 60
+                        in
+                        if minutes < 10 then
+                            "0" ++ String.fromInt minutes
+
+                        else
+                            String.fromInt minutes
+
+                    secondsRemaining =
+                        let
+                            seconds =
+                                (model.userData.userSettings.timeLimitInSeconds - model.elapsedSeconds) |> modBy 60
+                        in
+                        if seconds < 10 then
+                            "0" ++ String.fromInt seconds
+
+                        else
+                            String.fromInt seconds
+                  in
+                  text (minutesRemaining ++ ":" ++ secondsRemaining)
                 ]
             ]
         ]
