@@ -10,6 +10,7 @@ import List.Extra
 import Process
 import Round
 import Task
+import Time
 
 
 
@@ -206,6 +207,7 @@ update msg model =
                             , userName = welcomeModel.selectedUser
                             }
                         , exercise = ExerciseNotSelected
+                        , elapsedSeconds = 0
                         }
                     , sendOnMainView ()
                     )
@@ -314,19 +316,32 @@ exerciseDataDecoder =
 
 
 mainViewsubscriptions : MainViewModel -> Sub MainViewMsg
-mainViewsubscriptions _ =
-    receiveExerciseData
-        (JD.decodeValue
-            exerciseDataDecoder
-            >> (\l ->
-                    case l of
-                        Ok val ->
-                            ReceivedExerciseData val
+mainViewsubscriptions model =
+    Sub.batch
+        [ case model.exercise of
+            ExerciseSelected _ status ->
+                case status of
+                    Ongoing _ _ ->
+                        Time.every 1000 (always SecondHasElapsed)
 
-                        Err _ ->
-                            FailedToLoadExerciseData
-               )
-        )
+                    _ ->
+                        Sub.none
+
+            _ ->
+                Sub.none
+        , receiveExerciseData
+            (JD.decodeValue
+                exerciseDataDecoder
+                >> (\l ->
+                        case l of
+                            Ok val ->
+                                ReceivedExerciseData val
+
+                            Err _ ->
+                                FailedToLoadExerciseData
+                   )
+            )
+        ]
 
 
 
@@ -366,6 +381,7 @@ type alias UserData =
 type alias MainViewModel =
     { userData : UserData
     , exercise : Exercise
+    , elapsedSeconds : Int
     }
 
 
@@ -377,6 +393,7 @@ type MainViewMsg
     = ReceivedExerciseData ExerciseData
     | FailedToLoadExerciseData
     | KeyPressed KeyboardEvent
+    | SecondHasElapsed
 
 
 mainViewUpdate : MainViewMsg -> MainViewModel -> ( MainViewModel, Cmd MainViewMsg )
@@ -389,118 +406,136 @@ mainViewUpdate msg model =
             -- TODO handle happens when an exercise is already selected and we try to load another one and fail
             ( { model | exercise = FailedToLoadEData }, Cmd.none )
 
+        SecondHasElapsed ->
+            let
+                elapsedSeconds =
+                    case model.exercise of
+                        ExerciseSelected exerciseData status ->
+                            case status of
+                                Ongoing _ _ ->
+                                    model.elapsedSeconds + 1
+
+                                _ ->
+                                    model.elapsedSeconds
+
+                        _ ->
+                            model.elapsedSeconds
+            in
+            ( { model | elapsedSeconds = elapsedSeconds }, Cmd.none )
+
         KeyPressed event ->
             let
                 exercise =
-                    case model.exercise of
-                        ExerciseNotSelected ->
-                            model.exercise
+                    model.exercise
+            in
+            case model.exercise of
+                ExerciseNotSelected ->
+                    ( { model | exercise = exercise }, Cmd.none )
 
-                        FailedToLoadEData ->
-                            model.exercise
+                FailedToLoadEData ->
+                    ( { model | exercise = exercise }, Cmd.none )
 
-                        ExerciseSelected exerciseData status ->
-                            case event.key of
-                                Just keyPressed ->
-                                    case status of
-                                        NotStarted ->
-                                            if keyPressed == "Enter" then
-                                                ExerciseSelected exerciseData (Ongoing 0 0)
+                ExerciseSelected exerciseData status ->
+                    case event.key of
+                        Just keyPressed ->
+                            case status of
+                                NotStarted ->
+                                    if keyPressed == "Enter" then
+                                        ( { model | exercise = ExerciseSelected exerciseData (Ongoing 0 0) }, Cmd.none )
+
+                                    else
+                                        ( { model | exercise = exercise }, Cmd.none )
+
+                                Ongoing cursor errors ->
+                                    let
+                                        textCharsList : List ( Int, Char )
+                                        textCharsList =
+                                            List.indexedMap (\i c -> Tuple.pair i c) (String.toList exerciseData.text)
+
+                                        currentChar : Maybe ( Int, Char )
+                                        currentChar =
+                                            List.Extra.find (\( i, _ ) -> cursor == i) textCharsList
+
+                                        -- ------- Modifier keys --------
+                                        -- https://www.w3.org/TR/uievents-key/#keys-modifier
+                                        modifierKeys =
+                                            [ "Alt"
+                                            , "AltGraph"
+                                            , "CapsLock"
+                                            , "Control"
+                                            , "Fn"
+                                            , "FnLock"
+                                            , "Meta"
+                                            , "NumLock"
+                                            , "ScrollLock"
+                                            , "Shift"
+                                            , "Symbol"
+                                            , "SymbolLock"
+                                            ]
+
+                                        -- https://www.w3.org/TR/uievents-key/#keys-composition
+                                        iMEAndCompositionKeys =
+                                            [ "AllCandidates"
+                                            , "Alphanumeric"
+                                            , "CodeInput"
+                                            , "Compose"
+                                            , "Convert"
+                                            , "Dead"
+                                            , "FinalMode"
+                                            , "GroupFirst"
+                                            , "GroupLast"
+                                            , "GroupNext"
+                                            , "GroupPrevious"
+                                            , "ModeChange"
+                                            , "NextCandidate"
+                                            , "NonConvert"
+                                            , "PreviousCandidate"
+                                            , "Process"
+                                            , "SingleCandidate"
+                                            ]
+
+                                        -- NOTE this check is not exhaustive
+                                        isModifierKey : String -> Bool
+                                        isModifierKey key =
+                                            List.member key modifierKeys
+                                                || List.member key iMEAndCompositionKeys
+                                                || event.altKey
+                                                || event.ctrlKey
+                                                || event.metaKey
+                                                || event.shiftKey
+                                    in
+                                    -- NOTE this won't be "Enter" or something that isn't a single char, otherwise this doesn't work
+                                    -- i KNOW it won't be enter as none of the lessons have \n or \r or \r\n in them
+                                    case currentChar of
+                                        Just ( _, char ) ->
+                                            if cursor == (String.length exerciseData.text - 1) then
+                                                -- TODO check if succeded or failed
+                                                ( { model | exercise = ExerciseSelected exerciseData (ExerciseFinishedSuccessfully cursor errors) }, Cmd.none )
+
+                                            else if keyPressed == String.fromChar char then
+                                                ( { model | exercise = ExerciseSelected exerciseData (Ongoing (cursor + 1) errors) }, Cmd.none )
+                                                -- TODO check if key is not modifier key
+
+                                            else if isModifierKey keyPressed then
+                                                ( { model | exercise = ExerciseSelected exerciseData (Ongoing cursor errors) }, Cmd.none )
 
                                             else
-                                                model.exercise
+                                                ( { model | exercise = ExerciseSelected exerciseData (Ongoing cursor (errors + 1)) }, Cmd.none )
 
-                                        Ongoing cursor errors ->
-                                            let
-                                                textCharsList : List ( Int, Char )
-                                                textCharsList =
-                                                    List.indexedMap (\i c -> Tuple.pair i c) (String.toList exerciseData.text)
+                                        Nothing ->
+                                            ( { model | exercise = exercise }, Cmd.none )
 
-                                                currentChar : Maybe ( Int, Char )
-                                                currentChar =
-                                                    List.Extra.find (\( i, _ ) -> cursor == i) textCharsList
+                                -- TODO successfully and unsuccessfully finished cases
+                                _ ->
+                                    ( { model | exercise = exercise }, Cmd.none )
 
-                                                -- ------- Modifier keys --------
-                                                -- https://www.w3.org/TR/uievents-key/#keys-modifier
-                                                modifierKeys =
-                                                    [ "Alt"
-                                                    , "AltGraph"
-                                                    , "CapsLock"
-                                                    , "Control"
-                                                    , "Fn"
-                                                    , "FnLock"
-                                                    , "Meta"
-                                                    , "NumLock"
-                                                    , "ScrollLock"
-                                                    , "Shift"
-                                                    , "Symbol"
-                                                    , "SymbolLock"
-                                                    ]
-
-                                                -- https://www.w3.org/TR/uievents-key/#keys-composition
-                                                iMEAndCompositionKeys =
-                                                    [ "AllCandidates"
-                                                    , "Alphanumeric"
-                                                    , "CodeInput"
-                                                    , "Compose"
-                                                    , "Convert"
-                                                    , "Dead"
-                                                    , "FinalMode"
-                                                    , "GroupFirst"
-                                                    , "GroupLast"
-                                                    , "GroupNext"
-                                                    , "GroupPrevious"
-                                                    , "ModeChange"
-                                                    , "NextCandidate"
-                                                    , "NonConvert"
-                                                    , "PreviousCandidate"
-                                                    , "Process"
-                                                    , "SingleCandidate"
-                                                    ]
-
-                                                -- NOTE this check is not exhaustive
-                                                isModifierKey : String -> Bool
-                                                isModifierKey key =
-                                                    List.member key modifierKeys
-                                                        || List.member key iMEAndCompositionKeys
-                                                        || event.altKey
-                                                        || event.ctrlKey
-                                                        || event.metaKey
-                                                        || event.shiftKey
-                                            in
-                                            -- NOTE this won't be "Enter" or something that isn't a single char, otherwise this doesn't work
-                                            -- i KNOW it won't be enter as none of the lessons have \n or \r or \r\n in them
-                                            case currentChar of
-                                                Just ( _, char ) ->
-                                                    if cursor == (String.length exerciseData.text - 1) then
-                                                        -- TODO check if succeded or failed
-                                                        ExerciseSelected exerciseData (ExerciseFinishedSuccessfully cursor errors)
-
-                                                    else if keyPressed == String.fromChar char then
-                                                        ExerciseSelected exerciseData (Ongoing (cursor + 1) errors)
-                                                        -- TODO check if key is not modifier key
-
-                                                    else if isModifierKey keyPressed then
-                                                        ExerciseSelected exerciseData (Ongoing cursor errors)
-
-                                                    else
-                                                        ExerciseSelected exerciseData (Ongoing cursor (errors + 1))
-
-                                                Nothing ->
-                                                    model.exercise
-
-                                        _ ->
-                                            model.exercise
-
-                                Nothing ->
-                                    model.exercise
-
-                -- model.exercise
-            in
-            ( { model | exercise = exercise }, Cmd.none )
+                        Nothing ->
+                            ( { model | exercise = exercise }, Cmd.none )
 
 
 
+-- model.exercise
+-- ( { model | exercise = exercise }, Cmd.none )
 -- * VIEW
 
 
@@ -726,6 +761,8 @@ infoPanel model =
                     ]
                 , div [ class "info-panel-box-inner-boxes" ]
                     [ div [ class "info-panel-box-inner-boxes__long-box info-panel-box-inner-boxes__box" ] [ text "% Errores" ]
+
+                    --! FIXME can give infinity
                     , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ]
                         [ let
                             isWholeNumber : Float -> Bool
@@ -763,37 +800,31 @@ infoPanel model =
                     ]
 
                 -- TODO
-                -- , div [ class "info-panel-box-inner-boxes" ]
-                --     [ div [ class "info-panel-box-inner-boxes__long-box info-panel-box-inner-boxes__box" ] [ text "P. p. m." ]
-                --     , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ]
-                --         [ let
-                --             isWholeNumber : Float -> Bool
-                --             isWholeNumber num =
-                --                 String.fromFloat num
-                --                     |> String.filter (\l -> l == '.')
-                --                     |> (\l -> String.length l == 1)
-                --             getErrorPercentageString : Float -> String
-                --             getErrorPercentageString num =
-                --                 if isWholeNumber num then
-                --                     Round.round 2 num
-                --                 else
-                --                     String.fromFloat num
-                --           in
-                --           case model.exercise of
-                --             ExerciseSelected _ status ->
-                --                 case status of
-                --                     NotStarted ->
-                --                         text "0"
-                --                     Ongoing cursor errors ->
-                --                         text (getErrorPercentageString (calculatePercentageOfErrors errors cursor))
-                --                     Paused cursor errors ->
-                --                         text (getErrorPercentageString (calculatePercentageOfErrors errors cursor))
-                --                     ExerciseFinishedSuccessfully cursor errors ->
-                --                         text (getErrorPercentageString (calculatePercentageOfErrors errors cursor))
-                --             _ ->
-                --                 text ""
-                --         ]
-                --     ]
+                , div [ class "info-panel-box-inner-boxes" ]
+                    [ div [ class "info-panel-box-inner-boxes__long-box info-panel-box-inner-boxes__box" ] [ text "P. p. m." ]
+
+                    --! FIXME can give infinity
+                    , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ]
+                        [ -- [ text
+                          case model.exercise of
+                            ExerciseSelected _ status ->
+                                case status of
+                                    NotStarted ->
+                                        text "0"
+
+                                    Ongoing cursor errors ->
+                                        text (String.fromInt (calcNetWPM cursor model.elapsedSeconds errors))
+
+                                    Paused cursor errors ->
+                                        text (String.fromInt (calcNetWPM cursor model.elapsedSeconds errors))
+
+                                    ExerciseFinishedSuccessfully cursor errors ->
+                                        text (String.fromInt (calcNetWPM cursor model.elapsedSeconds errors))
+
+                            _ ->
+                                text ""
+                        ]
+                    ]
                 ]
             ]
         ]
