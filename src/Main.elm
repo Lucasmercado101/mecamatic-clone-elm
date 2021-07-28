@@ -529,9 +529,9 @@ infoPanel model =
                 ++ (case model.exercise of
                         ExerciseSelected exerciseData exerciseStatus ->
                             [ br [] []
-                            , text "Perfeccionamiento"
+                            , text exerciseData.exerciseCategory
                             , br [] []
-                            , text "Lección 10 - Ejercicio 10"
+                            , text ("Lección " ++ String.fromInt exerciseData.lessonNumber ++ " - Ejercicio " ++ String.fromInt exerciseData.exerciseNumber)
                             ]
 
                         _ ->
