@@ -1,7 +1,7 @@
 port module Main exposing (..)
 
 import Browser
-import Html exposing (Html, br, button, datalist, div, form, input, option, span, text)
+import Html exposing (Html, br, button, datalist, div, form, input, option, p, span, text)
 import Html.Attributes exposing (class, classList, disabled, id, list, style, tabindex, value)
 import Html.Events exposing (on, onInput, onSubmit)
 import Json.Decode as JD
@@ -538,7 +538,7 @@ infoPanel model =
     div [ class "info-panel-container" ]
         [ div
             [ centerText, class "info-panel-box" ]
-            ([ text "Alumno y nivel actual"
+            ([ p [ class "info-panel-box__title" ] [ text "Alumno y nivel actual" ]
              , br [] []
              , text model.userData.userName
              ]

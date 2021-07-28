@@ -46,10 +46,19 @@
     padding: 16px 8px 0 8px
 
 .info-panel-box
-    padding: 6px
-    border: thin solid #a0a0a0
     position: relative
+    font-size: 13px
+    padding: 6px
+    padding-top: 1px
+    border: thin solid #a0a0a0
     z-index: 2
+    &__title
+        position: absolute
+        top: 0
+        transform: translateY(-50%)
+        z-index: 3
+        background-color: #c0c0c0
+        padding: 0 3px
     &::after
         z-index: 1
         content: ''
