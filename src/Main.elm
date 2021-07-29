@@ -555,7 +555,6 @@ mainViewUpdate msg model =
                                         Nothing ->
                                             ( { model | exercise = exercise }, Cmd.none )
 
-                                -- TODO successfully and unsuccessfully finished cases
                                 _ ->
                                     ( { model | exercise = exercise }, Cmd.none )
 
