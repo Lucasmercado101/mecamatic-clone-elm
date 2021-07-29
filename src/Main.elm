@@ -695,188 +695,190 @@ infoPanel model =
                     ]
                 ]
             ]
-        , div
-            [ class "info-panel-box info-panel-box--padded"
-            , style "padding-top" "20px"
-            ]
-            [ p [ class "info-panel-box__title" ] [ text "Resultados obtenidos" ]
-            , div [ class "info-panel-boxes-col" ]
-                [ div [ class "info-panel-box-inner-boxes" ]
-                    [ div [ class "info-panel-box-inner-boxes__long-box info-panel-box-inner-boxes__box" ] [ text "P. Brutas" ]
-                    , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ]
-                        [ case model.exercise of
-                            ExerciseSelected _ status ->
-                                case status of
-                                    NotStarted ->
-                                        text "0"
-
-                                    Ongoing cursor errors ->
-                                        text (String.fromInt (totalGrossKeystrokesTyped cursor errors))
-
-                                    Paused cursor errors ->
-                                        text (String.fromInt (totalGrossKeystrokesTyped cursor errors))
-
-                                    ExerciseFinishedSuccessfully cursor errors ->
-                                        text (String.fromInt (totalGrossKeystrokesTyped cursor errors))
-
-                            _ ->
-                                text ""
-                        ]
-                    ]
-                , div [ class "info-panel-box-inner-boxes" ]
-                    [ div [ class "info-panel-box-inner-boxes__long-box info-panel-box-inner-boxes__box" ] [ text "P. Netas" ]
-                    , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ]
-                        [ case model.exercise of
-                            ExerciseSelected _ status ->
-                                case status of
-                                    NotStarted ->
-                                        text "0"
-
-                                    Ongoing cursor errors ->
-                                        text (String.fromInt (totalNetKeystrokesTyped cursor errors))
-
-                                    Paused cursor errors ->
-                                        text (String.fromInt (totalNetKeystrokesTyped cursor errors))
-
-                                    ExerciseFinishedSuccessfully cursor errors ->
-                                        text (String.fromInt (totalNetKeystrokesTyped cursor errors))
-
-                            _ ->
-                                text ""
-                        ]
-                    ]
-                , div [ class "info-panel-box-inner-boxes" ]
-                    [ div [ class "info-panel-box-inner-boxes__long-box info-panel-box-inner-boxes__box" ] [ text "Errores" ]
-                    , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ]
-                        [ case model.exercise of
-                            ExerciseSelected _ status ->
-                                case status of
-                                    NotStarted ->
-                                        text "0"
-
-                                    Ongoing _ errors ->
-                                        text (String.fromInt errors)
-
-                                    Paused _ errors ->
-                                        text (String.fromInt errors)
-
-                                    ExerciseFinishedSuccessfully _ errors ->
-                                        text (String.fromInt errors)
-
-                            _ ->
-                                text ""
-                        ]
-                    ]
-                , div [ class "info-panel-box-inner-boxes" ]
-                    [ div [ class "info-panel-box-inner-boxes__long-box info-panel-box-inner-boxes__box" ] [ text "% Errores" ]
-                    , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ]
-                        [ let
-                            isWholeNumber : Float -> Bool
-                            isWholeNumber num =
-                                String.fromFloat num
-                                    |> String.filter (\l -> l == '.')
-                                    |> (\l -> String.length l == 1)
-
-                            getErrorPercentageString : Float -> String
-                            getErrorPercentageString num =
-                                if isWholeNumber num then
-                                    Round.round 2 num
-
-                                else
-                                    String.fromFloat num
-                          in
-                          case model.exercise of
-                            ExerciseSelected _ status ->
-                                case status of
-                                    NotStarted ->
-                                        text "0"
-
-                                    Ongoing cursor errors ->
-                                        text
-                                            (if cursor == 0 && errors > 0 then
-                                                "100.00"
-
-                                             else
-                                                getErrorPercentageString (calculatePercentageOfErrors errors cursor)
-                                            )
-
-                                    Paused cursor errors ->
-                                        text
-                                            (if cursor == 0 && errors > 0 then
-                                                "100.00"
-
-                                             else
-                                                getErrorPercentageString (calculatePercentageOfErrors errors cursor)
-                                            )
-
-                                    ExerciseFinishedSuccessfully cursor errors ->
-                                        text
-                                            (if cursor == 0 && errors > 0 then
-                                                "100.00"
-
-                                             else
-                                                getErrorPercentageString (calculatePercentageOfErrors errors cursor)
-                                            )
-
-                            _ ->
-                                text ""
-                        ]
-                    ]
-                , div [ class "info-panel-box-inner-boxes" ]
-                    [ div [ class "info-panel-box-inner-boxes__long-box info-panel-box-inner-boxes__box" ] [ text "P. p. m." ]
-                    , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ]
-                        [ case model.exercise of
-                            ExerciseSelected _ status ->
-                                if model.elapsedSeconds == 0 then
-                                    text "0"
-
-                                else
+        , div [ style "display" "flex", style "flex-direction" "column", style "gap" "13px" ]
+            [ div
+                [ class "info-panel-box info-panel-box--padded"
+                , style "padding-top" "20px"
+                ]
+                [ p [ class "info-panel-box__title" ] [ text "Resultados obtenidos" ]
+                , div [ class "info-panel-boxes-col" ]
+                    [ div [ class "info-panel-box-inner-boxes" ]
+                        [ div [ class "info-panel-box-inner-boxes__long-box info-panel-box-inner-boxes__box" ] [ text "P. Brutas" ]
+                        , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ]
+                            [ case model.exercise of
+                                ExerciseSelected _ status ->
                                     case status of
                                         NotStarted ->
                                             text "0"
 
                                         Ongoing cursor errors ->
-                                            text (String.fromInt (max 0 (calcNetWPM cursor model.elapsedSeconds errors)))
+                                            text (String.fromInt (totalGrossKeystrokesTyped cursor errors))
 
                                         Paused cursor errors ->
-                                            text (String.fromInt (max 0 (calcNetWPM cursor model.elapsedSeconds errors)))
+                                            text (String.fromInt (totalGrossKeystrokesTyped cursor errors))
 
                                         ExerciseFinishedSuccessfully cursor errors ->
-                                            text (String.fromInt (max 0 (calcNetWPM cursor model.elapsedSeconds errors)))
+                                            text (String.fromInt (totalGrossKeystrokesTyped cursor errors))
 
-                            _ ->
-                                text ""
+                                _ ->
+                                    text ""
+                            ]
+                        ]
+                    , div [ class "info-panel-box-inner-boxes" ]
+                        [ div [ class "info-panel-box-inner-boxes__long-box info-panel-box-inner-boxes__box" ] [ text "P. Netas" ]
+                        , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ]
+                            [ case model.exercise of
+                                ExerciseSelected _ status ->
+                                    case status of
+                                        NotStarted ->
+                                            text "0"
+
+                                        Ongoing cursor errors ->
+                                            text (String.fromInt (totalNetKeystrokesTyped cursor errors))
+
+                                        Paused cursor errors ->
+                                            text (String.fromInt (totalNetKeystrokesTyped cursor errors))
+
+                                        ExerciseFinishedSuccessfully cursor errors ->
+                                            text (String.fromInt (totalNetKeystrokesTyped cursor errors))
+
+                                _ ->
+                                    text ""
+                            ]
+                        ]
+                    , div [ class "info-panel-box-inner-boxes" ]
+                        [ div [ class "info-panel-box-inner-boxes__long-box info-panel-box-inner-boxes__box" ] [ text "Errores" ]
+                        , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ]
+                            [ case model.exercise of
+                                ExerciseSelected _ status ->
+                                    case status of
+                                        NotStarted ->
+                                            text "0"
+
+                                        Ongoing _ errors ->
+                                            text (String.fromInt errors)
+
+                                        Paused _ errors ->
+                                            text (String.fromInt errors)
+
+                                        ExerciseFinishedSuccessfully _ errors ->
+                                            text (String.fromInt errors)
+
+                                _ ->
+                                    text ""
+                            ]
+                        ]
+                    , div [ class "info-panel-box-inner-boxes" ]
+                        [ div [ class "info-panel-box-inner-boxes__long-box info-panel-box-inner-boxes__box" ] [ text "% Errores" ]
+                        , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ]
+                            [ let
+                                isWholeNumber : Float -> Bool
+                                isWholeNumber num =
+                                    String.fromFloat num
+                                        |> String.filter (\l -> l == '.')
+                                        |> (\l -> String.length l == 1)
+
+                                getErrorPercentageString : Float -> String
+                                getErrorPercentageString num =
+                                    if isWholeNumber num then
+                                        Round.round 2 num
+
+                                    else
+                                        String.fromFloat num
+                              in
+                              case model.exercise of
+                                ExerciseSelected _ status ->
+                                    case status of
+                                        NotStarted ->
+                                            text "0"
+
+                                        Ongoing cursor errors ->
+                                            text
+                                                (if cursor == 0 && errors > 0 then
+                                                    "100.00"
+
+                                                 else
+                                                    getErrorPercentageString (calculatePercentageOfErrors errors cursor)
+                                                )
+
+                                        Paused cursor errors ->
+                                            text
+                                                (if cursor == 0 && errors > 0 then
+                                                    "100.00"
+
+                                                 else
+                                                    getErrorPercentageString (calculatePercentageOfErrors errors cursor)
+                                                )
+
+                                        ExerciseFinishedSuccessfully cursor errors ->
+                                            text
+                                                (if cursor == 0 && errors > 0 then
+                                                    "100.00"
+
+                                                 else
+                                                    getErrorPercentageString (calculatePercentageOfErrors errors cursor)
+                                                )
+
+                                _ ->
+                                    text ""
+                            ]
+                        ]
+                    , div [ class "info-panel-box-inner-boxes" ]
+                        [ div [ class "info-panel-box-inner-boxes__long-box info-panel-box-inner-boxes__box" ] [ text "P. p. m." ]
+                        , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ]
+                            [ case model.exercise of
+                                ExerciseSelected _ status ->
+                                    if model.elapsedSeconds == 0 then
+                                        text "0"
+
+                                    else
+                                        case status of
+                                            NotStarted ->
+                                                text "0"
+
+                                            Ongoing cursor errors ->
+                                                text (String.fromInt (max 0 (calcNetWPM cursor model.elapsedSeconds errors)))
+
+                                            Paused cursor errors ->
+                                                text (String.fromInt (max 0 (calcNetWPM cursor model.elapsedSeconds errors)))
+
+                                            ExerciseFinishedSuccessfully cursor errors ->
+                                                text (String.fromInt (max 0 (calcNetWPM cursor model.elapsedSeconds errors)))
+
+                                _ ->
+                                    text ""
+                            ]
                         ]
                     ]
                 ]
-            ]
-        , div [ class "info-panel-time" ]
-            [ div [ class "info-panel-time__box info-panel-time__box--big-box" ] [ text "Tiempo dis." ]
-            , div [ class "info-panel-time__box info-panel-time__box--small-box" ]
-                [ let
-                    minutesRemaining =
-                        let
-                            minutes =
-                                (model.userData.userSettings.timeLimitInSeconds - model.elapsedSeconds) // 60
-                        in
-                        if minutes < 10 then
-                            "0" ++ String.fromInt minutes
+            , div [ class "info-panel-time" ]
+                [ div [ class "info-panel-time__box info-panel-time__box--big-box" ] [ text "Tiempo dis." ]
+                , div [ class "info-panel-time__box info-panel-time__box--small-box" ]
+                    [ let
+                        minutesRemaining =
+                            let
+                                minutes =
+                                    (model.userData.userSettings.timeLimitInSeconds - model.elapsedSeconds) // 60
+                            in
+                            if minutes < 10 then
+                                "0" ++ String.fromInt minutes
 
-                        else
-                            String.fromInt minutes
+                            else
+                                String.fromInt minutes
 
-                    secondsRemaining =
-                        let
-                            seconds =
-                                (model.userData.userSettings.timeLimitInSeconds - model.elapsedSeconds) |> modBy 60
-                        in
-                        if seconds < 10 then
-                            "0" ++ String.fromInt seconds
+                        secondsRemaining =
+                            let
+                                seconds =
+                                    (model.userData.userSettings.timeLimitInSeconds - model.elapsedSeconds) |> modBy 60
+                            in
+                            if seconds < 10 then
+                                "0" ++ String.fromInt seconds
 
-                        else
-                            String.fromInt seconds
-                  in
-                  text (minutesRemaining ++ ":" ++ secondsRemaining)
+                            else
+                                String.fromInt seconds
+                      in
+                      text (minutesRemaining ++ ":" ++ secondsRemaining)
+                    ]
                 ]
             ]
         ]
