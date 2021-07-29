@@ -430,7 +430,7 @@ mainViewUpdate msg model =
             let
                 elapsedSeconds =
                     case model.exercise of
-                        ExerciseSelected exerciseData status ->
+                        ExerciseSelected _ status ->
                             case status of
                                 Ongoing _ _ ->
                                     model.elapsedSeconds + 1
@@ -529,7 +529,6 @@ mainViewUpdate msg model =
                                     case currentChar of
                                         Just ( _, char ) ->
                                             if cursor == (String.length exerciseData.text - 1) then
-                                                -- TODO check if succeded or failed
                                                 let
                                                     pctErrorsCommited : Int
                                                     pctErrorsCommited =
