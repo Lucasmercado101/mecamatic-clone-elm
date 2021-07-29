@@ -3,6 +3,7 @@ port module Main exposing (..)
 import Browser
 import Html exposing (Html, br, button, datalist, div, form, input, option, p, span, text)
 import Html.Attributes exposing (class, classList, disabled, id, list, style, tabindex, value)
+import Html.Attributes.Extra exposing (empty)
 import Html.Events exposing (on, onInput, onSubmit)
 import Json.Decode as JD
 import Keyboard.Event exposing (KeyboardEvent, decodeKeyboardEvent)
@@ -582,8 +583,6 @@ mainViewUpdate msg model =
 
 
 
--- model.exercise
--- ( { model | exercise = exercise }, Cmd.none )
 -- * VIEW
 
 
@@ -592,8 +591,22 @@ mainViewView model =
     div
         [ class "main-view"
         , tabindex 0
-        , on "keydown" <|
-            JD.map KeyPressed decodeKeyboardEvent
+        , case model.exercise of
+            ExerciseSelected _ status ->
+                case status of
+                    NotStarted ->
+                        on "keydown" <|
+                            JD.map KeyPressed decodeKeyboardEvent
+
+                    Ongoing _ _ ->
+                        on "keydown" <|
+                            JD.map KeyPressed decodeKeyboardEvent
+
+                    _ ->
+                        empty
+
+            _ ->
+                empty
         ]
         [ div [ class "main-view-content" ] [ textBox model, infoPanel model ]
         ]
