@@ -517,7 +517,6 @@ mainViewUpdate msg model =
 
                                             else if keyPressed == String.fromChar char then
                                                 ( { model | exercise = ExerciseSelected exerciseData (Ongoing (cursor + 1) errors) }, Cmd.none )
-                                                -- TODO check if key is not modifier key
 
                                             else if isModifierKey keyPressed then
                                                 ( { model | exercise = ExerciseSelected exerciseData (Ongoing cursor errors) }, Cmd.none )
