@@ -354,6 +354,7 @@ type ExerciseStatus
     | Ongoing Int Int -- Cursor, errors committed
     | Paused Int Int -- Cursor, errors committed
     | ExerciseFinishedSuccessfully Int Int -- Cursor, errors committed
+    | ExerciseFailed Int Int String -- Cursor, errrors committed, error message
 
 
 type alias ExerciseData =
@@ -581,25 +582,28 @@ textBox model =
                                             Paused cursor _ ->
                                                 i == cursor
 
-                                            NotStarted ->
-                                                False
+                                            ExerciseFailed cursor _ _ ->
+                                                i == cursor
 
-                                            ExerciseFinishedSuccessfully _ _ ->
+                                            _ ->
                                                 False
                                       )
                                     , ( "text-box-chars__char--typed"
                                       , case status of
+                                            NotStarted ->
+                                                False
+
                                             Ongoing cursor _ ->
                                                 i < cursor
 
                                             Paused cursor _ ->
                                                 i < cursor
 
-                                            NotStarted ->
-                                                False
+                                            ExerciseFailed cursor _ _ ->
+                                                i < cursor
 
                                             ExerciseFinishedSuccessfully _ _ ->
-                                                False
+                                                True
                                       )
                                     ]
                                 ]
@@ -725,6 +729,9 @@ infoPanel model =
                                         ExerciseFinishedSuccessfully cursor errors ->
                                             text (String.fromInt (totalGrossKeystrokesTyped cursor errors))
 
+                                        ExerciseFailed cursor errors _ ->
+                                            text (String.fromInt (totalGrossKeystrokesTyped cursor errors))
+
                                 _ ->
                                     text ""
                             ]
@@ -747,6 +754,9 @@ infoPanel model =
                                         ExerciseFinishedSuccessfully cursor errors ->
                                             text (String.fromInt (totalNetKeystrokesTyped cursor errors))
 
+                                        ExerciseFailed cursor errors _ ->
+                                            text (String.fromInt (totalNetKeystrokesTyped cursor errors))
+
                                 _ ->
                                     text ""
                             ]
@@ -767,6 +777,9 @@ infoPanel model =
                                             text (String.fromInt errors)
 
                                         ExerciseFinishedSuccessfully _ errors ->
+                                            text (String.fromInt errors)
+
+                                        ExerciseFailed _ errors _ ->
                                             text (String.fromInt errors)
 
                                 _ ->
@@ -824,6 +837,15 @@ infoPanel model =
                                                     getErrorPercentageString (calculatePercentageOfErrors errors cursor)
                                                 )
 
+                                        ExerciseFailed cursor errors _ ->
+                                            text
+                                                (if cursor == 0 && errors > 0 then
+                                                    "100.00"
+
+                                                 else
+                                                    getErrorPercentageString (calculatePercentageOfErrors errors cursor)
+                                                )
+
                                 _ ->
                                     text ""
                             ]
@@ -848,6 +870,9 @@ infoPanel model =
                                                 text (String.fromInt (max 0 (calcNetWPM cursor model.elapsedSeconds errors)))
 
                                             ExerciseFinishedSuccessfully cursor errors ->
+                                                text (String.fromInt (max 0 (calcNetWPM cursor model.elapsedSeconds errors)))
+
+                                            ExerciseFailed cursor errors _ ->
                                                 text (String.fromInt (max 0 (calcNetWPM cursor model.elapsedSeconds errors)))
 
                                 _ ->
