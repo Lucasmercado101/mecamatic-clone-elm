@@ -441,7 +441,26 @@ mainViewUpdate msg model =
                         _ ->
                             model.elapsedSeconds
             in
-            ( { model | elapsedSeconds = elapsedSeconds }, Cmd.none )
+            case model.exercise of
+                ExerciseSelected data status ->
+                    case status of
+                        Ongoing cursor errors ->
+                            if elapsedSeconds == model.userData.userSettings.timeLimitInSeconds then
+                                ( { model
+                                    | elapsedSeconds = elapsedSeconds
+                                    , exercise = ExerciseSelected data (ExerciseFailed cursor errors "Ha superado el\nlimite de tiempo\nestablecido")
+                                  }
+                                , Cmd.none
+                                )
+
+                            else
+                                ( { model | elapsedSeconds = elapsedSeconds }, Cmd.none )
+
+                        _ ->
+                            ( model, Cmd.none )
+
+                _ ->
+                    ( model, Cmd.none )
 
         KeyPressed event ->
             let
