@@ -380,6 +380,23 @@ type alias UserData =
     }
 
 
+
+{- Enum
+
+    {
+        errorsCoefficient = 2
+       , minimumSpeed = 20
+   }
+-}
+
+
+userDefaults : { errorsCoefficient : Float, minimumSpeed : Int }
+userDefaults =
+    { errorsCoefficient = 2
+    , minimumSpeed = 20
+    }
+
+
 type alias MainViewModel =
     { userData : UserData
     , exercise : Exercise
@@ -513,7 +530,19 @@ mainViewUpdate msg model =
                                         Just ( _, char ) ->
                                             if cursor == (String.length exerciseData.text - 1) then
                                                 -- TODO check if succeded or failed
-                                                ( { model | exercise = ExerciseSelected exerciseData (ExerciseFinishedSuccessfully cursor errors) }, Cmd.none )
+                                                let
+                                                    pctErrorsCommited : Int
+                                                    pctErrorsCommited =
+                                                        round (calculatePercentageOfErrors errors cursor)
+                                                in
+                                                if pctErrorsCommited > round (Maybe.withDefault userDefaults.errorsCoefficient model.userData.userSettings.errorsCoefficient) then
+                                                    ( { model | exercise = ExerciseSelected exerciseData (ExerciseFailed (cursor + 1) errors "Ha superado el % maximo de errores permitidos") }, Cmd.none )
+
+                                                else if calcNetWPM cursor model.elapsedSeconds errors < userDefaults.minimumSpeed then
+                                                    ( { model | exercise = ExerciseSelected exerciseData (ExerciseFailed (cursor + 1) errors "No ha superado la velocidad minima") }, Cmd.none )
+
+                                                else
+                                                    ( { model | exercise = ExerciseSelected exerciseData (ExerciseFinishedSuccessfully cursor errors) }, Cmd.none )
 
                                             else if keyPressed == String.fromChar char then
                                                 ( { model | exercise = ExerciseSelected exerciseData (Ongoing (cursor + 1) errors) }, Cmd.none )
@@ -684,22 +713,30 @@ infoPanel model =
             [ centerText, class "info-panel-box info-panel-incidences", style "min-height" "78px", style "max-height" "78px" ]
             [ p [ class "info-panel-box__title" ] [ text "Incidencias" ]
             , case model.exercise of
-                ExerciseSelected _ _ ->
-                    text ""
+                ExerciseNotSelected ->
+                    div [ class "info-panel-incidences__red-box" ] [ text "Seleccione un", br [] [], text "ejercicio" ]
+
+                ExerciseSelected data status ->
+                    case status of
+                        ExerciseFailed _ _ errorMessage ->
+                            div [ class "info-panel-incidences__red-box" ] [ text errorMessage ]
+
+                        _ ->
+                            text ""
 
                 _ ->
-                    div [ class "info-panel-incidences__red-box" ] [ text "Seleccione un", br [] [], text "ejercicio" ]
+                    text ""
             ]
         , div [ class "info-panel-box info-panel-box--padded", style "min-height" "64px", style "max-height" "64px" ]
             [ p [ class "info-panel-box__title" ] [ text "Valores establecidos" ]
             , div [ class "info-panel-boxes-col" ]
                 [ div [ class "info-panel-box-inner-boxes" ]
                     [ div [ class "info-panel-box-inner-boxes__long-box info-panel-box-inner-boxes__box" ] [ text "Coefi M.e.p." ]
-                    , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ] [ text (String.fromFloat (Maybe.withDefault 2 userSettings.errorsCoefficient) ++ " %") ]
+                    , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ] [ text (String.fromFloat (Maybe.withDefault userDefaults.errorsCoefficient userSettings.errorsCoefficient) ++ " %") ]
                     ]
                 , div [ class "info-panel-box-inner-boxes" ]
                     [ div [ class "info-panel-box-inner-boxes__long-box info-panel-box-inner-boxes__box" ] [ text "Velocidad" ]
-                    , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ] [ text (String.fromInt (Maybe.withDefault 20 userSettings.minimumWPM)) ]
+                    , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ] [ text (String.fromInt (Maybe.withDefault userDefaults.minimumSpeed userSettings.minimumWPM)) ]
                     ]
                 ]
             ]
