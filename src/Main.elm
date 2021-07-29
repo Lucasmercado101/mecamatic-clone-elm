@@ -680,7 +680,12 @@ infoPanel model =
         , div
             [ centerText, class "info-panel-box info-panel-incidences", style "min-height" "78px", style "max-height" "78px" ]
             [ p [ class "info-panel-box__title" ] [ text "Incidencias" ]
-            , div [ class "info-panel-incidences__red-box" ] [ text "Seleccione un", br [] [], text "ejercicio" ]
+            , case model.exercise of
+                ExerciseSelected _ _ ->
+                    text ""
+
+                _ ->
+                    div [ class "info-panel-incidences__red-box" ] [ text "Seleccione un", br [] [], text "ejercicio" ]
             ]
         , div [ class "info-panel-box info-panel-box--padded", style "min-height" "64px", style "max-height" "64px" ]
             [ p [ class "info-panel-box__title" ] [ text "Valores establecidos" ]
