@@ -622,7 +622,7 @@ mainViewView model =
             _ ->
                 empty
         ]
-        [ div [ class "main-view-content" ] [ textBox model, infoPanel model ]
+        [ div [ class "main-view-content" ] [ div [] [ textBox model, keyboard model ], infoPanel model ]
         ]
 
 
@@ -990,5 +990,27 @@ infoPanel model =
                       text (minutesRemaining ++ ":" ++ secondsRemaining)
                     ]
                 ]
+            ]
+        ]
+
+
+keyboard : MainViewModel -> Html MainViewMsg
+keyboard _ =
+    div [ class "keyboard-container" ]
+        [ div [ class "keyboard-row" ]
+            [ div [ class "key" ] [ text "" ]
+            , div [ class "key" ] [ text "" ]
+            , div [ class "key" ] [ text "" ]
+            , div [ class "key" ] [ text "" ]
+            , div [ class "key" ] [ text "" ]
+            , div [ class "key" ] [ text "" ]
+            , div [ class "key" ] [ text "" ]
+            , div [ class "key" ] [ text "" ]
+            , div [ class "key" ] [ text "" ]
+            , div [ class "key" ] [ text "" ]
+            , div [ class "key" ] [ text "" ]
+            , div [ class "key" ] [ text "" ]
+            , div [ class "key" ] [ text "" ]
+            , div [ class "key key--return" ] [ div [ style "margin-top" "-5px" ] [ text "←" ] ]
             ]
         ]
