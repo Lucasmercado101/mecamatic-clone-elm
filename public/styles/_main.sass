@@ -184,3 +184,30 @@
         display: grid
         place-items: center
         padding-bottom: 4px
+    &--enter-bottom
+        width: 41px
+        padding-top: 7px
+        position: relative
+        &::after
+            content: ''
+            position: absolute
+            right: -3px
+            left: -3px
+            top: 0
+            bottom: 10px
+            border-left: 3px solid #808080
+            border-right: 3px solid #808080
+            transform: translateY(-65%)
+            background-color: #e0e0e0
+        &--highlighter
+            &::after
+                background-color: #ff8080
+                // : isTutorActiveCurrently
+                // ? KEY_FINGER_COLORS.PINKY
+                // : "#e0e0e0",
+
+    &--caps-lock
+        width: 59px
+        font-size: 0.9rem
+        text-align: left
+        padding: 4px
