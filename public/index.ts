@@ -46,4 +46,6 @@ electron.ipcRenderer.on("exercise-picked-data", (_, data: LessonDataDTO) =>
   app.ports.receiveExerciseData.send(data)
 );
 
+electron.ipcRenderer.on("log-out", () => app.ports.receiveLogOut.send(null));
+
 // TODO handle "delete user" button

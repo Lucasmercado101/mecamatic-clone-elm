@@ -214,8 +214,13 @@ update msg model =
                     )
 
         ( GotMainViewMsg mainViewMsg, MainView mainViewModel ) ->
-            mainViewUpdate mainViewMsg mainViewModel
-                |> (\( mainModel, mainMsg ) -> ( MainView mainModel, Cmd.map GotMainViewMsg mainMsg ))
+            case mainViewMsg of
+                LogOut ->
+                    init ()
+
+                _ ->
+                    mainViewUpdate mainViewMsg mainViewModel
+                        |> (\( mainModel, mainMsg ) -> ( MainView mainModel, Cmd.map GotMainViewMsg mainMsg ))
 
         _ ->
             ( model, Cmd.none )
@@ -297,6 +302,9 @@ port sendOnMainView : () -> Cmd msg
 port receiveExerciseData : (JD.Value -> msg) -> Sub msg
 
 
+port receiveLogOut : (() -> msg) -> Sub msg
+
+
 
 -- * DECODERS
 
@@ -343,6 +351,7 @@ mainViewsubscriptions model =
                                 FailedToLoadExerciseData
                    )
             )
+        , receiveLogOut (\_ -> LogOut)
         ]
 
 
@@ -414,6 +423,7 @@ type MainViewMsg
     | FailedToLoadExerciseData
     | KeyPressed KeyboardEvent
     | SecondHasElapsed
+    | LogOut
 
 
 mainViewUpdate : MainViewMsg -> MainViewModel -> ( MainViewModel, Cmd MainViewMsg )
@@ -462,6 +472,10 @@ mainViewUpdate msg model =
 
                 _ ->
                     ( model, Cmd.none )
+
+        LogOut ->
+            --* Never reaches here, gets picked up in LINK ./Main.elm:218
+            ( model, Cmd.none )
 
         KeyPressed event ->
             let
