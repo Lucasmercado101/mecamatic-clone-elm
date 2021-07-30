@@ -96,6 +96,13 @@ ipcMain.on("is-on-main-view", async () => {
         "perfecting",
         "Perfeccionamiento"
       )
+    },
+    {
+      label: "Terminar sesión",
+      click() {
+        const currentWindow = BrowserWindow.getFocusedWindow()!;
+        currentWindow.webContents.send("log-out");
+      }
     }
   ]);
   Menu.setApplicationMenu(menu);
