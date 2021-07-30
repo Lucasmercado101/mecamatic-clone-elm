@@ -140,3 +140,35 @@
         background-color: #ff8080
         width: 100%
         height: 100%
+
+.keyboard-container
+    width: 570px
+    height: 208px
+    margin-top: 40px
+    border: 9px solid #808080
+    display: flex
+    flex-direction: column
+    gap: 4px
+    padding: 8px
+    font-weight: bold
+    user-select: none
+
+.keyboard-row
+    display: flex
+    gap: 4px
+
+.key
+    background-color: #e0e0e0
+    width: 32px
+    height: 32px
+    border: 3px solid #808080
+    border-radius: 4px
+    text-align: center
+    padding-top: 3px
+    &--highlighted
+        background-color: #ff8080
+    &--return
+        width: 68px
+        text-align: left
+        padding-left: 4px
+        font-size: 1.1rem
