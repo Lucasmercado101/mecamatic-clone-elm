@@ -1074,7 +1074,21 @@ keyboard model =
     in
     div [ class "keyboard-container" ]
         [ div [ class "keyboard-row" ]
-            [ div [ class "key", style "background-color" keyFingerColors.pinky ]
+            [ div
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Right [ '|', '°', '¬' ]) then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.pinky
+
+                  else if currentCharIs (Right [ '|', '°', '¬' ]) then
+                    class "key--highlighted"
+
+                  else
+                    empty
+                ]
                 [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
@@ -1098,7 +1112,21 @@ keyboard model =
                         [ text "\\" ]
                     ]
                 ]
-            , div [ class "key", style "background-color" keyFingerColors.pinky ]
+            , div
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Right [ '1', '!' ]) then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.pinky
+
+                  else if currentCharIs (Right [ '1', '!' ]) then
+                    class "key--highlighted"
+
+                  else
+                    empty
+                ]
                 [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
@@ -1123,7 +1151,21 @@ keyboard model =
                         [ text "|" ]
                     ]
                 ]
-            , div [ class "key", style "background-color" keyFingerColors.ringFinger ]
+            , div
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Right [ '2', '"' ]) then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.ringFinger
+
+                  else if currentCharIs (Right [ '2', '"' ]) then
+                    class "key--highlighted"
+
+                  else
+                    empty
+                ]
                 [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
@@ -1147,7 +1189,21 @@ keyboard model =
                         [ text "@" ]
                     ]
                 ]
-            , div [ class "key", style "background-color" keyFingerColors.middleFinger ]
+            , div
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Right [ '3', '#' ]) then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.ringFinger
+
+                  else if currentCharIs (Right [ '3', '#' ]) then
+                    class "key--highlighted"
+
+                  else
+                    empty
+                ]
                 [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
@@ -1171,7 +1227,21 @@ keyboard model =
                         [ text "#" ]
                     ]
                 ]
-            , div [ class "key", style "background-color" keyFingerColors.indexLeftHand ]
+            , div
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Right [ '4', '$' ]) then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.indexLeftHand
+
+                  else if currentCharIs (Right [ '4', '$' ]) then
+                    class "key--highlighted"
+
+                  else
+                    empty
+                ]
                 [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
@@ -1189,7 +1259,21 @@ keyboard model =
                         [ text "4" ]
                     ]
                 ]
-            , div [ class "key", style "background-color" keyFingerColors.indexLeftHand ]
+            , div
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Right [ '5', '%' ]) then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.indexLeftHand
+
+                  else if currentCharIs (Right [ '5', '%' ]) then
+                    class "key--highlighted"
+
+                  else
+                    empty
+                ]
                 [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
@@ -1207,7 +1291,21 @@ keyboard model =
                         [ text "5" ]
                     ]
                 ]
-            , div [ class "key", style "background-color" keyFingerColors.indexRightHand ]
+            , div
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Right [ '6', '&' ]) then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.indexRightHand
+
+                  else if currentCharIs (Right [ '6', '&' ]) then
+                    class "key--highlighted"
+
+                  else
+                    empty
+                ]
                 [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
@@ -1225,7 +1323,21 @@ keyboard model =
                         [ text "6" ]
                     ]
                 ]
-            , div [ class "key", style "background-color" keyFingerColors.indexRightHand ]
+            , div
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Right [ '7', '/' ]) then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.indexRightHand
+
+                  else if currentCharIs (Right [ '7', '/' ]) then
+                    class "key--highlighted"
+
+                  else
+                    empty
+                ]
                 [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
@@ -1243,7 +1355,21 @@ keyboard model =
                         [ text "7" ]
                     ]
                 ]
-            , div [ class "key", style "background-color" keyFingerColors.middleFinger ]
+            , div
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Right [ '8', '(' ]) then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.middleFinger
+
+                  else if currentCharIs (Right [ '8', '(' ]) then
+                    class "key--highlighted"
+
+                  else
+                    empty
+                ]
                 [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
@@ -1261,7 +1387,21 @@ keyboard model =
                         [ text "8" ]
                     ]
                 ]
-            , div [ class "key", style "background-color" keyFingerColors.ringFinger ]
+            , div
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Right [ '9', ')' ]) then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.ringFinger
+
+                  else if currentCharIs (Right [ '9', ')' ]) then
+                    class "key--highlighted"
+
+                  else
+                    empty
+                ]
                 [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
@@ -1279,7 +1419,21 @@ keyboard model =
                         [ text "9" ]
                     ]
                 ]
-            , div [ class "key", style "background-color" keyFingerColors.pinky ]
+            , div
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Right [ '0', '=' ]) then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.pinky
+
+                  else if currentCharIs (Right [ '0', '=' ]) then
+                    class "key--highlighted"
+
+                  else
+                    empty
+                ]
                 [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
@@ -1297,7 +1451,21 @@ keyboard model =
                         [ text "0" ]
                     ]
                 ]
-            , div [ class "key", style "background-color" keyFingerColors.pinky ]
+            , div
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Right [ '?', '\'', '\\' ]) then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.pinky
+
+                  else if currentCharIs (Right [ '?', '\'', '\\' ]) then
+                    class "key--highlighted"
+
+                  else
+                    empty
+                ]
                 [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
@@ -1315,7 +1483,21 @@ keyboard model =
                         [ text "'" ]
                     ]
                 ]
-            , div [ class "key", style "background-color" keyFingerColors.pinky ]
+            , div
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Right [ '¿', '¡' ]) then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.pinky
+
+                  else if currentCharIs (Right [ '¿', '¡' ]) then
+                    class "key--highlighted"
+
+                  else
+                    empty
+                ]
                 [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
