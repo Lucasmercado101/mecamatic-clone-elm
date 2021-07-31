@@ -1176,7 +1176,7 @@ keyboard model =
                         [ text "5" ]
                     ]
                 ]
-            , div [ class "key" ]
+            , div [ class "key", style "background-color" keyFingerColors.indexRightHand ]
                 [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
@@ -1194,7 +1194,7 @@ keyboard model =
                         [ text "6" ]
                     ]
                 ]
-            , div [ class "key" ]
+            , div [ class "key", style "background-color" keyFingerColors.indexRightHand ]
                 [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
@@ -1351,6 +1351,7 @@ keyboard model =
                     [ ( "key", True )
                     , ( "key--highlighted", currentChar == 'y' || currentChar == 'Y' )
                     ]
+                , style "background-color" keyFingerColors.indexRightHand
                 ]
                 [ text "Y" ]
             , div
@@ -1358,6 +1359,7 @@ keyboard model =
                     [ ( "key", True )
                     , ( "key--highlighted", currentChar == 'u' || currentChar == 'U' )
                     ]
+                , style "background-color" keyFingerColors.indexRightHand
                 ]
                 [ text "U" ]
             , div
@@ -1484,6 +1486,7 @@ keyboard model =
                     [ ( "key", True )
                     , ( "key--highlighted", currentChar == 'h' || currentChar == 'H' )
                     ]
+                , style "background-color" keyFingerColors.indexRightHand
                 ]
                 [ text "H" ]
             , div
@@ -1491,6 +1494,7 @@ keyboard model =
                     [ ( "key", True )
                     , ( "key--highlighted", currentChar == 'j' || currentChar == 'J' )
                     ]
+                , style "background-color" keyFingerColors.indexRightHand
                 ]
                 [ text "J" ]
             , div
@@ -1622,6 +1626,7 @@ keyboard model =
                     [ ( "key", True )
                     , ( "key--highlighted", currentChar == 'n' || currentChar == 'N' )
                     ]
+                , style "background-color" keyFingerColors.indexRightHand
                 ]
                 [ text "N" ]
             , div
@@ -1629,6 +1634,7 @@ keyboard model =
                     [ ( "key", True )
                     , ( "key--highlighted", currentChar == 'm' || currentChar == 'M' )
                     ]
+                , style "background-color" keyFingerColors.indexRightHand
                 ]
                 [ text "M" ]
             , div [ class "key", style "background-color" keyFingerColors.middleFinger ]
