@@ -1,6 +1,6 @@
 // @ts-ignore
 import { Elm } from "../src/Main.elm";
-import { DefaultUserSettings, LessonDataDTO } from "../electron/data.models";
+import { DefaultUserSettings, LessonDataDTO } from "../../electron/data.models";
 
 const electron = window.require("electron");
 
@@ -64,5 +64,3 @@ electron.ipcRenderer.on("exercise-picked-data", (_, data: LessonDataDTO) =>
 );
 
 electron.ipcRenderer.on("log-out", () => app.ports.receiveLogOut.send(null));
-
-// TODO handle "delete user" button
