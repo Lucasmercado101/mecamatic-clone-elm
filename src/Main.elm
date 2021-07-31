@@ -1148,24 +1148,6 @@ keyboard model =
                 [ div [ class "num-row-key" ]
                     [ p
                         [ style "position" "absolute"
-                        , style "left" "6px"
-                        , style "top" "-3px"
-                        , style "fontSize" "0.8rem"
-                        ]
-                        [ text "$" ]
-                    , p
-                        [ style "position" "absolute"
-                        , style "left" "5px"
-                        , style "top" "9px"
-                        , style "fontSize" "0.8rem"
-                        ]
-                        [ text "4" ]
-                    ]
-                ]
-            , div [ class "key" ]
-                [ div [ class "num-row-key" ]
-                    [ p
-                        [ style "position" "absolute"
                         , style "left" "5px"
                         , style "top" "-3px"
                         , style "fontSize" "0.7rem"
@@ -1286,6 +1268,24 @@ keyboard model =
                         , style "fontSize" "0.8rem"
                         ]
                         [ text "'" ]
+                    ]
+                ]
+            , div [ class "key" ]
+                [ div [ class "num-row-key" ]
+                    [ p
+                        [ style "position" "absolute"
+                        , style "left" "5px"
+                        , style "top" "-6px"
+                        , style "fontSize" "0.8rem"
+                        ]
+                        [ text "¿" ]
+                    , p
+                        [ style "position" "absolute"
+                        , style "left" "8px"
+                        , style "top" "8px"
+                        , style "fontSize" "0.7rem"
+                        ]
+                        [ text "¡" ]
                     ]
                 ]
             , div [ class "key key--return" ] [ div [ style "margin-top" "-5px" ] [ text "←" ] ]
