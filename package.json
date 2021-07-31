@@ -6,6 +6,7 @@
   "scripts": {
     "prestart": "tsc",
     "start": "concurrently \"npm:ts:watch\" \"npm:dev\" \"npm:electron\"",
+    "build": "parcel build public/index.html --out-dir dist",
     "dev": "parcel public/index.html",
     "electron": "electron .",
     "ts:watch": "tsc -w"
