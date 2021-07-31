@@ -1763,11 +1763,19 @@ keyboard model =
                     ]
                 ]
             , div
-                [ classList
-                    [ ( "key key--enter-top", True )
-                    , ( "key--highlighted", exerciseHasntStarted )
-                    ]
-                , style "background-color" keyFingerColors.pinky
+                [ class "key key--enter-top"
+                , if isTutorActive then
+                    if exerciseHasntStarted then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.pinky
+
+                  else if exerciseHasntStarted then
+                    class "key--highlighted"
+
+                  else
+                    empty
                 ]
                 [ text "Enter" ]
             ]
@@ -2016,11 +2024,34 @@ keyboard model =
             , div
                 [ classList
                     [ ( "key key--enter-bottom", True )
-                    , ( "key--enter-bottom--colored", True )
-                    , ( "key--enter-bottom--highlighted", exerciseHasntStarted )
-                    , ( "key--highlighted", exerciseHasntStarted )
                     ]
-                , style "background-color" keyFingerColors.pinky
+                , if isTutorActive then
+                    if exerciseHasntStarted then
+                        classList
+                            [ ( "key--enter-bottom--highlighted", exerciseHasntStarted )
+                            , ( "key--highlighted", exerciseHasntStarted )
+                            ]
+
+                    else
+                        class "key--enter-bottom--colored"
+
+                  else if exerciseHasntStarted then
+                    classList
+                        [ ( "key--enter-bottom--highlighted", exerciseHasntStarted )
+                        , ( "key--highlighted", exerciseHasntStarted )
+                        ]
+
+                  else
+                    empty
+                , if isTutorActive then
+                    if exerciseHasntStarted then
+                        empty
+
+                    else
+                        style "background-color" keyFingerColors.pinky
+
+                  else
+                    empty
                 ]
                 []
             ]
@@ -2256,7 +2287,15 @@ keyboard model =
                     , text "-"
                     ]
                 ]
-            , div [ class "key key--rshift", style "background-color" keyFingerColors.pinky ] [ text "⇧" ]
+            , div
+                [ class "key key--rshift"
+                , if isTutorActive then
+                    style "background-color" keyFingerColors.pinky
+
+                  else
+                    empty
+                ]
+                [ text "⇧" ]
             ]
         , div [ class "keyboard-row" ]
             [ div [ class "key key--ctrl" ] [ text "Ctrl" ]
