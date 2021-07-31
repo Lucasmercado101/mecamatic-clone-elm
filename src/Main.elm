@@ -1126,7 +1126,24 @@ keyboard model =
                         [ text "#" ]
                     ]
                 ]
-            , div [ class "key" ] [ text "" ]
+            , div [ class "key" ]
+                [ div [ class "num-row-key" ]
+                    [ p
+                        [ style "position" "absolute"
+                        , style "left" "6px"
+                        , style "top" "-3px"
+                        , style "fontSize" "0.8rem"
+                        ]
+                        [ text "$" ]
+                    , p
+                        [ style "position" "absolute"
+                        , style "left" "5px"
+                        , style "top" "9px"
+                        , style "fontSize" "0.8rem"
+                        ]
+                        [ text "4" ]
+                    ]
+                ]
             , div [ class "key" ] [ text "" ]
             , div [ class "key" ] [ text "" ]
             , div [ class "key" ] [ text "" ]
