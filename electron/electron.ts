@@ -24,6 +24,7 @@ import {
 } from "./paths";
 import "./listeners/isOnMainView";
 import "./listeners/deleteUserProfile";
+import "./listeners/isOnWelcomeView";
 
 try {
   isDev && require("electron-reloader")(module);

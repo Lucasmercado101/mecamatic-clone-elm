@@ -54,6 +54,11 @@ app.ports.sendOnMainView.subscribe(() => {
   electron.ipcRenderer.send("is-on-main-view");
 });
 
+// * Inform electron that it's on welcome view LINK electron/listeners/isOnMainView.ts
+app.ports.sendOnWelcomeView.subscribe(() => {
+  electron.ipcRenderer.send("is-on-welcome-view");
+});
+
 electron.ipcRenderer.on("exercise-picked-data", (_, data: LessonDataDTO) =>
   app.ports.receiveExerciseData.send(data)
 );

@@ -19,6 +19,9 @@ import Time
 --* PORTS
 
 
+port sendOnWelcomeView : () -> Cmd msg
+
+
 port sendRequestUserData : String -> Cmd msg
 
 
@@ -127,6 +130,7 @@ init _ =
         }
     , Cmd.batch
         [ sendRequestProfilesNames ()
+        , sendOnWelcomeView ()
         , Process.sleep 200
             |> Task.perform (\_ -> GotWelcomeMsg ShowIsLoadingText)
         ]
