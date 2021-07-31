@@ -2325,7 +2325,7 @@ keyboard model =
                         class "key--highlighted"
 
                     else
-                        style "background-color" keyFingerColors.pinky
+                        empty
 
                   else if currentCharIs (Right [ '¬', '\\', '~', '^', '`' ]) then
                     class "key--highlighted"
