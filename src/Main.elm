@@ -1891,7 +1891,21 @@ keyboard model =
                     empty
                 ]
                 [ text "M" ]
-            , div [ class "key", style "background-color" keyFingerColors.middleFinger ]
+            , div
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Right [ ';', ',' ]) then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.middleFinger
+
+                  else if currentCharIs (Right [ ';', ',' ]) then
+                    class "key--highlighted"
+
+                  else
+                    empty
+                ]
                 [ div
                     [ style "line-height" "0.65"
                     , style "padding-left" "6px"
@@ -1903,7 +1917,21 @@ keyboard model =
                     , text ","
                     ]
                 ]
-            , div [ class "key", style "background-color" keyFingerColors.ringFinger ]
+            , div
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Right [ ':', '.' ]) then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.ringFinger
+
+                  else if currentCharIs (Right [ ':', '.' ]) then
+                    class "key--highlighted"
+
+                  else
+                    empty
+                ]
                 [ div
                     [ style "line-height" "0.65"
                     , style "padding-left" "6px"
@@ -1915,7 +1943,21 @@ keyboard model =
                     , text "."
                     ]
                 ]
-            , div [ class "key", style "background-color" keyFingerColors.pinky ]
+            , div
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Right [ '_', '-' ]) then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.ringFinger
+
+                  else if currentCharIs (Right [ '_', '-' ]) then
+                    class "key--highlighted"
+
+                  else
+                    empty
+                ]
                 [ div
                     [ style "line-height" "1.2"
                     , style "padding-left" "6px"
