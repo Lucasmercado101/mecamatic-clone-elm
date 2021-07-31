@@ -126,14 +126,12 @@ function createWindow() {
       contextIsolation: false
     }
   });
+
   win.loadURL(
-    "http://localhost:1234"
-    // TODO production files}
-    // `file://${path.join(__dirname, "./index.html")}`
+    isDev
+      ? "http://localhost:1234"
+      : `file://${path.join(__dirname, "../front-dist/index.html")}`
   );
-  // isDev
-  //   ? "http://localhost:3000"
-  //   : `file://${path.join(__dirname, "../build/index.html")}`
 
   if (isDev) win.webContents.openDevTools();
 

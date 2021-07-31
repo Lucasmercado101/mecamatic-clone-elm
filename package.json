@@ -9,6 +9,7 @@
     "web-front": "cd web-front && npm start",
     "electron": "electron .",
     "electron-pack": "electron-builder --c.extraMetadata.main=electron/electron.js",
+    "postinstall": "electron-builder install-app-deps",
     "ts:watch": "tsc -w"
   },
   "repository": {
@@ -32,6 +33,11 @@
     "files": [
       "front-dist/**/*",
       "node_modules/**/*",
+      "front-end//*",
+      "build//*",
+      "node_modules//*",
+      "electron//*",
+      "electron/**/*",
       "electron/electron.js"
     ],
     "extraResources": [
