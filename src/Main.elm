@@ -1693,6 +1693,7 @@ keyboard model =
                     , ( "key--highlighted", currentChar == ' ' )
                     ]
                 , style "width" "159px"
+                , style "background-color" "#ffc0c0"
                 ]
                 [ text "" ]
             , div [ class "key key--alt-grl" ] [ text "AltGrl" ]
