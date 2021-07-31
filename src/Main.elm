@@ -1562,13 +1562,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Left 'E') then
+                    if currentCharIs (Right [ 'E', 'É', 'Ë', 'é', 'ë' ]) then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.middleFinger
 
-                  else if currentCharIs (Left 'E') then
+                  else if currentCharIs (Right [ 'E', 'É', 'Ë', 'é', 'ë' ]) then
                     class "key--highlighted"
 
                   else
@@ -1649,13 +1649,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Left 'U') then
+                    if currentCharIs (Right [ 'U', 'Ú', 'Ü', 'ú', 'ü' ]) then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.indexRightHand
 
-                  else if currentCharIs (Left 'U') then
+                  else if currentCharIs (Right [ 'U', 'Ú', 'Ü', 'ú', 'ü' ]) then
                     class "key--highlighted"
 
                   else
@@ -1665,13 +1665,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Left 'I') then
+                    if currentCharIs (Right [ 'I', 'Í', 'Ï', 'í', 'ï' ]) then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.middleFinger
 
-                  else if currentCharIs (Left 'I') then
+                  else if currentCharIs (Right [ 'I', 'Í', 'Ï', 'í', 'ï' ]) then
                     class "key--highlighted"
 
                   else
@@ -1681,13 +1681,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Left 'O') then
+                    if currentCharIs (Right [ 'O', 'Ó', 'Ö', 'ó', 'ö' ]) then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.ringFinger
 
-                  else if currentCharIs (Left 'O') then
+                  else if currentCharIs (Right [ 'O', 'Ó', 'Ö', 'ó', 'ö' ]) then
                     class "key--highlighted"
 
                   else
@@ -1713,13 +1713,31 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Right [ '´', '¨' ]) then
+                    if
+                        currentCharIs (Right [ '´', '¨', 'á', 'é', 'í', 'ó', 'ú', 'ä', 'ë', 'ï', 'ö', 'ü' ])
+                            || (case List.Extra.find (\l -> l == currentChar) [ 'Ä', 'Ë', 'Ï', 'Ö', 'Ü', 'Á', 'É', 'Í', 'Ó', 'Ú' ] of
+                                    Just _ ->
+                                        True
+
+                                    Nothing ->
+                                        False
+                               )
+                    then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.pinky
 
-                  else if currentCharIs (Right [ '´', '¨' ]) then
+                  else if
+                    currentCharIs (Right [ '´', '¨', 'á', 'é', 'í', 'ó', 'ú', 'ä', 'ë', 'ï', 'ö', 'ü' ])
+                        || (case List.Extra.find (\l -> l == currentChar) [ 'Ä', 'Ë', 'Ï', 'Ö', 'Ü', 'Á', 'É', 'Í', 'Ó', 'Ú' ] of
+                                Just _ ->
+                                    True
+
+                                Nothing ->
+                                    False
+                           )
+                  then
                     class "key--highlighted"
 
                   else
@@ -1815,13 +1833,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Left 'A') then
+                    if currentCharIs (Right [ 'A', 'á', 'ä', 'Á', 'Ä' ]) then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.pinky
 
-                  else if currentCharIs (Left 'A') then
+                  else if currentCharIs (Right [ 'A', 'á', 'ä', 'Á', 'Ä' ]) then
                     class "key--highlighted"
 
                   else
@@ -2100,8 +2118,8 @@ keyboard model =
                 [ class "key key--lshift"
                 , if isTutorActive then
                     if
-                        currentCharIs (Right [ '°', '!', '"', '#', '$', '%', '&', '/', '(', ')', '=', '?', '¡', '¨', '*', '[', ']', '_', ':', ';', '>' ])
-                            || (case List.Extra.find (\l -> l == currentChar) [ 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ñ', 'Z', 'X', 'C', 'V', 'B', 'N', 'M' ] of
+                        currentCharIs (Right [ '°', '!', '"', '#', '$', '%', '&', '/', '(', ')', '=', '?', '¡', '¨', '*', '[', ']', '_', ':', ';', '>', 'ä', 'ë', 'ï', 'ö', 'ü' ])
+                            || (case List.Extra.find (\l -> l == currentChar) [ 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ñ', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'Ä', 'Ë', 'Ï', 'Ö', 'Ü', 'Á', 'É', 'Í', 'Ó', 'Ú' ] of
                                     Just _ ->
                                         True
 
@@ -2115,8 +2133,8 @@ keyboard model =
                         style "background-color" keyFingerColors.pinky
 
                   else if
-                    currentCharIs (Right [ '°', '!', '"', '#', '$', '%', '&', '/', '(', ')', '=', '?', '¡', '¨', '*', '[', ']', '_', ':', ';', '>' ])
-                        || (case List.Extra.find (\l -> l == currentChar) [ 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ñ', 'Z', 'X', 'C', 'V', 'B', 'N', 'M' ] of
+                    currentCharIs (Right [ '°', '!', '"', '#', '$', '%', '&', '/', '(', ')', '=', '?', '¡', '¨', '*', '[', ']', '_', ':', ';', '>', 'ä', 'ë', 'ï', 'ö', 'ü' ])
+                        || (case List.Extra.find (\l -> l == currentChar) [ 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ñ', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'Ä', 'Ë', 'Ï', 'Ö', 'Ü', 'Á', 'É', 'Í', 'Ó', 'Ú' ] of
                                 Just _ ->
                                     True
 
