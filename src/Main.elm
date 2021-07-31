@@ -1030,7 +1030,7 @@ keyboard model =
     div [ class "keyboard-container" ]
         [ div [ class "keyboard-row" ]
             [ div [ class "key" ]
-                [ div [ class "num-row-key" ]
+                [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
                         , style "fontSize" "0.8rem"
@@ -1054,7 +1054,7 @@ keyboard model =
                     ]
                 ]
             , div [ class "key" ]
-                [ div [ class "num-row-key" ]
+                [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
                         , style "left" "5px"
@@ -1079,7 +1079,7 @@ keyboard model =
                     ]
                 ]
             , div [ class "key" ]
-                [ div [ class "num-row-key" ]
+                [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
                         , style "left" "5px"
@@ -1103,7 +1103,7 @@ keyboard model =
                     ]
                 ]
             , div [ class "key" ]
-                [ div [ class "num-row-key" ]
+                [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
                         , style "left" "5px"
@@ -1127,7 +1127,7 @@ keyboard model =
                     ]
                 ]
             , div [ class "key" ]
-                [ div [ class "num-row-key" ]
+                [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
                         , style "left" "6px"
@@ -1145,7 +1145,7 @@ keyboard model =
                     ]
                 ]
             , div [ class "key" ]
-                [ div [ class "num-row-key" ]
+                [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
                         , style "left" "5px"
@@ -1163,7 +1163,7 @@ keyboard model =
                     ]
                 ]
             , div [ class "key" ]
-                [ div [ class "num-row-key" ]
+                [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
                         , style "left" "5px"
@@ -1181,7 +1181,7 @@ keyboard model =
                     ]
                 ]
             , div [ class "key" ]
-                [ div [ class "num-row-key" ]
+                [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
                         , style "left" "6px"
@@ -1199,7 +1199,7 @@ keyboard model =
                     ]
                 ]
             , div [ class "key" ]
-                [ div [ class "num-row-key" ]
+                [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
                         , style "left" "5px"
@@ -1217,7 +1217,7 @@ keyboard model =
                     ]
                 ]
             , div [ class "key" ]
-                [ div [ class "num-row-key" ]
+                [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
                         , style "left" "5px"
@@ -1235,7 +1235,7 @@ keyboard model =
                     ]
                 ]
             , div [ class "key" ]
-                [ div [ class "num-row-key" ]
+                [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
                         , style "left" "5px"
@@ -1253,7 +1253,7 @@ keyboard model =
                     ]
                 ]
             , div [ class "key" ]
-                [ div [ class "num-row-key" ]
+                [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
                         , style "left" "5px"
@@ -1271,7 +1271,7 @@ keyboard model =
                     ]
                 ]
             , div [ class "key" ]
-                [ div [ class "num-row-key" ]
+                [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
                         , style "left" "5px"
@@ -1362,7 +1362,30 @@ keyboard model =
                     ]
                 ]
                 [ text "P" ]
-            , div [ class "key" ] [ text "" ]
+            , div [ class "key" ]
+                [ div [ class "custom-row-key" ]
+                    [ p
+                        [ style "position" "absolute"
+                        , style "left" "5px"
+                        , style "top" "1px"
+                        ]
+                        [ text "^" ]
+                    , p
+                        [ style "position" "absolute"
+                        , style "left" "6px"
+                        , style "top" "13px"
+                        , style "fontSize" "0.7rem"
+                        ]
+                        [ text "`" ]
+                    , p
+                        [ style "position" "absolute"
+                        , style "left" "16px"
+                        , style "top" "8px"
+                        , style "fontSize" "0.7rem"
+                        ]
+                        [ text "[" ]
+                    ]
+                ]
             , div [ class "key" ] [ text "" ]
             , div
                 [ classList
