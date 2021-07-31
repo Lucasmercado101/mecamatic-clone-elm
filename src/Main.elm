@@ -1029,7 +1029,30 @@ keyboard model =
     in
     div [ class "keyboard-container" ]
         [ div [ class "keyboard-row" ]
-            [ div [ class "key" ] [ text "" ]
+            [ div [ class "key" ]
+                [ div [ class "num-row-key" ]
+                    [ p
+                        [ style "position" "absolute"
+                        , style "fontSize" "0.8rem"
+                        , style "left" "4px"
+                        , style "top" "-4px"
+                        ]
+                        [ text "a" ]
+                    , p
+                        [ style "position" "absolute"
+                        , style "left" "4px"
+                        , style "top" "11px"
+                        ]
+                        [ text "°" ]
+                    , p
+                        [ style "position" "absolute"
+                        , style "left" "16px"
+                        , style "top" "7px"
+                        , style "fontSize" "0.9rem"
+                        ]
+                        [ text "\\" ]
+                    ]
+                ]
             , div [ class "key" ] [ text "" ]
             , div [ class "key" ] [ text "" ]
             , div [ class "key" ] [ text "" ]
