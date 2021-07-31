@@ -1541,7 +1541,16 @@ keyboard model =
             ]
         , div [ class "keyboard-row" ]
             [ div [ class "key key--lshift" ] [ text "⇧" ]
-            , div [ class "key" ] [ text "" ]
+            , div [ class "key" ]
+                [ div
+                    [ style "line-height" "0.7"
+                    , style "fontSize" "0.9rem"
+                    ]
+                    [ text ">"
+                    , br [] []
+                    , text "<"
+                    ]
+                ]
             , div
                 [ classList
                     [ ( "key", True )
