@@ -1600,7 +1600,18 @@ keyboard model =
                     ]
                 ]
                 [ text "M" ]
-            , div [ class "key" ] [ text "" ]
+            , div [ class "key" ]
+                [ div
+                    [ style "line-height" "0.65"
+                    , style "padding-left" "6px"
+                    , style "text-align" "left"
+                    , style "font-size" "0.85rem"
+                    ]
+                    [ text ";"
+                    , br [] []
+                    , text ","
+                    ]
+                ]
             , div [ class "key" ] [ text "" ]
             , div [ class "key" ] [ text "" ]
             , div [ class "key key--rshift" ] [ text "⇧" ]
