@@ -652,7 +652,15 @@ mainViewView model =
             _ ->
                 empty
         ]
-        [ div [ class "main-view-content" ] [ div [] [ textBox model, keyboard model ], infoPanel model ]
+        [ div [ class "top-toolbar" ]
+            [ div [ class "toolbar-separator" ] []
+            , button [] [ text "Pausa" ]
+            ]
+        , div
+            [ class "main-view-content" ]
+            [ div [] [ textBox model, keyboard model ]
+            , infoPanel model
+            ]
         ]
 
 
