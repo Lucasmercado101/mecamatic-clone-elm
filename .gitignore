@@ -8,3 +8,4 @@ package-lock.json
 .parcel-cache
 electron/**/*.js
 pnpm-lock.yaml
+front-dist
