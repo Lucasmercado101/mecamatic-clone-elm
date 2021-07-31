@@ -1078,7 +1078,30 @@ keyboard model =
                         [ text "|" ]
                     ]
                 ]
-            , div [ class "key" ] [ text "" ]
+            , div [ class "key" ]
+                [ div [ class "num-row-key" ]
+                    [ p
+                        [ style "position" "absolute"
+                        , style "left" "5px"
+                        , style "top" "-2px"
+                        ]
+                        [ text "\"" ]
+                    , p
+                        [ style "position" "absolute"
+                        , style "left" "4px"
+                        , style "top" "8px"
+                        , style "fontSize" "0.8rem"
+                        ]
+                        [ text "2" ]
+                    , p
+                        [ style "position" "absolute"
+                        , style "left" "14px"
+                        , style "top" "8px"
+                        , style "fontSize" "0.6rem"
+                        ]
+                        [ text "@" ]
+                    ]
+                ]
             , div [ class "key" ] [ text "" ]
             , div [ class "key" ] [ text "" ]
             , div [ class "key" ] [ text "" ]
