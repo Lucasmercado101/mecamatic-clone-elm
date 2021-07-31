@@ -1687,7 +1687,21 @@ keyboard model =
                     empty
                 ]
                 [ text "P" ]
-            , div [ class "key", style "background-color" keyFingerColors.pinky ]
+            , div
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Right [ '´', '¨' ]) then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.pinky
+
+                  else if currentCharIs (Right [ '´', '¨' ]) then
+                    class "key--highlighted"
+
+                  else
+                    empty
+                ]
                 [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
@@ -1711,7 +1725,21 @@ keyboard model =
                         [ text "[" ]
                     ]
                 ]
-            , div [ class "key", style "background-color" keyFingerColors.pinky ]
+            , div
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Right [ '+', '*', '~' ]) then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.pinky
+
+                  else if currentCharIs (Right [ '+', '*', '~' ]) then
+                    class "key--highlighted"
+
+                  else
+                    empty
+                ]
                 [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
@@ -1913,8 +1941,24 @@ keyboard model =
                     empty
                 ]
                 [ text "Ñ" ]
-            , div [ class "key", style "background-color" keyFingerColors.pinky ]
-                [ div [ class "custom-row-key" ]
+            , div
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Right [ '{', '[', '^' ]) then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.pinky
+
+                  else if currentCharIs (Right [ '{', '[', '^' ]) then
+                    class "key--highlighted"
+
+                  else
+                    empty
+                ]
+                [ div
+                    [ class "custom-row-key"
+                    ]
                     [ p
                         [ style "position" "absolute"
                         , style "left" "6px"
@@ -1936,8 +1980,23 @@ keyboard model =
                         [ text "{" ]
                     ]
                 ]
-            , div [ class "key", style "background-color" keyFingerColors.pinky ]
-                [ div [ class "custom-row-key" ]
+            , div
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Right [ '}', ']', '`' ]) then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.pinky
+
+                  else if currentCharIs (Right [ '}', ']', '`' ]) then
+                    class "key--highlighted"
+
+                  else
+                    empty
+                ]
+                [ div
+                    [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
                         , style "left" "5px"
@@ -1967,7 +2026,21 @@ keyboard model =
             ]
         , div [ class "keyboard-row" ]
             [ div [ class "key key--lshift", style "background-color" keyFingerColors.pinky ] [ text "⇧" ]
-            , div [ class "key", style "background-color" keyFingerColors.pinky ]
+            , div
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Right [ '<', '>' ]) then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.pinky
+
+                  else if currentCharIs (Right [ '<', '>' ]) then
+                    class "key--highlighted"
+
+                  else
+                    empty
+                ]
                 [ div
                     [ style "line-height" "0.7"
                     , style "fontSize" "0.9rem"
