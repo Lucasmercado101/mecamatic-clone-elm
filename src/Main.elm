@@ -2096,15 +2096,34 @@ keyboard model =
             ]
         , div [ class "keyboard-row" ]
             [ div
+                --
                 [ class "key key--lshift"
                 , if isTutorActive then
-                    if currentCharIs (Right [ '°', '!', '"', '#', '$', '%', '&', '/', '(', ')', '=', '?', '¡', '¨', '*', '[', ']', '_', ':', ';', '>' ]) then
+                    if
+                        currentCharIs (Right [ '°', '!', '"', '#', '$', '%', '&', '/', '(', ')', '=', '?', '¡', '¨', '*', '[', ']', '_', ':', ';', '>' ])
+                            || (case List.Extra.find (\l -> l == currentChar) [ 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ñ', 'Z', 'X', 'C', 'V', 'B', 'N', 'M' ] of
+                                    Just _ ->
+                                        True
+
+                                    Nothing ->
+                                        False
+                               )
+                    then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.pinky
 
-                  else if currentCharIs (Right [ '°', '!', '"', '#', '$', '%', '&', '/', '(', ')', '=', '?', '¡', '¨', '*', '[', ']', '_', ':', ';', '>' ]) then
+                  else if
+                    currentCharIs (Right [ '°', '!', '"', '#', '$', '%', '&', '/', '(', ')', '=', '?', '¡', '¨', '*', '[', ']', '_', ':', ';', '>' ])
+                        || (case List.Extra.find (\l -> l == currentChar) [ 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ñ', 'Z', 'X', 'C', 'V', 'B', 'N', 'M' ] of
+                                Just _ ->
+                                    True
+
+                                Nothing ->
+                                    False
+                           )
+                  then
                     class "key--highlighted"
 
                   else
