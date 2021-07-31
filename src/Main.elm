@@ -1248,7 +1248,7 @@ keyboard model =
                         [ text "9" ]
                     ]
                 ]
-            , div [ class "key" ]
+            , div [ class "key", style "background-color" keyFingerColors.pinky ]
                 [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
@@ -1266,7 +1266,7 @@ keyboard model =
                         [ text "0" ]
                     ]
                 ]
-            , div [ class "key" ]
+            , div [ class "key", style "background-color" keyFingerColors.pinky ]
                 [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
@@ -1284,7 +1284,7 @@ keyboard model =
                         [ text "'" ]
                     ]
                 ]
-            , div [ class "key" ]
+            , div [ class "key", style "background-color" keyFingerColors.pinky ]
                 [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
@@ -1383,9 +1383,10 @@ keyboard model =
                     [ ( "key", True )
                     , ( "key--highlighted", currentChar == 'p' || currentChar == 'P' )
                     ]
+                , style "background-color" keyFingerColors.pinky
                 ]
                 [ text "P" ]
-            , div [ class "key" ]
+            , div [ class "key", style "background-color" keyFingerColors.pinky ]
                 [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
@@ -1409,7 +1410,7 @@ keyboard model =
                         [ text "[" ]
                     ]
                 ]
-            , div [ class "key" ]
+            , div [ class "key", style "background-color" keyFingerColors.pinky ]
                 [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
@@ -1437,6 +1438,7 @@ keyboard model =
                     [ ( "key key--enter-top", True )
                     , ( "key--highlighted", exerciseHasntStarted )
                     ]
+                , style "background-color" keyFingerColors.pinky
                 ]
                 [ text "Enter" ]
             ]
@@ -1519,9 +1521,10 @@ keyboard model =
                     [ ( "key", True )
                     , ( "key--highlighted", currentChar == 'ñ' || currentChar == 'Ñ' )
                     ]
+                , style "background-color" keyFingerColors.pinky
                 ]
                 [ text "Ñ" ]
-            , div [ class "key" ]
+            , div [ class "key", style "background-color" keyFingerColors.pinky ]
                 [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
@@ -1544,7 +1547,7 @@ keyboard model =
                         [ text "{" ]
                     ]
                 ]
-            , div [ class "key" ]
+            , div [ class "key", style "background-color" keyFingerColors.pinky ]
                 [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
@@ -1565,9 +1568,11 @@ keyboard model =
             , div
                 [ classList
                     [ ( "key key--enter-bottom", True )
+                    , ( "key--enter-bottom--colored", True )
                     , ( "key--enter-bottom--highlighted", exerciseHasntStarted )
                     , ( "key--highlighted", exerciseHasntStarted )
                     ]
+                , style "background-color" keyFingerColors.pinky
                 ]
                 []
             ]
@@ -1663,7 +1668,7 @@ keyboard model =
                     , text "."
                     ]
                 ]
-            , div [ class "key" ]
+            , div [ class "key", style "background-color" keyFingerColors.pinky ]
                 [ div
                     [ style "line-height" "1.2"
                     , style "padding-left" "6px"
@@ -1676,7 +1681,7 @@ keyboard model =
                     , text "-"
                     ]
                 ]
-            , div [ class "key key--rshift" ] [ text "⇧" ]
+            , div [ class "key key--rshift", style "background-color" keyFingerColors.pinky ] [ text "⇧" ]
             ]
         , div [ class "keyboard-row" ]
             [ div [ class "key key--ctrl" ] [ text "Ctrl" ]
