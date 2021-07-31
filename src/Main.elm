@@ -2248,12 +2248,20 @@ keyboard model =
             , div [ class "key", style "width" "52px" ] [ text "" ]
             , div [ class "key key--lalt" ] [ text "Alt" ]
             , div
-                [ classList
-                    [ ( "key", True )
-                    , ( "key--highlighted", currentChar == ' ' )
-                    ]
+                [ class "key"
                 , style "width" "159px"
-                , style "background-color" "#ffc0c0"
+                , if isTutorActive then
+                    if currentChar == ' ' then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" "#ffc0c0"
+
+                  else if currentChar == ' ' then
+                    class "key--highlighted"
+
+                  else
+                    empty
                 ]
                 [ text "" ]
             , div [ class "key key--alt-grl" ] [ text "AltGrl" ]
