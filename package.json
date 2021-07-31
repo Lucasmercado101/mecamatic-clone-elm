@@ -8,6 +8,7 @@
     "start": "concurrently \"npm:ts:watch\" \"npm:web-front\" \"npm:electron\"",
     "web-front": "cd web-front && npm start",
     "electron": "electron .",
+    "electron-pack": "electron-builder --c.extraMetadata.main=electron/electron.js",
     "ts:watch": "tsc -w"
   },
   "repository": {
@@ -29,8 +30,9 @@
     "appId": "mecamatic.typing",
     "productName": "Mecamatic",
     "files": [
-      "build/**/*",
-      "node_modules/**/*"
+      "front-dist/**/*",
+      "node_modules/**/*",
+      "electron/electron.js"
     ],
     "extraResources": [
       {
