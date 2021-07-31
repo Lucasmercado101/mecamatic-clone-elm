@@ -995,7 +995,20 @@ infoPanel model =
 
 
 keyboard : MainViewModel -> Html MainViewMsg
-keyboard _ =
+keyboard model =
+    let
+        exerciseHasntStarted =
+            case model.exercise of
+                ExerciseSelected _ status ->
+                    if status == NotStarted then
+                        True
+
+                    else
+                        False
+
+                _ ->
+                    False
+    in
     div [ class "keyboard-container" ]
         [ div [ class "keyboard-row" ]
             [ div [ class "key" ] [ text "" ]
@@ -1027,7 +1040,13 @@ keyboard _ =
             , div [ class "key" ] [ text "P" ]
             , div [ class "key" ] [ text "" ]
             , div [ class "key" ] [ text "" ]
-            , div [ class "key key--enter-top" ] [ text "Enter" ]
+            , div
+                [ classList
+                    [ ( "key key--enter-top", True )
+                    , ( "key--highlighted", exerciseHasntStarted )
+                    ]
+                ]
+                [ text "Enter" ]
             ]
         , div [ class "keyboard-row" ]
             [ div [ class "key key--caps-lock" ] [ text "Mayús" ]
@@ -1043,7 +1062,14 @@ keyboard _ =
             , div [ class "key" ] [ text "Ñ" ]
             , div [ class "key" ] [ text "" ]
             , div [ class "key" ] [ text "" ]
-            , div [ class "key key--enter-bottom" ] [ text "" ]
+            , div
+                [ classList
+                    [ ( "key key--enter-bottom", True )
+                    , ( "key--enter-bottom--highlighted", exerciseHasntStarted )
+                    , ( "key--highlighted", exerciseHasntStarted )
+                    ]
+                ]
+                []
             ]
         , div [ class "keyboard-row" ]
             [ div [ class "key key--lshift" ] [ text "⇧" ]
