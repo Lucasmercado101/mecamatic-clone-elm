@@ -1574,7 +1574,30 @@ keyboard model =
                   else
                     empty
                 ]
-                [ text "E" ]
+                [ div
+                    [ style "display" "flex"
+                    , style "flex-direction" "column"
+                    , style "position" "relative"
+                    , style "width" "100%"
+                    , style "height" "100%"
+                    ]
+                    [ p
+                        [ style "position" "absolute"
+                        , style "left" "4px"
+                        , style "top" "0"
+                        , style "fontSize" "1rem"
+                        ]
+                        [ text "E" ]
+                    , p
+                        [ style "position" "absolute"
+                        , style "bottom" "1px"
+                        , style "right" "2px"
+                        , style "fontSize" "0.7rem"
+                        ]
+                        [ text "€"
+                        ]
+                    ]
+                ]
             , div
                 [ class "key"
                 , if isTutorActive then
@@ -1852,7 +1875,15 @@ keyboard model =
                   else
                     empty
                 ]
-                [ text "F" ]
+                [ div
+                    [ style "lineHeight" "0.3"
+                    , style "paddingTop" "5px"
+                    ]
+                    [ text "F"
+                    , br [] []
+                    , text "_"
+                    ]
+                ]
             , div
                 [ class "key"
                 , if isTutorActive then
@@ -1900,7 +1931,15 @@ keyboard model =
                   else
                     empty
                 ]
-                [ text "J" ]
+                [ div
+                    [ style "lineHeight" "0.3"
+                    , style "paddingTop" "5px"
+                    ]
+                    [ text "J"
+                    , br [] []
+                    , text "_"
+                    ]
+                ]
             , div
                 [ class "key"
                 , if isTutorActive then
