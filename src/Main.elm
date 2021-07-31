@@ -1144,14 +1144,150 @@ keyboard model =
                         [ text "4" ]
                     ]
                 ]
-            , div [ class "key" ] [ text "" ]
-            , div [ class "key" ] [ text "" ]
-            , div [ class "key" ] [ text "" ]
-            , div [ class "key" ] [ text "" ]
-            , div [ class "key" ] [ text "" ]
-            , div [ class "key" ] [ text "" ]
-            , div [ class "key" ] [ text "" ]
-            , div [ class "key" ] [ text "" ]
+            , div [ class "key" ]
+                [ div [ class "num-row-key" ]
+                    [ p
+                        [ style "position" "absolute"
+                        , style "left" "6px"
+                        , style "top" "-3px"
+                        , style "fontSize" "0.8rem"
+                        ]
+                        [ text "$" ]
+                    , p
+                        [ style "position" "absolute"
+                        , style "left" "5px"
+                        , style "top" "9px"
+                        , style "fontSize" "0.8rem"
+                        ]
+                        [ text "4" ]
+                    ]
+                ]
+            , div [ class "key" ]
+                [ div [ class "num-row-key" ]
+                    [ p
+                        [ style "position" "absolute"
+                        , style "left" "5px"
+                        , style "top" "-3px"
+                        , style "fontSize" "0.7rem"
+                        ]
+                        [ text "%" ]
+                    , p
+                        [ style "position" "absolute"
+                        , style "left" "5px"
+                        , style "top" "9px"
+                        , style "fontSize" "0.8rem"
+                        ]
+                        [ text "5" ]
+                    ]
+                ]
+            , div [ class "key" ]
+                [ div [ class "num-row-key" ]
+                    [ p
+                        [ style "position" "absolute"
+                        , style "left" "5px"
+                        , style "top" "-4px"
+                        , style "fontSize" "1.3rem"
+                        ]
+                        [ text "°" ]
+                    , p
+                        [ style "position" "absolute"
+                        , style "left" "6px"
+                        , style "top" "9px"
+                        , style "fontSize" "0.8rem"
+                        ]
+                        [ text "6" ]
+                    ]
+                ]
+            , div [ class "key" ]
+                [ div [ class "num-row-key" ]
+                    [ p
+                        [ style "position" "absolute"
+                        , style "left" "6px"
+                        , style "top" "-3px"
+                        , style "fontSize" "0.8rem"
+                        ]
+                        [ text "/" ]
+                    , p
+                        [ style "position" "absolute"
+                        , style "left" "5px"
+                        , style "top" "9px"
+                        , style "fontSize" "0.8rem"
+                        ]
+                        [ text "7" ]
+                    ]
+                ]
+            , div [ class "key" ]
+                [ div [ class "num-row-key" ]
+                    [ p
+                        [ style "position" "absolute"
+                        , style "left" "5px"
+                        , style "top" "-3px"
+                        , style "fontSize" "0.7rem"
+                        ]
+                        [ text "(" ]
+                    , p
+                        [ style "position" "absolute"
+                        , style "left" "5px"
+                        , style "top" "9px"
+                        , style "fontSize" "0.8rem"
+                        ]
+                        [ text "8" ]
+                    ]
+                ]
+            , div [ class "key" ]
+                [ div [ class "num-row-key" ]
+                    [ p
+                        [ style "position" "absolute"
+                        , style "left" "5px"
+                        , style "top" "-3px"
+                        , style "fontSize" "0.7rem"
+                        ]
+                        [ text ")" ]
+                    , p
+                        [ style "position" "absolute"
+                        , style "left" "5px"
+                        , style "top" "9px"
+                        , style "fontSize" "0.8rem"
+                        ]
+                        [ text "9" ]
+                    ]
+                ]
+            , div [ class "key" ]
+                [ div [ class "num-row-key" ]
+                    [ p
+                        [ style "position" "absolute"
+                        , style "left" "5px"
+                        , style "top" "-3px"
+                        , style "fontSize" "0.7rem"
+                        ]
+                        [ text "=" ]
+                    , p
+                        [ style "position" "absolute"
+                        , style "left" "5px"
+                        , style "top" "9px"
+                        , style "fontSize" "0.8rem"
+                        ]
+                        [ text "0" ]
+                    ]
+                ]
+            , div [ class "key" ]
+                [ div [ class "num-row-key" ]
+                    [ p
+                        [ style "position" "absolute"
+                        , style "left" "5px"
+                        , style "top" "-2px"
+                        , style "fontSize" "0.8rem"
+                        ]
+                        [ text "?" ]
+                    , p
+                        [ style "position" "absolute"
+                        , style "left" "5px"
+                        , style "top" "14px"
+                        , style "fontSize" "0.8rem"
+                        ]
+                        [ text "'" ]
+                    ]
+                ]
             , div [ class "key key--return" ] [ div [ style "margin-top" "-5px" ] [ text "←" ] ]
             ]
         , div [ class "keyboard-row" ]
