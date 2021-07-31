@@ -2,8 +2,8 @@ port module Main exposing (..)
 
 import Browser
 import Either exposing (Either(..))
-import Html exposing (Html, br, button, datalist, div, form, input, option, p, span, text)
-import Html.Attributes exposing (class, classList, disabled, id, list, style, tabindex, value)
+import Html exposing (Html, br, button, datalist, div, form, img, input, option, p, span, text)
+import Html.Attributes exposing (class, classList, disabled, id, list, src, style, tabindex, value)
 import Html.Attributes.Extra exposing (empty)
 import Html.Events exposing (on, onInput, onSubmit)
 import Json.Decode as JD
@@ -655,7 +655,7 @@ mainViewView model =
         [ div [ class "top-toolbar" ]
             [ div [ class "top-toolbar__menu-items" ]
                 [ div [ class "toolbar-separator" ] []
-                , button [ class "top-toolbar__menu-item" ] [ text "Pausa" ]
+                , button [ class "top-toolbar__menu-item" ] [ text "Pausa", img [ src "./images/stop.png" ] [] ]
                 ]
             ]
         , div
