@@ -2025,7 +2025,22 @@ keyboard model =
                 []
             ]
         , div [ class "keyboard-row" ]
-            [ div [ class "key key--lshift", style "background-color" keyFingerColors.pinky ] [ text "⇧" ]
+            [ div
+                [ class "key key--lshift"
+                , if isTutorActive then
+                    if currentCharIs (Right [ '°', '!', '"', '#', '$', '%', '&', '/', '(', ')', '=', '?', '¡', '¨', '*', '[', ']', '_', ':', ';', '>' ]) then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.pinky
+
+                  else if currentCharIs (Right [ '°', '!', '"', '#', '$', '%', '&', '/', '(', ')', '=', '?', '¡', '¨', '*', '[', ']', '_', ':', ';', '>' ]) then
+                    class "key--highlighted"
+
+                  else
+                    empty
+                ]
+                [ text "⇧" ]
             , div
                 [ class "key"
                 , if isTutorActive then
@@ -2264,7 +2279,22 @@ keyboard model =
                     empty
                 ]
                 [ text "" ]
-            , div [ class "key key--alt-grl" ] [ text "AltGrl" ]
+            , div
+                [ class "key key--alt-grl"
+                , if isTutorActive then
+                    if currentCharIs (Right [ '¬', '\\', '~', '^', '`' ]) then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.pinky
+
+                  else if currentCharIs (Right [ '¬', '\\', '~', '^', '`' ]) then
+                    class "key--highlighted"
+
+                  else
+                    empty
+                ]
+                [ text "AltGrl" ]
             , div [ class "key", style "width" "48px" ] [ text "" ]
             , div [ class "key", style "width" "48px" ] [ text "" ]
             , div [ class "key key--ctrl" ] [ text "Ctrl" ]
