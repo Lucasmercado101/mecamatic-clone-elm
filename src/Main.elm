@@ -1230,7 +1230,7 @@ keyboard model =
                         [ text "8" ]
                     ]
                 ]
-            , div [ class "key" ]
+            , div [ class "key", style "background-color" keyFingerColors.ringFinger ]
                 [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
@@ -1375,6 +1375,7 @@ keyboard model =
                     [ ( "key", True )
                     , ( "key--highlighted", currentChar == 'o' || currentChar == 'O' )
                     ]
+                , style "background-color" keyFingerColors.ringFinger
                 ]
                 [ text "O" ]
             , div
@@ -1510,6 +1511,7 @@ keyboard model =
                     [ ( "key", True )
                     , ( "key--highlighted", currentChar == 'l' || currentChar == 'L' )
                     ]
+                , style "background-color" keyFingerColors.ringFinger
                 ]
                 [ text "L" ]
             , div
@@ -1649,7 +1651,7 @@ keyboard model =
                     , text ","
                     ]
                 ]
-            , div [ class "key" ]
+            , div [ class "key", style "background-color" keyFingerColors.ringFinger ]
                 [ div
                     [ style "line-height" "0.65"
                     , style "padding-left" "6px"
