@@ -1,6 +1,7 @@
 port module Main exposing (..)
 
 import Browser
+import Either exposing (Either(..))
 import Html exposing (Html, br, button, datalist, div, form, input, option, p, span, text)
 import Html.Attributes exposing (class, classList, disabled, id, list, style, tabindex, value)
 import Html.Attributes.Extra exposing (empty)
@@ -1040,6 +1041,36 @@ keyboard model =
 
                 _ ->
                     '←'
+
+        isTutorActive =
+            case model.exercise of
+                ExerciseNotSelected ->
+                    True
+
+                ExerciseSelected data _ ->
+                    case model.userData.userSettings.isTutorGloballyActive of
+                        Just bool ->
+                            bool
+
+                        Nothing ->
+                            data.isTutorActive
+
+                _ ->
+                    False
+
+        currentCharIs : Either Char (List Char) -> Bool
+        currentCharIs val =
+            case val of
+                Left char ->
+                    Char.toLower char == currentChar || char == currentChar
+
+                Right chars ->
+                    case List.Extra.find (\l -> Char.toLower l == currentChar || l == currentChar) chars of
+                        Just _ ->
+                            True
+
+                        Nothing ->
+                            False
     in
     div [ class "keyboard-container" ]
         [ div [ class "keyboard-row" ]
@@ -1307,83 +1338,163 @@ keyboard model =
         , div [ class "keyboard-row" ]
             [ div [ class "key key--tab", style "background-color" keyFingerColors.pinky ] [ text "⭾" ]
             , div
-                [ classList
-                    [ ( "key", True )
-                    , ( "key--highlighted", currentChar == 'q' || currentChar == 'Q' )
-                    ]
-                , style "background-color" keyFingerColors.pinky
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Left 'Q') then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.pinky
+
+                  else if currentCharIs (Left 'Q') then
+                    class "key--highlighted"
+
+                  else
+                    empty
                 ]
                 [ text "Q" ]
             , div
-                [ classList
-                    [ ( "key", True )
-                    , ( "key--highlighted", currentChar == 'w' || currentChar == 'W' )
-                    ]
-                , style "background-color" keyFingerColors.ringFinger
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Left 'W') then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.ringFinger
+
+                  else if currentCharIs (Left 'W') then
+                    class "key--highlighted"
+
+                  else
+                    empty
                 ]
                 [ text "W" ]
             , div
-                [ classList
-                    [ ( "key", True )
-                    , ( "key--highlighted", currentChar == 'e' || currentChar == 'E' )
-                    ]
-                , style "background-color" keyFingerColors.middleFinger
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Left 'E') then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.middleFinger
+
+                  else if currentCharIs (Left 'E') then
+                    class "key--highlighted"
+
+                  else
+                    empty
                 ]
                 [ text "E" ]
             , div
-                [ classList
-                    [ ( "key", True )
-                    , ( "key--highlighted", currentChar == 'r' || currentChar == 'R' )
-                    ]
-                , style "background-color" keyFingerColors.indexLeftHand
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Left 'R') then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.indexLeftHand
+
+                  else if currentCharIs (Left 'R') then
+                    class "key--highlighted"
+
+                  else
+                    empty
                 ]
                 [ text "R" ]
             , div
-                [ classList
-                    [ ( "key", True )
-                    , ( "key--highlighted", currentChar == 't' || currentChar == 'T' )
-                    ]
-                , style "background-color" keyFingerColors.indexLeftHand
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Left 'T') then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.indexLeftHand
+
+                  else if currentCharIs (Left 'T') then
+                    class "key--highlighted"
+
+                  else
+                    empty
                 ]
                 [ text "T" ]
             , div
-                [ classList
-                    [ ( "key", True )
-                    , ( "key--highlighted", currentChar == 'y' || currentChar == 'Y' )
-                    ]
-                , style "background-color" keyFingerColors.indexRightHand
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Left 'Y') then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.indexRightHand
+
+                  else if currentCharIs (Left 'Y') then
+                    class "key--highlighted"
+
+                  else
+                    empty
                 ]
                 [ text "Y" ]
             , div
-                [ classList
-                    [ ( "key", True )
-                    , ( "key--highlighted", currentChar == 'u' || currentChar == 'U' )
-                    ]
-                , style "background-color" keyFingerColors.indexRightHand
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Left 'U') then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.indexRightHand
+
+                  else if currentCharIs (Left 'U') then
+                    class "key--highlighted"
+
+                  else
+                    empty
                 ]
                 [ text "U" ]
             , div
-                [ classList
-                    [ ( "key", True )
-                    , ( "key--highlighted", currentChar == 'i' || currentChar == 'I' )
-                    ]
-                , style "background-color" keyFingerColors.middleFinger
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Left 'I') then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.middleFinger
+
+                  else if currentCharIs (Left 'I') then
+                    class "key--highlighted"
+
+                  else
+                    empty
                 ]
                 [ text "I" ]
             , div
-                [ classList
-                    [ ( "key", True )
-                    , ( "key--highlighted", currentChar == 'o' || currentChar == 'O' )
-                    ]
-                , style "background-color" keyFingerColors.ringFinger
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Left 'O') then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.ringFinger
+
+                  else if currentCharIs (Left 'O') then
+                    class "key--highlighted"
+
+                  else
+                    empty
                 ]
                 [ text "O" ]
             , div
-                [ classList
-                    [ ( "key", True )
-                    , ( "key--highlighted", currentChar == 'p' || currentChar == 'P' )
-                    ]
-                , style "background-color" keyFingerColors.pinky
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Left 'P') then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.pinky
+
+                  else if currentCharIs (Left 'P') then
+                    class "key--highlighted"
+
+                  else
+                    empty
                 ]
                 [ text "P" ]
             , div [ class "key", style "background-color" keyFingerColors.pinky ]
@@ -1445,83 +1556,163 @@ keyboard model =
         , div [ class "keyboard-row" ]
             [ div [ class "key key--caps-lock", style "background-color" keyFingerColors.pinky ] [ text "Mayús" ]
             , div
-                [ classList
-                    [ ( "key", True )
-                    , ( "key--highlighted", currentChar == 'a' || currentChar == 'A' )
-                    ]
-                , style "background-color" keyFingerColors.pinky
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Left 'A') then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.pinky
+
+                  else if currentCharIs (Left 'A') then
+                    class "key--highlighted"
+
+                  else
+                    empty
                 ]
                 [ text "A" ]
             , div
-                [ classList
-                    [ ( "key", True )
-                    , ( "key--highlighted", currentChar == 's' || currentChar == 'S' )
-                    ]
-                , style "background-color" keyFingerColors.ringFinger
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Left 'S') then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.ringFinger
+
+                  else if currentCharIs (Left 'S') then
+                    class "key--highlighted"
+
+                  else
+                    empty
                 ]
                 [ text "S" ]
             , div
-                [ classList
-                    [ ( "key", True )
-                    , ( "key--highlighted", currentChar == 'd' || currentChar == 'D' )
-                    ]
-                , style "background-color" keyFingerColors.middleFinger
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Left 'D') then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.middleFinger
+
+                  else if currentCharIs (Left 'D') then
+                    class "key--highlighted"
+
+                  else
+                    empty
                 ]
                 [ text "D" ]
             , div
-                [ classList
-                    [ ( "key", True )
-                    , ( "key--highlighted", currentChar == 'f' || currentChar == 'F' )
-                    ]
-                , style "background-color" keyFingerColors.indexLeftHand
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Left 'F') then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.indexLeftHand
+
+                  else if currentCharIs (Left 'F') then
+                    class "key--highlighted"
+
+                  else
+                    empty
                 ]
                 [ text "F" ]
             , div
-                [ classList
-                    [ ( "key", True )
-                    , ( "key--highlighted", currentChar == 'g' || currentChar == 'G' )
-                    ]
-                , style "background-color" keyFingerColors.indexLeftHand
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Left 'G') then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.indexLeftHand
+
+                  else if currentCharIs (Left 'G') then
+                    class "key--highlighted"
+
+                  else
+                    empty
                 ]
                 [ text "G" ]
             , div
-                [ classList
-                    [ ( "key", True )
-                    , ( "key--highlighted", currentChar == 'h' || currentChar == 'H' )
-                    ]
-                , style "background-color" keyFingerColors.indexRightHand
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Left 'H') then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.indexRightHand
+
+                  else if currentCharIs (Left 'H') then
+                    class "key--highlighted"
+
+                  else
+                    empty
                 ]
                 [ text "H" ]
             , div
-                [ classList
-                    [ ( "key", True )
-                    , ( "key--highlighted", currentChar == 'j' || currentChar == 'J' )
-                    ]
-                , style "background-color" keyFingerColors.indexRightHand
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Left 'J') then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.indexRightHand
+
+                  else if currentCharIs (Left 'J') then
+                    class "key--highlighted"
+
+                  else
+                    empty
                 ]
                 [ text "J" ]
             , div
-                [ classList
-                    [ ( "key", True )
-                    , ( "key--highlighted", currentChar == 'k' || currentChar == 'K' )
-                    ]
-                , style "background-color" keyFingerColors.middleFinger
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Left 'K') then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.middleFinger
+
+                  else if currentCharIs (Left 'K') then
+                    class "key--highlighted"
+
+                  else
+                    empty
                 ]
                 [ text "K" ]
             , div
-                [ classList
-                    [ ( "key", True )
-                    , ( "key--highlighted", currentChar == 'l' || currentChar == 'L' )
-                    ]
-                , style "background-color" keyFingerColors.ringFinger
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Left 'L') then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.ringFinger
+
+                  else if currentCharIs (Left 'L') then
+                    class "key--highlighted"
+
+                  else
+                    empty
                 ]
                 [ text "L" ]
             , div
-                [ classList
-                    [ ( "key", True )
-                    , ( "key--highlighted", currentChar == 'ñ' || currentChar == 'Ñ' )
-                    ]
-                , style "background-color" keyFingerColors.pinky
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Left 'Ñ') then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.pinky
+
+                  else if currentCharIs (Left 'Ñ') then
+                    class "key--highlighted"
+
+                  else
+                    empty
                 ]
                 [ text "Ñ" ]
             , div [ class "key", style "background-color" keyFingerColors.pinky ]
@@ -1589,59 +1780,115 @@ keyboard model =
                     ]
                 ]
             , div
-                [ classList
-                    [ ( "key", True )
-                    , ( "key--highlighted", currentChar == 'z' || currentChar == 'Z' )
-                    ]
-                , style "background-color" keyFingerColors.pinky
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Left 'Z') then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.pinky
+
+                  else if currentCharIs (Left 'Z') then
+                    class "key--highlighted"
+
+                  else
+                    empty
                 ]
                 [ text "Z" ]
             , div
-                [ classList
-                    [ ( "key", True )
-                    , ( "key--highlighted", currentChar == 'x' || currentChar == 'X' )
-                    ]
-                , style "background-color" keyFingerColors.ringFinger
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Left 'X') then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.ringFinger
+
+                  else if currentCharIs (Left 'X') then
+                    class "key--highlighted"
+
+                  else
+                    empty
                 ]
                 [ text "X" ]
             , div
-                [ classList
-                    [ ( "key", True )
-                    , ( "key--highlighted", currentChar == 'c' || currentChar == 'C' )
-                    ]
-                , style "background-color" keyFingerColors.middleFinger
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Left 'C') then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.middleFinger
+
+                  else if currentCharIs (Left 'C') then
+                    class "key--highlighted"
+
+                  else
+                    empty
                 ]
                 [ text "C" ]
             , div
-                [ classList
-                    [ ( "key", True )
-                    , ( "key--highlighted", currentChar == 'v' || currentChar == 'V' )
-                    ]
-                , style "background-color" keyFingerColors.indexLeftHand
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Left 'V') then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.indexLeftHand
+
+                  else if currentCharIs (Left 'V') then
+                    class "key--highlighted"
+
+                  else
+                    empty
                 ]
                 [ text "V" ]
             , div
-                [ classList
-                    [ ( "key", True )
-                    , ( "key--highlighted", currentChar == 'b' || currentChar == 'B' )
-                    ]
-                , style "background-color" keyFingerColors.indexLeftHand
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Left 'B') then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.indexLeftHand
+
+                  else if currentCharIs (Left 'B') then
+                    class "key--highlighted"
+
+                  else
+                    empty
                 ]
                 [ text "B" ]
             , div
-                [ classList
-                    [ ( "key", True )
-                    , ( "key--highlighted", currentChar == 'n' || currentChar == 'N' )
-                    ]
-                , style "background-color" keyFingerColors.indexRightHand
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Left 'N') then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.indexRightHand
+
+                  else if currentCharIs (Left 'N') then
+                    class "key--highlighted"
+
+                  else
+                    empty
                 ]
                 [ text "N" ]
             , div
-                [ classList
-                    [ ( "key", True )
-                    , ( "key--highlighted", currentChar == 'm' || currentChar == 'M' )
-                    ]
-                , style "background-color" keyFingerColors.indexRightHand
+                [ class "key"
+                , if isTutorActive then
+                    if currentCharIs (Left 'M') then
+                        class "key--highlighted"
+
+                    else
+                        style "background-color" keyFingerColors.indexRightHand
+
+                  else if currentCharIs (Left 'M') then
+                    class "key--highlighted"
+
+                  else
+                    empty
                 ]
                 [ text "M" ]
             , div [ class "key", style "background-color" keyFingerColors.middleFinger ]
