@@ -1612,14 +1612,37 @@ keyboard model =
                     , text ","
                     ]
                 ]
-            , div [ class "key" ] [ text "" ]
-            , div [ class "key" ] [ text "" ]
+            , div [ class "key" ]
+                [ div
+                    [ style "line-height" "0.65"
+                    , style "padding-left" "6px"
+                    , style "text-align" "left"
+                    , style "font-size" "0.85rem"
+                    ]
+                    [ text ":"
+                    , br [] []
+                    , text "."
+                    ]
+                ]
+            , div [ class "key" ]
+                [ div
+                    [ style "line-height" "1.2"
+                    , style "padding-left" "6px"
+                    , style "text-align" "left"
+                    , style "font-size" "0.9rem"
+                    , style "margin-top" "-8px"
+                    ]
+                    [ text "_"
+                    , br [] []
+                    , text "-"
+                    ]
+                ]
             , div [ class "key key--rshift" ] [ text "⇧" ]
             ]
         , div [ class "keyboard-row" ]
             [ div [ class "key key--ctrl" ] [ text "Ctrl" ]
             , div [ class "key", style "width" "52px" ] [ text "" ]
-            , div [ class "key key--lalt" ] [ text "" ]
+            , div [ class "key key--lalt" ] [ text "Alt" ]
             , div
                 [ classList
                     [ ( "key", True )
@@ -1628,7 +1651,7 @@ keyboard model =
                 , style "width" "159px"
                 ]
                 [ text "" ]
-            , div [ class "key key--alt-grl" ] [ text "" ]
+            , div [ class "key key--alt-grl" ] [ text "AltGrl" ]
             , div [ class "key", style "width" "48px" ] [ text "" ]
             , div [ class "key", style "width" "48px" ] [ text "" ]
             , div [ class "key key--ctrl" ] [ text "Ctrl" ]
