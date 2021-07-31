@@ -142,31 +142,38 @@
 
 .top-toolbar
     background-color: #f0f0f0
-    padding-left: 5px
     width: 100%
-    // &-menu-item
-    //     display: flex
-    //     background-color: transparent
-    //     align-items: center
-    //     border: none
-    //     padding: 0 8px
-    //     justify-content: space-between
-    //     margin: 1px
-    //     width: 100px
-
-    // &-menu-item:hover
-    //     display: flex
-    //     align-items: center
-    //     border: thin outset
-
-    // &-menu-item:active:hover
-    //     border: thin inset
+    height: 20px
+    position: relative
+    &__menu-items
+        position: absolute
+        left: 5px
+        top: 0
+        display: flex
+    &__menu-item
+        display: flex
+        background-color: transparent
+        align-items: center
+        border: none
+        padding: 0 8px
+        justify-content: space-between
+        margin: 1px
+        padding: 1px
+        width: 100px
+        &:hover
+            padding: 0
+            display: flex
+            align-items: center
+            border: thin outset
+        &:active:hover
+            padding: 0
+            border: thin inset
 
 .toolbar-separator
     width: 2px
     background-color: #a0a0a0
     border-right: 1px solid #ffffff
-    margin: 2px 2px
+    margin: 4px 2px
 
 .keyboard-container
     width: 570px

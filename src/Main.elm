@@ -653,8 +653,10 @@ mainViewView model =
                 empty
         ]
         [ div [ class "top-toolbar" ]
-            [ div [ class "toolbar-separator" ] []
-            , button [] [ text "Pausa" ]
+            [ div [ class "top-toolbar__menu-items" ]
+                [ div [ class "toolbar-separator" ] []
+                , button [ class "top-toolbar__menu-item" ] [ text "Pausa" ]
+                ]
             ]
         , div
             [ class "main-view-content" ]
