@@ -1518,7 +1518,15 @@ keyboard model =
             , div [ class "key key--return" ] [ div [ style "margin-top" "-5px" ] [ text "←" ] ]
             ]
         , div [ class "keyboard-row" ]
-            [ div [ class "key key--tab", style "background-color" keyFingerColors.pinky ] [ text "⭾" ]
+            [ div
+                [ class "key key--tab"
+                , if isTutorActive then
+                    style "background-color" keyFingerColors.pinky
+
+                  else
+                    empty
+                ]
+                [ text "⭾" ]
             , div
                 [ class "key"
                 , if isTutorActive then
@@ -1736,7 +1744,15 @@ keyboard model =
                 [ text "Enter" ]
             ]
         , div [ class "keyboard-row" ]
-            [ div [ class "key key--caps-lock", style "background-color" keyFingerColors.pinky ] [ text "Mayús" ]
+            [ div
+                [ class "key key--caps-lock"
+                , if isTutorActive then
+                    style "background-color" keyFingerColors.pinky
+
+                  else
+                    empty
+                ]
+                [ text "Mayús" ]
             , div
                 [ class "key"
                 , if isTutorActive then
