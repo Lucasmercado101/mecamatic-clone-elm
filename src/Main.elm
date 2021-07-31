@@ -1950,7 +1950,7 @@ keyboard model =
                         class "key--highlighted"
 
                     else
-                        style "background-color" keyFingerColors.ringFinger
+                        style "background-color" keyFingerColors.pinky
 
                   else if currentCharIs (Right [ '_', '-' ]) then
                     class "key--highlighted"
