@@ -774,7 +774,7 @@ infoPanel model =
                 ExerciseNotSelected ->
                     div [ class "info-panel-incidences__red-box" ] [ text "Seleccione un", br [] [], text "ejercicio" ]
 
-                ExerciseSelected data status ->
+                ExerciseSelected _ status ->
                     case status of
                         ExerciseFailed _ _ errorMessage ->
                             div [ class "info-panel-incidences__red-box" ] [ text errorMessage ]
