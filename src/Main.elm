@@ -407,6 +407,20 @@ userDefaults =
     }
 
 
+
+{- Enum -}
+
+
+keyFingerColors : { pinky : String, ringFinger : String, middleFinger : String, indexLeftHand : String, indexRightHand : String }
+keyFingerColors =
+    { pinky = "#ffffc0"
+    , ringFinger = "#c0ffc0"
+    , middleFinger = "#c0ffff"
+    , indexLeftHand = "#ffc0ff"
+    , indexRightHand = "#ff96ff"
+    }
+
+
 type alias MainViewModel =
     { userData : UserData
     , exercise : Exercise
