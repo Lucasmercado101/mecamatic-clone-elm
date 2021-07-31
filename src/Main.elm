@@ -504,7 +504,7 @@ mainViewUpdate msg model =
                                     let
                                         textCharsList : List ( Int, Char )
                                         textCharsList =
-                                            List.indexedMap (\i c -> Tuple.pair i c) (String.toList exerciseData.text)
+                                            List.indexedMap Tuple.pair (String.toList exerciseData.text)
 
                                         currentChar : Maybe ( Int, Char )
                                         currentChar =
@@ -1008,6 +1008,24 @@ keyboard model =
 
                 _ ->
                     False
+
+        currentChar : Char
+        currentChar =
+            case model.exercise of
+                ExerciseSelected data status ->
+                    case status of
+                        Ongoing cursor _ ->
+                            String.toList data.text
+                                |> List.indexedMap Tuple.pair
+                                |> List.Extra.find (\( i, _ ) -> cursor == i)
+                                |> Maybe.withDefault ( 0, '←' )
+                                |> Tuple.second
+
+                        _ ->
+                            '←'
+
+                _ ->
+                    '←'
     in
     div [ class "keyboard-container" ]
         [ div [ class "keyboard-row" ]
@@ -1028,16 +1046,76 @@ keyboard model =
             ]
         , div [ class "keyboard-row" ]
             [ div [ class "key key--tab" ] [ text "⭾" ]
-            , div [ class "key" ] [ text "Q" ]
-            , div [ class "key" ] [ text "W" ]
-            , div [ class "key" ] [ text "E" ]
-            , div [ class "key" ] [ text "R" ]
-            , div [ class "key" ] [ text "T" ]
-            , div [ class "key" ] [ text "Y" ]
-            , div [ class "key" ] [ text "U" ]
-            , div [ class "key" ] [ text "I" ]
-            , div [ class "key" ] [ text "O" ]
-            , div [ class "key" ] [ text "P" ]
+            , div
+                [ classList
+                    [ ( "key", True )
+                    , ( "key--highlighted", currentChar == 'q' || currentChar == 'Q' )
+                    ]
+                ]
+                [ text "Q" ]
+            , div
+                [ classList
+                    [ ( "key", True )
+                    , ( "key--highlighted", currentChar == 'w' || currentChar == 'W' )
+                    ]
+                ]
+                [ text "W" ]
+            , div
+                [ classList
+                    [ ( "key", True )
+                    , ( "key--highlighted", currentChar == 'e' || currentChar == 'E' )
+                    ]
+                ]
+                [ text "E" ]
+            , div
+                [ classList
+                    [ ( "key", True )
+                    , ( "key--highlighted", currentChar == 'r' || currentChar == 'R' )
+                    ]
+                ]
+                [ text "R" ]
+            , div
+                [ classList
+                    [ ( "key", True )
+                    , ( "key--highlighted", currentChar == 't' || currentChar == 'T' )
+                    ]
+                ]
+                [ text "T" ]
+            , div
+                [ classList
+                    [ ( "key", True )
+                    , ( "key--highlighted", currentChar == 'y' || currentChar == 'Y' )
+                    ]
+                ]
+                [ text "Y" ]
+            , div
+                [ classList
+                    [ ( "key", True )
+                    , ( "key--highlighted", currentChar == 'u' || currentChar == 'U' )
+                    ]
+                ]
+                [ text "U" ]
+            , div
+                [ classList
+                    [ ( "key", True )
+                    , ( "key--highlighted", currentChar == 'i' || currentChar == 'I' )
+                    ]
+                ]
+                [ text "I" ]
+            , div
+                [ classList
+                    [ ( "key", True )
+                    , ( "key--highlighted", currentChar == 'o' || currentChar == 'O' )
+                    ]
+                ]
+                [ text "O" ]
+            , div
+                [ classList
+                    [ ( "key", True )
+                    , ( "key--highlighted", currentChar == 'p' || currentChar == 'P' )
+                    ]
+                ]
+                [ text "P" ]
             , div [ class "key" ] [ text "" ]
             , div [ class "key" ] [ text "" ]
             , div
@@ -1050,16 +1128,76 @@ keyboard model =
             ]
         , div [ class "keyboard-row" ]
             [ div [ class "key key--caps-lock" ] [ text "Mayús" ]
-            , div [ class "key" ] [ text "A" ]
-            , div [ class "key" ] [ text "S" ]
-            , div [ class "key" ] [ text "D" ]
-            , div [ class "key" ] [ text "F" ]
-            , div [ class "key" ] [ text "G" ]
-            , div [ class "key" ] [ text "H" ]
-            , div [ class "key" ] [ text "J" ]
-            , div [ class "key" ] [ text "K" ]
-            , div [ class "key" ] [ text "L" ]
-            , div [ class "key" ] [ text "Ñ" ]
+            , div
+                [ classList
+                    [ ( "key", True )
+                    , ( "key--highlighted", currentChar == 'a' || currentChar == 'A' )
+                    ]
+                ]
+                [ text "A" ]
+            , div
+                [ classList
+                    [ ( "key", True )
+                    , ( "key--highlighted", currentChar == 's' || currentChar == 'S' )
+                    ]
+                ]
+                [ text "S" ]
+            , div
+                [ classList
+                    [ ( "key", True )
+                    , ( "key--highlighted", currentChar == 'd' || currentChar == 'D' )
+                    ]
+                ]
+                [ text "D" ]
+            , div
+                [ classList
+                    [ ( "key", True )
+                    , ( "key--highlighted", currentChar == 'f' || currentChar == 'F' )
+                    ]
+                ]
+                [ text "F" ]
+            , div
+                [ classList
+                    [ ( "key", True )
+                    , ( "key--highlighted", currentChar == 'g' || currentChar == 'G' )
+                    ]
+                ]
+                [ text "G" ]
+            , div
+                [ classList
+                    [ ( "key", True )
+                    , ( "key--highlighted", currentChar == 'h' || currentChar == 'H' )
+                    ]
+                ]
+                [ text "H" ]
+            , div
+                [ classList
+                    [ ( "key", True )
+                    , ( "key--highlighted", currentChar == 'j' || currentChar == 'J' )
+                    ]
+                ]
+                [ text "J" ]
+            , div
+                [ classList
+                    [ ( "key", True )
+                    , ( "key--highlighted", currentChar == 'k' || currentChar == 'K' )
+                    ]
+                ]
+                [ text "K" ]
+            , div
+                [ classList
+                    [ ( "key", True )
+                    , ( "key--highlighted", currentChar == 'l' || currentChar == 'L' )
+                    ]
+                ]
+                [ text "L" ]
+            , div
+                [ classList
+                    [ ( "key", True )
+                    , ( "key--highlighted", currentChar == 'ñ' || currentChar == 'Ñ' )
+                    ]
+                ]
+                [ text "Ñ" ]
             , div [ class "key" ] [ text "" ]
             , div [ class "key" ] [ text "" ]
             , div
@@ -1074,13 +1212,55 @@ keyboard model =
         , div [ class "keyboard-row" ]
             [ div [ class "key key--lshift" ] [ text "⇧" ]
             , div [ class "key" ] [ text "" ]
-            , div [ class "key" ] [ text "Z" ]
-            , div [ class "key" ] [ text "X" ]
-            , div [ class "key" ] [ text "C" ]
-            , div [ class "key" ] [ text "V" ]
-            , div [ class "key" ] [ text "B" ]
-            , div [ class "key" ] [ text "N" ]
-            , div [ class "key" ] [ text "M" ]
+            , div
+                [ classList
+                    [ ( "key", True )
+                    , ( "key--highlighted", currentChar == 'z' || currentChar == 'Z' )
+                    ]
+                ]
+                [ text "Z" ]
+            , div
+                [ classList
+                    [ ( "key", True )
+                    , ( "key--highlighted", currentChar == 'x' || currentChar == 'X' )
+                    ]
+                ]
+                [ text "X" ]
+            , div
+                [ classList
+                    [ ( "key", True )
+                    , ( "key--highlighted", currentChar == 'c' || currentChar == 'C' )
+                    ]
+                ]
+                [ text "C" ]
+            , div
+                [ classList
+                    [ ( "key", True )
+                    , ( "key--highlighted", currentChar == 'v' || currentChar == 'V' )
+                    ]
+                ]
+                [ text "V" ]
+            , div
+                [ classList
+                    [ ( "key", True )
+                    , ( "key--highlighted", currentChar == 'b' || currentChar == 'B' )
+                    ]
+                ]
+                [ text "B" ]
+            , div
+                [ classList
+                    [ ( "key", True )
+                    , ( "key--highlighted", currentChar == 'n' || currentChar == 'N' )
+                    ]
+                ]
+                [ text "N" ]
+            , div
+                [ classList
+                    [ ( "key", True )
+                    , ( "key--highlighted", currentChar == 'm' || currentChar == 'M' )
+                    ]
+                ]
+                [ text "M" ]
             , div [ class "key" ] [ text "" ]
             , div [ class "key" ] [ text "" ]
             , div [ class "key" ] [ text "" ]
@@ -1090,7 +1270,14 @@ keyboard model =
             [ div [ class "key key--ctrl" ] [ text "Ctrl" ]
             , div [ class "key", style "width" "52px" ] [ text "" ]
             , div [ class "key key--lalt" ] [ text "" ]
-            , div [ class "key", style "width" "159px" ] [ text "" ]
+            , div
+                [ classList
+                    [ ( "key", True )
+                    , ( "key--highlighted", currentChar == ' ' )
+                    ]
+                , style "width" "159px"
+                ]
+                [ text "" ]
             , div [ class "key key--alt-grl" ] [ text "" ]
             , div [ class "key", style "width" "48px" ] [ text "" ]
             , div [ class "key", style "width" "48px" ] [ text "" ]
