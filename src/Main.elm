@@ -1116,7 +1116,7 @@ keyboard model =
                         [ text "@" ]
                     ]
                 ]
-            , div [ class "key" ]
+            , div [ class "key", style "background-color" keyFingerColors.middleFinger ]
                 [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
@@ -1212,7 +1212,7 @@ keyboard model =
                         [ text "7" ]
                     ]
                 ]
-            , div [ class "key" ]
+            , div [ class "key", style "background-color" keyFingerColors.middleFinger ]
                 [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
@@ -1327,6 +1327,7 @@ keyboard model =
                     [ ( "key", True )
                     , ( "key--highlighted", currentChar == 'e' || currentChar == 'E' )
                     ]
+                , style "background-color" keyFingerColors.middleFinger
                 ]
                 [ text "E" ]
             , div
@@ -1362,6 +1363,7 @@ keyboard model =
                     [ ( "key", True )
                     , ( "key--highlighted", currentChar == 'i' || currentChar == 'I' )
                     ]
+                , style "background-color" keyFingerColors.middleFinger
                 ]
                 [ text "I" ]
             , div
@@ -1456,6 +1458,7 @@ keyboard model =
                     [ ( "key", True )
                     , ( "key--highlighted", currentChar == 'd' || currentChar == 'D' )
                     ]
+                , style "background-color" keyFingerColors.middleFinger
                 ]
                 [ text "D" ]
             , div
@@ -1491,6 +1494,7 @@ keyboard model =
                     [ ( "key", True )
                     , ( "key--highlighted", currentChar == 'k' || currentChar == 'K' )
                     ]
+                , style "background-color" keyFingerColors.middleFinger
                 ]
                 [ text "K" ]
             , div
@@ -1590,6 +1594,7 @@ keyboard model =
                     [ ( "key", True )
                     , ( "key--highlighted", currentChar == 'c' || currentChar == 'C' )
                     ]
+                , style "background-color" keyFingerColors.middleFinger
                 ]
                 [ text "C" ]
             , div
@@ -1620,7 +1625,7 @@ keyboard model =
                     ]
                 ]
                 [ text "M" ]
-            , div [ class "key" ]
+            , div [ class "key", style "background-color" keyFingerColors.middleFinger ]
                 [ div
                     [ style "line-height" "0.65"
                     , style "padding-left" "6px"
