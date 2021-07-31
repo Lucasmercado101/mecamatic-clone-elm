@@ -9,6 +9,18 @@ const app = Elm.Main.init({
 });
 
 /**
+ *
+ */
+
+electron.ipcRenderer.on("get-selected-user", () =>
+  app.ports.userSelectedRequestReceiver.send(null)
+);
+
+app.ports.sendSelectedUser.subscribe((userName: string) =>
+  electron.ipcRenderer.send("selected-user-name", userName)
+);
+
+/**
  * * Request users profiles names. LINK electron/electron.ts#load-user-profiles-names-listener
  *
  * * If successful sends an array of strings

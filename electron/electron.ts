@@ -23,6 +23,7 @@ import {
   userProfilesFolderPath
 } from "./paths";
 import "./listeners/isOnMainView";
+import "./listeners/deleteUserProfile";
 
 try {
   isDev && require("electron-reloader")(module);
@@ -135,16 +136,15 @@ function createWindow() {
 
   if (isDev) win.webContents.openDevTools();
 
-  // TODO
-  // const menu = Menu.buildFromTemplate([
-  //   {
-  //     label: "Eliminar Usuario",
-  //     click() {
-  //       win.webContents.send("get-selected-user");
-  //     }
-  //   }
-  // ]);
-  // Menu.setApplicationMenu(menu);
+  const menu = Menu.buildFromTemplate([
+    {
+      label: "Eliminar Usuario",
+      click() {
+        win.webContents.send("get-selected-user");
+      }
+    }
+  ]);
+  Menu.setApplicationMenu(menu);
 }
 
 // This method will be called when Electron has finished

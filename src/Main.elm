@@ -22,6 +22,9 @@ import Time
 port sendRequestUserData : String -> Cmd msg
 
 
+port sendSelectedUser : String -> Cmd msg
+
+
 port sendRequestProfilesNames : () -> Cmd msg
 
 
@@ -37,6 +40,9 @@ port userDataReceiver : (JD.Value -> msg) -> Sub msg
 
 
 port userProfilesReceiver : (JD.Value -> msg) -> Sub msg
+
+
+port userSelectedRequestReceiver : (() -> msg) -> Sub msg
 
 
 
@@ -101,6 +107,7 @@ subscriptions model =
                                         GotWelcomeMsg FailedToLoadUserData
                            )
                     )
+                , userSelectedRequestReceiver (\l -> GotWelcomeMsg ReceivedRequestToSendSelectedUserName)
                 ]
 
         MainView mainViewModel ->
@@ -167,6 +174,7 @@ type WelcomeMsg
     | FailedToLoadUsers
     | ReceivedUserData UserSettings
     | FailedToLoadUserData
+    | ReceivedRequestToSendSelectedUserName
 
 
 type Msg
@@ -179,6 +187,9 @@ update msg model =
     case ( msg, model ) of
         ( GotWelcomeMsg welcomeMsg, WelcomeView welcomeModel ) ->
             case welcomeMsg of
+                ReceivedRequestToSendSelectedUserName ->
+                    ( WelcomeView welcomeModel, sendSelectedUser welcomeModel.selectedUser )
+
                 ConfirmedUserProfile ->
                     ( WelcomeView welcomeModel, sendRequestUserData welcomeModel.selectedUser )
 
