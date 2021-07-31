@@ -1043,7 +1043,7 @@ keyboard model =
     in
     div [ class "keyboard-container" ]
         [ div [ class "keyboard-row" ]
-            [ div [ class "key" ]
+            [ div [ class "key", style "background-color" keyFingerColors.pinky ]
                 [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
@@ -1067,7 +1067,7 @@ keyboard model =
                         [ text "\\" ]
                     ]
                 ]
-            , div [ class "key" ]
+            , div [ class "key", style "background-color" keyFingerColors.pinky ]
                 [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
@@ -1305,12 +1305,13 @@ keyboard model =
             , div [ class "key key--return" ] [ div [ style "margin-top" "-5px" ] [ text "←" ] ]
             ]
         , div [ class "keyboard-row" ]
-            [ div [ class "key key--tab" ] [ text "⭾" ]
+            [ div [ class "key key--tab", style "background-color" keyFingerColors.pinky ] [ text "⭾" ]
             , div
                 [ classList
                     [ ( "key", True )
                     , ( "key--highlighted", currentChar == 'q' || currentChar == 'Q' )
                     ]
+                , style "background-color" keyFingerColors.pinky
                 ]
                 [ text "Q" ]
             , div
@@ -1432,12 +1433,13 @@ keyboard model =
                 [ text "Enter" ]
             ]
         , div [ class "keyboard-row" ]
-            [ div [ class "key key--caps-lock" ] [ text "Mayús" ]
+            [ div [ class "key key--caps-lock", style "background-color" keyFingerColors.pinky ] [ text "Mayús" ]
             , div
                 [ classList
                     [ ( "key", True )
                     , ( "key--highlighted", currentChar == 'a' || currentChar == 'A' )
                     ]
+                , style "background-color" keyFingerColors.pinky
                 ]
                 [ text "A" ]
             , div
@@ -1554,8 +1556,8 @@ keyboard model =
                 []
             ]
         , div [ class "keyboard-row" ]
-            [ div [ class "key key--lshift" ] [ text "⇧" ]
-            , div [ class "key" ]
+            [ div [ class "key key--lshift", style "background-color" keyFingerColors.pinky ] [ text "⇧" ]
+            , div [ class "key", style "background-color" keyFingerColors.pinky ]
                 [ div
                     [ style "line-height" "0.7"
                     , style "fontSize" "0.9rem"
@@ -1570,6 +1572,7 @@ keyboard model =
                     [ ( "key", True )
                     , ( "key--highlighted", currentChar == 'z' || currentChar == 'Z' )
                     ]
+                , style "background-color" keyFingerColors.pinky
                 ]
                 [ text "Z" ]
             , div
