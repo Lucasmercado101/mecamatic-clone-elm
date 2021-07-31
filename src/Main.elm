@@ -1092,7 +1092,7 @@ keyboard model =
                         [ text "|" ]
                     ]
                 ]
-            , div [ class "key" ]
+            , div [ class "key", style "background-color" keyFingerColors.ringFinger ]
                 [ div [ class "custom-row-key" ]
                     [ p
                         [ style "position" "absolute"
@@ -1319,6 +1319,7 @@ keyboard model =
                     [ ( "key", True )
                     , ( "key--highlighted", currentChar == 'w' || currentChar == 'W' )
                     ]
+                , style "background-color" keyFingerColors.ringFinger
                 ]
                 [ text "W" ]
             , div
@@ -1447,6 +1448,7 @@ keyboard model =
                     [ ( "key", True )
                     , ( "key--highlighted", currentChar == 's' || currentChar == 'S' )
                     ]
+                , style "background-color" keyFingerColors.ringFinger
                 ]
                 [ text "S" ]
             , div
@@ -1580,6 +1582,7 @@ keyboard model =
                     [ ( "key", True )
                     , ( "key--highlighted", currentChar == 'x' || currentChar == 'X' )
                     ]
+                , style "background-color" keyFingerColors.ringFinger
                 ]
                 [ text "X" ]
             , div
