@@ -2,11 +2,7 @@ import { app } from "electron";
 import * as path from "path";
 import * as isDev from "electron-is-dev";
 
-export const lessonsFolderPath = isDev
-  ? path.join(__dirname, "..", "data", "lessons")
-  : // TODO
-    // path.dirname(__dirname)
-    "";
+export const lessonsFolderPath = path.join(__dirname, "..", "data", "lessons");
 
 export const learningLessonsFolderPath = path.join(
   lessonsFolderPath,
