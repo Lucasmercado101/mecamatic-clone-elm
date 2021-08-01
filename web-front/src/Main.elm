@@ -5,7 +5,7 @@ import Either exposing (Either(..))
 import Html exposing (Html, br, button, datalist, div, form, img, input, option, p, span, text)
 import Html.Attributes exposing (class, classList, disabled, id, list, src, style, tabindex, value)
 import Html.Attributes.Extra exposing (empty)
-import Html.Events exposing (on, onInput, onSubmit)
+import Html.Events exposing (on, onClick, onInput, onSubmit)
 import Json.Decode as JD
 import Keyboard.Event exposing (KeyboardEvent, decodeKeyboardEvent)
 import List.Extra
@@ -454,6 +454,8 @@ type MainViewMsg
     | KeyPressed KeyboardEvent
     | SecondHasElapsed
     | LogOut
+    | PauseTimer
+    | ResumeTimer
 
 
 mainViewUpdate : MainViewMsg -> MainViewModel -> ( MainViewModel, Cmd MainViewMsg )
@@ -506,6 +508,50 @@ mainViewUpdate msg model =
         LogOut ->
             --* Never reaches here, gets picked up in LINK ./Main.elm:218
             ( model, Cmd.none )
+
+        PauseTimer ->
+            let
+                exercise =
+                    model.exercise
+            in
+            ( { model
+                | exercise =
+                    case exercise of
+                        ExerciseSelected data status ->
+                            case status of
+                                Ongoing cursor errors ->
+                                    ExerciseSelected data (Paused cursor errors)
+
+                                _ ->
+                                    exercise
+
+                        _ ->
+                            exercise
+              }
+            , Cmd.none
+            )
+
+        ResumeTimer ->
+            let
+                exercise =
+                    model.exercise
+            in
+            ( { model
+                | exercise =
+                    case exercise of
+                        ExerciseSelected data status ->
+                            case status of
+                                Paused cursor errors ->
+                                    ExerciseSelected data (Ongoing cursor errors)
+
+                                _ ->
+                                    exercise
+
+                        _ ->
+                            exercise
+              }
+            , Cmd.none
+            )
 
         KeyPressed event ->
             let
@@ -655,7 +701,43 @@ mainViewView model =
         [ div [ class "top-toolbar" ]
             [ div [ class "top-toolbar__menu-items" ]
                 [ div [ class "toolbar-separator" ] []
-                , button [ class "top-toolbar__menu-item" ] [ text "Pausa", img [ src "./images/stop.png" ] [] ]
+                , button
+                    [ class "top-toolbar__menu-item"
+                    , 
+                        (case model.exercise of
+                            ExerciseSelected _ status ->
+                                case status of
+                                    Ongoing _ _ ->
+                                        onClick PauseTimer
+
+                                    Paused _ _ ->
+                                        onClick ResumeTimer
+
+                                    _ ->
+                                        onClick PauseTimer
+
+                            _ ->
+                                empty
+                        )
+                    ]
+                    [ text
+                        (case model.exercise of
+                            ExerciseSelected _ status ->
+                                case status of
+                                    Ongoing _ _ ->
+                                        "Pausa"
+
+                                    Paused _ _ ->
+                                        "Reanudar"
+
+                                    _ ->
+                                        "Pausa"
+
+                            _ ->
+                                "Pausa"
+                        )
+                    , img [ src "./images/stop.png" ] []
+                    ]
                 ]
             ]
         , div
@@ -1055,6 +1137,13 @@ keyboard model =
                 ExerciseSelected data status ->
                     case status of
                         Ongoing cursor _ ->
+                            String.toList data.text
+                                |> List.indexedMap Tuple.pair
+                                |> List.Extra.find (\( i, _ ) -> cursor == i)
+                                |> Maybe.withDefault ( 0, '←' )
+                                |> Tuple.second
+
+                        Paused cursor _ ->
                             String.toList data.text
                                 |> List.indexedMap Tuple.pair
                                 |> List.Extra.find (\( i, _ ) -> cursor == i)
