@@ -33,7 +33,9 @@
     "files": [
       "front-dist/**/*",
       "node_modules/**/*",
+      "data/*/**",
       "front-end//*",
+      "data//*",
       "build//*",
       "node_modules//*",
       "electron//*",
