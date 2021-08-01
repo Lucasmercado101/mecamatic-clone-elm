@@ -703,24 +703,23 @@ mainViewView model =
                 [ div [ class "toolbar-separator" ] []
                 , button
                     [ class "top-toolbar__menu-item"
-                    , 
-                        (case model.exercise of
-                            ExerciseSelected _ status ->
-                                case status of
-                                    Ongoing _ _ ->
-                                        onClick PauseTimer
+                    , case model.exercise of
+                        ExerciseSelected _ status ->
+                            case status of
+                                Ongoing _ _ ->
+                                    onClick PauseTimer
 
-                                    Paused _ _ ->
-                                        onClick ResumeTimer
+                                Paused _ _ ->
+                                    onClick ResumeTimer
 
-                                    _ ->
-                                        onClick PauseTimer
+                                _ ->
+                                    onClick PauseTimer
 
-                            _ ->
-                                empty
-                        )
+                        _ ->
+                            empty
                     ]
-                    [ text
+                    [ img [ src "./images/stop.png" ] []
+                    , text
                         (case model.exercise of
                             ExerciseSelected _ status ->
                                 case status of
@@ -736,7 +735,6 @@ mainViewView model =
                             _ ->
                                 "Pausa"
                         )
-                    , img [ src "./images/stop.png" ] []
                     ]
                 ]
             ]
