@@ -61,7 +61,7 @@ ipcMain.handle("load-user-data", async (_, userName: string) => {
       err ? err.message : "Se ha producido un error desconocido"
     );
     throw new Error();
-  }
+  } // otherwise folder was created successfully
 
   const userSettingsExists = await dirOrFileExists(userSettingsPath);
 
