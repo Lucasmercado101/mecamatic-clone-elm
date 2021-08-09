@@ -8,7 +8,7 @@ import {
 } from "electron";
 import * as path from "path";
 import {
-  createFile,
+  createTextFile,
   dirOrFileExists,
   readFile,
   createFolderIfNotExists,
@@ -63,12 +63,19 @@ ipcMain.handle("load-user-data", async (_, userName: string) => {
   const userSettingsExists = await dirOrFileExists(userSettingsPath);
 
   if (!userSettingsExists) {
-    return createFile(userSettingsPath, JSON.stringify(defaultUserSettings))
-      .then(() => defaultUserSettings)
-      .catch((err: NodeJS.ErrnoException) => {
-        dialog.showErrorBox("Error", err.message);
+    return createTextFile(
+      userSettingsPath,
+      JSON.stringify(defaultUserSettings)
+    ).match(
+      () => defaultUserSettings,
+      (err) => {
+        dialog.showErrorBox(
+          "Error",
+          err ? err.message : "Se ha producido un error desconocido"
+        );
         throw new Error();
-      });
+      }
+    );
   } else {
     return readFile(userSettingsPath).match(JSON.parse, (err) => {
       dialog.showErrorBox(
