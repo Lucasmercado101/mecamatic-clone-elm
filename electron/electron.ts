@@ -70,12 +70,13 @@ ipcMain.handle("load-user-data", async (_, userName: string) => {
         throw new Error();
       });
   } else {
-    return readFile(userSettingsPath)
-      .then(JSON.parse)
-      .catch((err: NodeJS.ErrnoException) => {
-        dialog.showErrorBox("Error", err.message);
-        throw new Error();
-      });
+    return readFile(userSettingsPath).match(JSON.parse, (err) => {
+      dialog.showErrorBox(
+        "Error",
+        err ? err.message : "Se ha producido un error desconocido"
+      );
+      throw new Error();
+    });
   }
 });
 

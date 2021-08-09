@@ -41,7 +41,7 @@ const getOptionMenuSubmenus = async (
               lessonFolder,
               exercise
             )
-          ).then((data) => {
+          ).map((data) => {
             const { WPMNeededToPass, ...otherLessonData }: LessonData =
               JSON.parse(data);
             const lessonDataDTO: LessonDataDTO = {
