@@ -53,10 +53,13 @@ ipcMain.handle("load-user-data", async (_, userName: string) => {
   const userFolderPath = getUserProfileFolderPath(userName);
   const userSettingsPath = getUserSettingsFilePath(userName);
 
-  try {
-    await createFolderIfNotExists(userFolderPath);
-  } catch (err: any) {
-    dialog.showErrorBox("Error", (err as NodeJS.ErrnoException).message);
+  const triedToCreateFolder = await createFolderIfNotExists(userFolderPath);
+  if (triedToCreateFolder && triedToCreateFolder.isErr()) {
+    const err = triedToCreateFolder.error;
+    dialog.showErrorBox(
+      "Error",
+      err ? err.message : "Se ha producido un error desconocido"
+    );
     throw new Error();
   }
 
