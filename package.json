@@ -25,7 +25,8 @@
   "homepage": "https://github.com/Lucasmercado101/mecamatic-clone-elm#readme",
   "dependencies": {
     "electron-is-dev": "2.0.0",
-    "mobx": "6.3.2"
+    "mobx": "6.3.2",
+    "neverthrow": "4.2.2"
   },
   "build": {
     "appId": "mecamatic.typing",
