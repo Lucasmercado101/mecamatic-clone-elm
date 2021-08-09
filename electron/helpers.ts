@@ -1,5 +1,5 @@
 import * as fs from "fs";
-import { errAsync, ResultAsync } from "neverthrow";
+import { ResultAsync } from "neverthrow";
 
 export const dirOrFileExists = (path: string): Promise<boolean> =>
   new Promise((res) => fs.stat(path, (err) => (err ? res(false) : res(true))));
