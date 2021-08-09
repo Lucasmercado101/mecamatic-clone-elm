@@ -1,18 +1,22 @@
 import * as fs from "fs";
+import { errAsync, ResultAsync } from "neverthrow";
 
 export const dirOrFileExists = (path: string): Promise<boolean> =>
   new Promise((res) => fs.stat(path, (err) => (err ? res(false) : res(true))));
 
-/**
- * if error rejects to an {NodeJS.ErrnoException} error
- */
-export const readFile = (path: string): Promise<string> =>
-  new Promise((res, rej) =>
-    fs.readFile(path, { encoding: "utf8" }, (err, data) => {
-      if (err) rej(err);
-      res(data);
-    })
+export function readFile(
+  path: string
+): ResultAsync<string, NodeJS.ErrnoException | null> {
+  return ResultAsync.fromPromise(
+    new Promise((res, rej) =>
+      fs.readFile(path, { encoding: "utf8" }, (err, data) => {
+        if (err) rej(err);
+        res(data);
+      })
+    ),
+    (e) => e as NodeJS.ErrnoException | null
   );
+}
 
 /**
  * if error rejects to an {NodeJS.ErrnoException} error
