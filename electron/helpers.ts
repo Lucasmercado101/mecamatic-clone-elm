@@ -18,18 +18,21 @@ export function readFile(
   );
 }
 
-/**
- * if error rejects to an {NodeJS.ErrnoException} error
- */
-export const readDir = (path: string): Promise<string[]> =>
-  new Promise((res, rej) =>
-    fs.readdir(path, (err, files) => {
-      if (err) {
-        rej(err);
-      }
-      res(files);
-    })
+export function readDir(
+  path: string
+): ResultAsync<string[], NodeJS.ErrnoException | null> {
+  return ResultAsync.fromPromise(
+    new Promise((res, rej) =>
+      fs.readdir(path, (err, files) => {
+        if (err) {
+          rej(err);
+        }
+        res(files);
+      })
+    ),
+    (e) => e as NodeJS.ErrnoException | null
   );
+}
 
 /**
  * if error rejects to an {NodeJS.ErrnoException} error
