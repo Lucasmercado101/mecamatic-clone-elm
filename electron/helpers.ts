@@ -45,15 +45,19 @@ export function createFolder(
   );
 }
 
-/**
- * if error rejects to an {NodeJS.ErrnoException} error
- */
-export const createFile = (path: string, data: string): Promise<undefined> =>
-  new Promise((res, rej) =>
-    fs.writeFile(path, data, { encoding: "utf8" }, (err) =>
-      err ? rej(err) : res(undefined)
-    )
+export function createTextFile(
+  path: string,
+  data: string
+): ResultAsync<undefined, NodeJS.ErrnoException | null> {
+  return ResultAsync.fromPromise(
+    new Promise((res, rej) =>
+      fs.writeFile(path, data, { encoding: "utf8" }, (err) =>
+        err ? rej(err) : res(undefined)
+      )
+    ),
+    (e) => e as NodeJS.ErrnoException | null
   );
+}
 
 /**
  * if error rejects to an {NodeJS.ErrnoException} error
