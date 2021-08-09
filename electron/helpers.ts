@@ -34,13 +34,16 @@ export function readDir(
   );
 }
 
-/**
- * if error rejects to an {NodeJS.ErrnoException} error
- */
-export const createFolder = (path: string): Promise<undefined> =>
-  new Promise((res, rej) =>
-    fs.mkdir(path, (err) => (err ? rej(err) : res(undefined)))
+export function createFolder(
+  path: string
+): ResultAsync<undefined, NodeJS.ErrnoException | null> {
+  return ResultAsync.fromPromise(
+    new Promise((res, rej) =>
+      fs.mkdir(path, (err) => (err ? rej(err) : res(undefined)))
+    ),
+    (e) => e as NodeJS.ErrnoException | null
   );
+}
 
 /**
  * if error rejects to an {NodeJS.ErrnoException} error
