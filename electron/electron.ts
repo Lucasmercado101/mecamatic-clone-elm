@@ -96,14 +96,17 @@ ipcMain.handle("load-user-profiles-names", async () => {
     userProfilesFolderPath
   );
 
-  if (userProfilesFolderExists)
-    return await readDir(userProfilesFolderPath).catch(
-      (err: NodeJS.ErrnoException) => {
-        dialog.showErrorBox("Error", err.message);
-        throw new Error();
-      }
-    );
-  else
+  if (userProfilesFolderExists) {
+    const dirs = await readDir(userProfilesFolderPath);
+    if (dirs.isOk()) return dirs.value;
+    else {
+      dialog.showErrorBox(
+        "Error",
+        dirs.error ? dirs.error.message : "Se ha producido un error desconocido"
+      );
+      throw new Error();
+    }
+  } else
     return createFolder(userProfilesFolderPath)
       .then(() => [])
       .catch((err: NodeJS.ErrnoException) => {
