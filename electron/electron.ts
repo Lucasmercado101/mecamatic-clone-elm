@@ -107,12 +107,16 @@ ipcMain.handle("load-user-profiles-names", async () => {
       throw new Error();
     }
   } else
-    return createFolder(userProfilesFolderPath)
-      .then(() => [])
-      .catch((err: NodeJS.ErrnoException) => {
-        dialog.showErrorBox("Error", err.message);
+    return createFolder(userProfilesFolderPath).match(
+      () => [],
+      (err) => {
+        dialog.showErrorBox(
+          "Error",
+          err ? err.message : "Se ha producido un error desconocido"
+        );
         throw new Error();
-      });
+      }
+    );
 });
 
 function createWindow() {
