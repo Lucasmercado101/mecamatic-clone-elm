@@ -25,6 +25,7 @@ import {
 import "./listeners/isOnMainView";
 import "./listeners/deleteUserProfile";
 import "./listeners/isOnWelcomeView";
+import "./listeners/requestNextExercise";
 
 try {
   isDev && require("electron-reloader")(module);
