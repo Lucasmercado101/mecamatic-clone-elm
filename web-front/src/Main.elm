@@ -761,7 +761,7 @@ mainViewView model =
                     [ class "top-toolbar__menu-item"
                     , onClick RestartExercise
                     ]
-                    [ img [ src "./images/stop.png" ] []
+                    [ img [ src "./images/repeat.png" ] []
                     , text "Repetir"
                     ]
                 ]
