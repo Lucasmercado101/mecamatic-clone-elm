@@ -9,3 +9,4 @@ package-lock.json
 electron/**/*.js
 pnpm-lock.yaml
 front-dist
+web-front/**/*.js
