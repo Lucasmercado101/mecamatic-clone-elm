@@ -29,9 +29,11 @@ export interface LessonData {
   WPMNeededToPass: number;
 }
 
+export type lessonType = "Aprendizaje" | "Practica" | "Perfeccionamiento";
+
 // * What actually gets sent to the Elm app
 export interface LessonDataDTO extends Omit<LessonData, "WPMNeededToPass"> {
-  exerciseCategory: "Aprendizaje" | "Practica" | "Perfeccionamiento";
+  exerciseCategory: lessonType;
   exerciseNumber: number;
   lessonNumber: number;
   wordsPerMinuteNeededToPass: number;
