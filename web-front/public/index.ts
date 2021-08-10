@@ -64,3 +64,9 @@ electron.ipcRenderer.on("exercise-picked-data", (_, data: LessonDataDTO) =>
 );
 
 electron.ipcRenderer.on("log-out", () => app.ports.receiveLogOut.send(null));
+
+app.ports.sendScrollHighlightedKeyIntoView.subscribe(() => {
+  document
+    .getElementById("key-highlighted")
+    .scrollIntoView({ behavior: "smooth" });
+});

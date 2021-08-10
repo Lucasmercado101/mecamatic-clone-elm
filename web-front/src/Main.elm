@@ -311,6 +311,9 @@ main =
 port sendOnMainView : () -> Cmd msg
 
 
+port sendScrollHighlightedKeyIntoView : () -> Cmd msg
+
+
 
 -- * Receives LINK electron/data.models.ts:33
 
@@ -456,11 +459,15 @@ type MainViewMsg
     | LogOut
     | PauseTimer
     | ResumeTimer
+    | NoOp
 
 
 mainViewUpdate : MainViewMsg -> MainViewModel -> ( MainViewModel, Cmd MainViewMsg )
 mainViewUpdate msg model =
     case msg of
+        NoOp ->
+            ( model, Cmd.none )
+
         ReceivedExerciseData exerciseData ->
             ( { model | exercise = ExerciseSelected exerciseData NotStarted, elapsedSeconds = 0 }, Cmd.none )
 
@@ -654,7 +661,7 @@ mainViewUpdate msg model =
                                                     ( { model | exercise = ExerciseSelected exerciseData (ExerciseFinishedSuccessfully cursor errors) }, Cmd.none )
 
                                             else if keyPressed == String.fromChar char then
-                                                ( { model | exercise = ExerciseSelected exerciseData (Ongoing (cursor + 1) errors) }, Cmd.none )
+                                                ( { model | exercise = ExerciseSelected exerciseData (Ongoing (cursor + 1) errors) }, sendScrollHighlightedKeyIntoView () )
 
                                             else if isModifierKey keyPressed then
                                                 ( { model | exercise = ExerciseSelected exerciseData (Ongoing cursor errors) }, Cmd.none )
@@ -749,8 +756,7 @@ mainViewView model =
 textBox : MainViewModel -> Html MainViewMsg
 textBox model =
     div
-        [ class "text-box-container"
-        ]
+        [ class "text-box-container" ]
         (case model.exercise of
             ExerciseNotSelected ->
                 [ div [ class "text-box__welcome-text" ] [ text "Bienvenido a MecaMatic 3.0" ] ]
@@ -764,7 +770,33 @@ textBox model =
                                     String.fromChar el
                             in
                             span
-                                [ classList
+                                [ case status of
+                                    Ongoing cursor _ ->
+                                        -- NOTE this is to make the cursor scroll into view using ports
+                                        -- doesn't work with just i == cursor for some reason
+                                        if i == cursor || i == cursor - 1 then
+                                            id "key-highlighted"
+
+                                        else
+                                            empty
+
+                                    Paused cursor _ ->
+                                        if i == cursor || i == cursor - 1 then
+                                            id "key-highlighted"
+
+                                        else
+                                            empty
+
+                                    ExerciseFailed cursor _ _ ->
+                                        if i == cursor || i == cursor - 1 then
+                                            id "key-highlighted"
+
+                                        else
+                                            empty
+
+                                    _ ->
+                                        empty
+                                , classList
                                     [ ( "text-box-chars__char", True )
                                     , ( "text-box-chars__char--highlighted"
                                       , case status of
