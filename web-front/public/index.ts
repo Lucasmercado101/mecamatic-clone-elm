@@ -1,6 +1,10 @@
 // @ts-ignore
 import { Elm } from "../src/Main.elm";
-import { DefaultUserSettings, LessonDataDTO } from "../../electron/data.models";
+import {
+  DefaultUserSettings,
+  LessonDataDTO,
+  lessonType
+} from "../../electron/data.models";
 
 const electron = window.require("electron");
 
@@ -38,7 +42,7 @@ app.ports.sendRequestProfilesNames.subscribe(function () {
 /**
  * * Request users' data. LINK electron/electron.ts#load-user-data
  */
-app.ports.sendRequestUserData.subscribe(function (userName) {
+app.ports.sendRequestUserData.subscribe(function (userName: string) {
   electron.ipcRenderer
     .invoke("load-user-data", userName)
     .then((userData: DefaultUserSettings) => {
@@ -67,6 +71,43 @@ electron.ipcRenderer.on("log-out", () => app.ports.receiveLogOut.send(null));
 
 app.ports.sendScrollHighlightedKeyIntoView.subscribe(() => {
   document
-    .getElementById("key-highlighted")
+    .getElementById("key-highlighted")!
     .scrollIntoView({ behavior: "smooth" });
+});
+
+export interface preMadeLesson {
+  exerciseNumber: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+  lessonNumber: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+  lessonType: lessonType;
+}
+
+// TODO
+// interface userLesson {
+//   exerciseNumber: number;
+//   lessonNumber: number;
+// }
+// export type currentExercise = preMadeLesson | userLesson
+
+app.ports.sendRequestNextExercise.subscribe((data: preMadeLesson) => {
+  electron.ipcRenderer
+    .invoke("request-next-exercise", data)
+    .then((data: LessonDataDTO) => {
+      app.ports.receiveExerciseData.send(data);
+    });
+  // TODO: Handle error
+  // .catch(() => {
+  //   app.ports.receiveExerciseData.send(null);
+  // });
+});
+
+app.ports.sendRequestPreviousExercise.subscribe((data: preMadeLesson) => {
+  electron.ipcRenderer
+    .invoke("request-previous-exercise", data)
+    .then((data: LessonDataDTO) => {
+      app.ports.receiveExerciseData.send(data);
+    });
+  // TODO: Handle error
+  // .catch(() => {
+  //   app.ports.receiveExerciseData.send(null);
+  // });
 });
