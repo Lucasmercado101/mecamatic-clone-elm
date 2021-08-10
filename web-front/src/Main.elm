@@ -1,6 +1,7 @@
 port module Main exposing (..)
 
 import Browser
+import Browser.Dom as Dom
 import Either exposing (Either(..))
 import Html exposing (Html, br, button, datalist, div, form, img, input, option, p, span, text)
 import Html.Attributes exposing (class, classList, disabled, id, list, src, style, tabindex, value)
@@ -459,6 +460,7 @@ type MainViewMsg
     | LogOut
     | PauseTimer
     | ResumeTimer
+    | RestartExercise
     | NoOp
 
 
@@ -508,6 +510,16 @@ mainViewUpdate msg model =
 
                         _ ->
                             ( model, Cmd.none )
+
+                _ ->
+                    ( model, Cmd.none )
+
+        RestartExercise ->
+            case model.exercise of
+                ExerciseSelected data status ->
+                    ( { model | exercise = ExerciseSelected data NotStarted, elapsedSeconds = 0 }
+                    , Task.attempt (\_ -> NoOp) (Dom.setViewportOf "text-box-container-id" 0 0)
+                    )
 
                 _ ->
                     ( model, Cmd.none )
@@ -705,6 +717,7 @@ mainViewView model =
             _ ->
                 empty
         ]
+        -- TODO Unblur on click
         [ div [ class "top-toolbar" ]
             [ div [ class "top-toolbar__menu-items" ]
                 [ div [ class "toolbar-separator" ] []
@@ -743,6 +756,14 @@ mainViewView model =
                                 "Pausa"
                         )
                     ]
+                , div [ class "toolbar-separator" ] []
+                , button
+                    [ class "top-toolbar__menu-item"
+                    , onClick RestartExercise
+                    ]
+                    [ img [ src "./images/stop.png" ] []
+                    , text "Repetir"
+                    ]
                 ]
             ]
         , div
@@ -756,7 +777,7 @@ mainViewView model =
 textBox : MainViewModel -> Html MainViewMsg
 textBox model =
     div
-        [ class "text-box-container" ]
+        [ class "text-box-container", id "text-box-container-id" ]
         (case model.exercise of
             ExerciseNotSelected ->
                 [ div [ class "text-box__welcome-text" ] [ text "Bienvenido a MecaMatic 3.0" ] ]
