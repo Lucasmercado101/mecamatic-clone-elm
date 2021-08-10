@@ -315,6 +315,19 @@ port sendOnMainView : () -> Cmd msg
 port sendScrollHighlightedKeyIntoView : () -> Cmd msg
 
 
+type alias RequestExercise =
+    { exerciseNumber : Int
+    , lessonNumber : Int
+    , lessonType : String
+    }
+
+
+port sendRequestNextExercise : RequestExercise -> Cmd msg
+
+
+port sendRequestPreviousExercise : RequestExercise -> Cmd msg
+
+
 
 -- * Receives LINK electron/data.models.ts:33
 
@@ -462,6 +475,8 @@ type MainViewMsg
     | ResumeTimer
     | RestartExercise
     | NoOp
+    | RequestPreviousExercise
+    | RequestNextExercise
 
 
 mainViewUpdate : MainViewMsg -> MainViewModel -> ( MainViewModel, Cmd MainViewMsg )
@@ -475,7 +490,12 @@ mainViewUpdate msg model =
 
         FailedToLoadExerciseData ->
             -- TODO handle happens when an exercise is already selected and we try to load another one and fail
-            ( { model | exercise = FailedToLoadEData }, Cmd.none )
+            case model.exercise of
+                ExerciseSelected _ _ ->
+                    ( model, Cmd.none )
+
+                _ ->
+                    ( { model | exercise = FailedToLoadEData }, Cmd.none )
 
         -- TODO handle time has run out
         SecondHasElapsed ->
@@ -571,6 +591,34 @@ mainViewUpdate msg model =
               }
             , Cmd.none
             )
+
+        RequestPreviousExercise ->
+            case model.exercise of
+                ExerciseSelected data status ->
+                    ( model
+                    , sendRequestPreviousExercise
+                        { exerciseNumber = data.exerciseNumber
+                        , lessonNumber = data.lessonNumber
+                        , lessonType = data.exerciseCategory
+                        }
+                    )
+
+                _ ->
+                    ( model, Cmd.none )
+
+        RequestNextExercise ->
+            case model.exercise of
+                ExerciseSelected data status ->
+                    ( model
+                    , sendRequestNextExercise
+                        { exerciseNumber = data.exerciseNumber
+                        , lessonNumber = data.lessonNumber
+                        , lessonType = data.exerciseCategory
+                        }
+                    )
+
+                _ ->
+                    ( model, Cmd.none )
 
         KeyPressed event ->
             let
@@ -763,6 +811,23 @@ mainViewView model =
                     ]
                     [ img [ src "./images/repeat.png" ] []
                     , text "Repetir"
+                    ]
+
+                -- , div [ class "toolbar-separator" ] []
+                -- , button
+                --     [ class "top-toolbar__menu-item"
+                --     , onClick RequestPreviousExercise
+                --     ]
+                --     [ img [ src "./images/left_arr.png" ] []
+                --     , text "Anterior"
+                --     ]
+                , div [ class "toolbar-separator" ] []
+                , button
+                    [ class "top-toolbar__menu-item"
+                    , onClick RequestNextExercise
+                    ]
+                    [ img [ src "./images/right_arr.png" ] []
+                    , text "Siguiente"
                     ]
                 ]
             ]
