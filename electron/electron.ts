@@ -26,6 +26,7 @@ import "./listeners/isOnMainView";
 import "./listeners/deleteUserProfile";
 import "./listeners/isOnWelcomeView";
 import "./listeners/requestNextExercise";
+import "./listeners/requestPreviousExercise";
 
 const defaultUserSettings: DefaultUserSettings = { timeLimitInSeconds: 600 };
 
