@@ -11,7 +11,7 @@ import { Ok } from "neverthrow";
 import { LessonData, LessonDataDTO, lessonType } from "../data.models";
 import * as winston from "winston";
 const { createLogger, format, transports } = winston;
-const { combine, label, printf, colorize, splat } = format;
+const { combine, label, printf, colorize } = format;
 
 const myFormat = printf(({ level, message, label }) => {
   return `[${label}] ${level}: ${message}`;
