@@ -27,10 +27,6 @@ import "./listeners/deleteUserProfile";
 import "./listeners/isOnWelcomeView";
 import "./listeners/requestNextExercise";
 
-try {
-  isDev && require("electron-reloader")(module);
-} catch (_) {}
-
 const defaultUserSettings: DefaultUserSettings = { timeLimitInSeconds: 600 };
 
 /**
