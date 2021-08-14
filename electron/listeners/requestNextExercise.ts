@@ -9,12 +9,32 @@ import {
 import { readFile } from "../helpers";
 import { Ok } from "neverthrow";
 import { LessonData, LessonDataDTO, lessonType } from "../data.models";
+import * as winston from "winston";
+const { createLogger, format, transports } = winston;
+const { combine, label, printf, colorize, splat } = format;
 
-const getExerciseData = async (
-  folderPath: string,
-  lesson: number,
-  exercise: number
-): Promise<LessonData> => {
+const myFormat = printf(({ level, message, label }) => {
+  return `[${label}] ${level}: ${message}`;
+});
+
+const logger = createLogger({
+  format: combine(
+    label({ label: "Request next exercise" }),
+    colorize(),
+    myFormat
+  ),
+  transports: [new transports.Console()]
+});
+
+const getExerciseData = async ({
+  exercise,
+  folderPath,
+  lesson
+}: {
+  folderPath: string;
+  lesson: number;
+  exercise: number;
+}): Promise<LessonData> => {
   //* it always exists ergo this won't fail, or shouldn't at least
   const res = (await readFile(
     path.join(folderPath, `lesson ${lesson}`, exercise + ".json")
@@ -22,17 +42,22 @@ const getExerciseData = async (
   return JSON.parse(res.value);
 };
 
-const getExerciseDataDTO = async (
-  folderPath: string,
-  lesson: number,
-  exercise: number,
-  category: lessonType
-) => {
-  const { WPMNeededToPass, ...lessonData } = await getExerciseData(
+const getExerciseDataDTO = async ({
+  category,
+  exercise,
+  folderPath,
+  lesson
+}: {
+  folderPath: string;
+  lesson: number;
+  exercise: number;
+  category: lessonType;
+}) => {
+  const { WPMNeededToPass, ...lessonData } = await getExerciseData({
     folderPath,
     lesson,
     exercise
-  );
+  });
 
   return {
     exerciseCategory: category,
@@ -43,105 +68,163 @@ const getExerciseDataDTO = async (
   };
 };
 
-//!FIXME very much hacked together
+const getLearningExerciseDataDTO = async ({
+  exercise,
+  lesson
+}: {
+  lesson: number;
+  exercise: number;
+}) =>
+  getExerciseDataDTO({
+    lesson,
+    exercise,
+    category: "Aprendizaje",
+    folderPath: learningLessonsFolderPath
+  });
+
+const getPracticeExerciseDataDTO = async ({
+  exercise,
+  lesson
+}: {
+  lesson: number;
+  exercise: number;
+}) =>
+  getExerciseDataDTO({
+    lesson,
+    exercise,
+    category: "Practica",
+    folderPath: practiceLessonsFolderPath
+  });
+
+const getPerfectingExerciseDataDTO = async ({
+  exercise,
+  lesson
+}: {
+  lesson: number;
+  exercise: number;
+}) =>
+  getExerciseDataDTO({
+    lesson,
+    exercise,
+    category: "Perfeccionamiento",
+    folderPath: perfectingLessonsFolderPath
+  });
 
 ipcMain.handle(
   "request-next-exercise",
   async (_, data: preMadeLesson): Promise<LessonDataDTO | null> => {
-    let thereIsANextExercise;
-    let thereIsANextLesson;
-    switch (data.lessonType) {
-      case "Aprendizaje":
-        thereIsANextExercise = data.exerciseNumber !== 10;
-        thereIsANextLesson = data.lessonNumber !== 10;
-        if (thereIsANextExercise) {
-          const newExerciseNumber = data.exerciseNumber + 1;
+    logger.info(`@Start\n${JSON.stringify(data, null, 2)}`);
 
-          return await getExerciseDataDTO(
-            learningLessonsFolderPath,
-            //@ts-ignore
-            data.lessonNumber === 0 ? 1 : data.lessonNumber,
-            newExerciseNumber,
-            "Aprendizaje"
+    if (data.lessonType === "Aprendizaje") {
+      logger.info("On learning");
+      // If currently on last exercise of current lesson
+      if (data.exerciseNumber === 10) {
+        // If there is a next lesson
+        if (data.lessonNumber < 10) {
+          // Get the first exercise of the next lesson
+          logger.info(
+            `Returning next lesson (${data.lessonNumber + 1}), first exercise`
           );
-        } else if (!thereIsANextExercise && thereIsANextLesson) {
-          const newExerciseNumber = 1;
-          const newLessonNumber = data.lessonNumber + 1;
-
-          return await getExerciseDataDTO(
-            learningLessonsFolderPath,
-            newLessonNumber,
-            newExerciseNumber,
-            "Aprendizaje"
+          return getLearningExerciseDataDTO({
+            exercise: 1,
+            lesson: data.lessonNumber + 1
+          });
+        } else {
+          // Else If there is no next lesson
+          // Get the first exercise of the first lesson of the next category type
+          logger.info(
+            `Returning exercise ${1}, lesson ${1}, category: Practice`
           );
+          return getPracticeExerciseDataDTO({
+            exercise: 1,
+            lesson: 1
+          });
         }
-        // there's neither a next exercise nor a next lesson
-        //@ts-ignore
-        data.exerciseNumber = 0;
-        //@ts-ignore
-        data.lessonNumber = 0;
-      case "Practica":
-        thereIsANextExercise = data.exerciseNumber !== 10;
-        thereIsANextLesson = data.lessonNumber !== 10;
-        if (thereIsANextExercise) {
-          const newExerciseNumber = data.exerciseNumber + 1;
-
-          return await getExerciseDataDTO(
-            practiceLessonsFolderPath,
-            //@ts-ignore
-            data.lessonNumber === 0 ? 1 : data.lessonNumber,
-            newExerciseNumber,
-            "Practica"
-          );
-        } else if (!thereIsANextExercise && thereIsANextLesson) {
-          const newExerciseNumber = 1;
-          const newLessonNumber = data.lessonNumber + 1;
-
-          return await getExerciseDataDTO(
-            practiceLessonsFolderPath,
-            newLessonNumber,
-            newExerciseNumber,
-            "Practica"
-          );
-        }
-        // there's neither a next exercise nor a next lesson
-        //@ts-ignore
-        data.exerciseNumber = 0;
-        //@ts-ignore
-        data.lessonNumber = 0;
-      case "Perfeccionamiento":
-        thereIsANextExercise = data.exerciseNumber !== 10;
-        thereIsANextLesson = data.lessonNumber !== 10;
-        if (thereIsANextExercise) {
-          const newExerciseNumber = data.exerciseNumber + 1;
-
-          return await getExerciseDataDTO(
-            perfectingLessonsFolderPath,
-            //@ts-ignore
-            data.lessonNumber === 0 ? 1 : data.lessonNumber,
-            newExerciseNumber,
-            "Perfeccionamiento"
-          );
-        } else if (!thereIsANextExercise && thereIsANextLesson) {
-          const newExerciseNumber = 1;
-          const newLessonNumber = data.lessonNumber + 1;
-
-          return await getExerciseDataDTO(
-            perfectingLessonsFolderPath,
-            newLessonNumber,
-            newExerciseNumber,
-            "Perfeccionamiento"
-          );
-        }
-        // there's neither a next exercise nor a next lesson
-        //@ts-ignore
-        data.exerciseNumber = 0;
-        //@ts-ignore
-        data.lessonNumber = 0;
-
-      // TODO custom user lessons
-      default:
-        return null;
+      } else {
+        // Else: there is a next exercise
+        logger.info(
+          `Returning next exercise: exercise ${
+            data.exerciseNumber + 1
+          }, lesson ${data.lessonNumber}`
+        );
+        return getLearningExerciseDataDTO({
+          exercise: data.exerciseNumber + 1,
+          lesson: data.lessonNumber
+        });
+      }
     }
+
+    if (data.lessonType === "Practica") {
+      // If currently on last exercise of current lesson
+      if (data.exerciseNumber === 10) {
+        // If there is a next lesson
+        if (data.lessonNumber < 10) {
+          // Get the first exercise of the next lesson
+          logger.info(
+            `Returning next lesson (${data.lessonNumber + 1}), first exercise`
+          );
+          return getPracticeExerciseDataDTO({
+            exercise: 1,
+            lesson: data.lessonNumber + 1
+          });
+        } else {
+          // Else If there is no next lesson
+          // Get the first exercise of the first lesson of the next category type
+          logger.info(
+            `Returning exercise ${1}, lesson ${1}, category: Perfecting`
+          );
+          return getPerfectingExerciseDataDTO({
+            exercise: 1,
+            lesson: 1
+          });
+        }
+      } else {
+        // Else: there is a next exercise
+        logger.info(
+          `Returning next exercise: exercise ${
+            data.exerciseNumber + 1
+          }, lesson ${data.lessonNumber}`
+        );
+        return getPracticeExerciseDataDTO({
+          exercise: data.exerciseNumber + 1,
+          lesson: data.lessonNumber
+        });
+      }
+    }
+
+    if (data.lessonType === "Perfeccionamiento") {
+      // If currently on last exercise of current lesson
+      if (data.exerciseNumber === 10) {
+        // If there is a next lesson
+        if (data.lessonNumber < 10) {
+          // Get the first exercise of the next lesson
+          logger.info(
+            `Returning next lesson (${data.lessonNumber + 1}), first exercise`
+          );
+          return getPerfectingExerciseDataDTO({
+            exercise: 1,
+            lesson: data.lessonNumber + 1
+          });
+        } else {
+          // Else If there is no next lesson
+          // TODO custom user lessons
+          logger.info("Returning null");
+          return null;
+        }
+      } else {
+        // Else: there is a next exercise
+        logger.info(
+          `Returning next exercise: exercise ${
+            data.exerciseNumber + 1
+          }, lesson ${data.lessonNumber}`
+        );
+        return getPerfectingExerciseDataDTO({
+          exercise: data.exerciseNumber + 1,
+          lesson: data.lessonNumber
+        });
+      }
+    }
+
+    return null;
   }
 );
