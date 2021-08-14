@@ -314,7 +314,7 @@ update msg model =
 
         RequestPreviousExercise ->
             case model.exercise of
-                ExerciseSelected data status ->
+                ExerciseSelected data _ ->
                     ( model
                     , sendRequestPreviousExercise
                         { exerciseNumber = data.exerciseNumber
@@ -328,7 +328,7 @@ update msg model =
 
         RequestNextExercise ->
             case model.exercise of
-                ExerciseSelected data status ->
+                ExerciseSelected data _ ->
                     ( model
                     , sendRequestNextExercise
                         { exerciseNumber = data.exerciseNumber
@@ -532,15 +532,14 @@ view model =
                     [ img [ src "./images/repeat.png" ] []
                     , text "Repetir"
                     ]
-
-                -- , div [ class "toolbar-separator" ] []
-                -- , button
-                --     [ class "top-toolbar__menu-item"
-                --     , onClick RequestPreviousExercise
-                --     ]
-                --     [ img [ src "./images/left_arr.png" ] []
-                --     , text "Anterior"
-                --     ]
+                , div [ class "toolbar-separator" ] []
+                , button
+                    [ class "top-toolbar__menu-item"
+                    , onClick RequestPreviousExercise
+                    ]
+                    [ img [ src "./images/left_arr.png" ] []
+                    , text "Anterior"
+                    ]
                 , div [ class "toolbar-separator" ] []
                 , button
                     [ class "top-toolbar__menu-item"
