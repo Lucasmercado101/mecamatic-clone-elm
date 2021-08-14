@@ -26,7 +26,8 @@
   "dependencies": {
     "electron-is-dev": "2.0.0",
     "mobx": "6.3.2",
-    "neverthrow": "4.2.2"
+    "neverthrow": "4.2.2",
+    "winston": "^3.3.3"
   },
   "build": {
     "appId": "mecamatic.typing",
@@ -54,7 +55,6 @@
     "concurrently": "6.2.0",
     "electron": "13.1.6",
     "electron-builder": "22.11.7",
-    "electron-reloader": "1.2.1",
     "elm": "0.19.1-5",
     "typescript": "4.3.5"
   }
