@@ -1,6 +1,7 @@
 port module Views.Main exposing (Exercise(..), Model, Msg(..), sendOnMainView, subscriptions, update, view)
 
 import Browser.Dom as Dom
+import Char exposing (Char)
 import Either exposing (Either(..))
 import Html exposing (Html, br, button, div, img, p, span, text)
 import Html.Attributes exposing (class, classList, id, src, style, tabindex)
@@ -964,6 +965,272 @@ infoPanel model =
         ]
 
 
+
+--* Keys highlight lists
+
+
+degreeKeyChars : List Char
+degreeKeyChars =
+    [ '|', '°', '¬' ]
+
+
+numberKey1Chars : List Char
+numberKey1Chars =
+    [ '1', '!' ]
+
+
+numberKey2Chars : List Char
+numberKey2Chars =
+    [ '2', '"' ]
+
+
+numberKey3Chars : List Char
+numberKey3Chars =
+    [ '3', '#' ]
+
+
+numberKey4Chars : List Char
+numberKey4Chars =
+    [ '4', '$' ]
+
+
+numberKey5Chars : List Char
+numberKey5Chars =
+    [ '5', '%' ]
+
+
+numberKey6Chars : List Char
+numberKey6Chars =
+    [ '6', '&' ]
+
+
+numberKey7Chars : List Char
+numberKey7Chars =
+    [ '7', '/' ]
+
+
+numberKey8Chars : List Char
+numberKey8Chars =
+    [ '8', '(' ]
+
+
+numberKey9Chars : List Char
+numberKey9Chars =
+    [ '9', ')' ]
+
+
+numberKey0Chars : List Char
+numberKey0Chars =
+    [ '0', '=' ]
+
+
+questionMarkKeyChars : List Char
+questionMarkKeyChars =
+    [ '?', '\'', '\\' ]
+
+
+startQuestionMarkKeyChars : List Char
+startQuestionMarkKeyChars =
+    [ '¿', '¡' ]
+
+
+
+--* Second keyboard row
+
+
+qKeyChars : List Char
+qKeyChars =
+    [ 'q', 'Q', '@' ]
+
+
+wKeyChars : List Char
+wKeyChars =
+    [ 'w', 'W' ]
+
+
+eKeyChars : List Char
+eKeyChars =
+    [ 'e', 'E', 'é', 'É', 'ë', 'Ë' ]
+
+
+rKeyChars : List Char
+rKeyChars =
+    [ 'r', 'R' ]
+
+
+tKeyChars : List Char
+tKeyChars =
+    [ 't', 'T' ]
+
+
+yKeyChars : List Char
+yKeyChars =
+    [ 'y', 'Y', 'ý', 'Ý', 'ÿ', 'Ÿ' ]
+
+
+uKeyChars : List Char
+uKeyChars =
+    [ 'u', 'U', 'ú', 'Ú', 'ü', 'Ü' ]
+
+
+iKeyChars : List Char
+iKeyChars =
+    [ 'i', 'I', 'í', 'Í', 'ï', 'Ï' ]
+
+
+oKeyChars : List Char
+oKeyChars =
+    [ 'o', 'O', 'ó', 'Ó', 'ö', 'Ö' ]
+
+
+pKeyChars : List Char
+pKeyChars =
+    [ 'p', 'P' ]
+
+
+umlautKeyChars : List Char
+umlautKeyChars =
+    [ '´', '¨', 'á', 'é', 'í', 'ó', 'ú', 'ý', 'ä', 'ë', 'ï', 'ö', 'ü', 'ÿ', 'Á', 'É', 'Í', 'Ó', 'Ú', 'Ý', 'Ä', 'Ë', 'Ï', 'Ö', 'Ü', 'Ÿ' ]
+
+
+tildeKeyChars : List Char
+tildeKeyChars =
+    [ '+', '*', '~' ]
+
+
+
+--* Third keyboard row
+
+
+aKeyChars : List Char
+aKeyChars =
+    [ 'a', 'A', 'á', 'Á', 'ä', 'Ä' ]
+
+
+sKeyChars : List Char
+sKeyChars =
+    [ 's', 'S' ]
+
+
+dKeyChars : List Char
+dKeyChars =
+    [ 'd', 'D' ]
+
+
+fKeyChars : List Char
+fKeyChars =
+    [ 'f', 'F' ]
+
+
+gKeyChars : List Char
+gKeyChars =
+    [ 'g', 'G' ]
+
+
+hKeyChars : List Char
+hKeyChars =
+    [ 'h', 'H' ]
+
+
+jKeyChars : List Char
+jKeyChars =
+    [ 'j', 'J' ]
+
+
+kKeyChars : List Char
+kKeyChars =
+    [ 'k', 'K' ]
+
+
+lKeyChars : List Char
+lKeyChars =
+    [ 'l', 'L' ]
+
+
+ñKeyChars : List Char
+ñKeyChars =
+    [ 'ñ', 'Ñ' ]
+
+
+leftSquareBracketKeyChars : List Char
+leftSquareBracketKeyChars =
+    [ '{', '[', '^' ]
+
+
+rightSquareBracketKeyChars : List Char
+rightSquareBracketKeyChars =
+    [ '}', ']', '`' ]
+
+
+
+--* Fourth keyboard row
+
+
+lShiftKeyChars : List Char
+lShiftKeyChars =
+    [ '°', '!', '"', '#', '$', '%', '&', '/', '(', ')', '=', '?', '¡', '¨', '*', '[', ']', '_', ':', ';', '>', 'ä', 'ë', 'ï', 'ö', 'ü', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ñ', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'Ä', 'Ë', 'Ï', 'Ö', 'Ü', 'Á', 'É', 'Í', 'Ó', 'Ú' ]
+
+
+lgThenKeyChars : List Char
+lgThenKeyChars =
+    [ '<', '>' ]
+
+
+zKeyChars : List Char
+zKeyChars =
+    [ 'z', 'Z' ]
+
+
+xKeyChars : List Char
+xKeyChars =
+    [ 'x', 'X' ]
+
+
+cKeyChars : List Char
+cKeyChars =
+    [ 'c', 'C' ]
+
+
+vKeyChars : List Char
+vKeyChars =
+    [ 'v', 'V' ]
+
+
+bKeyChars : List Char
+bKeyChars =
+    [ 'b', 'B' ]
+
+
+nKeyChars : List Char
+nKeyChars =
+    [ 'n', 'N' ]
+
+
+mKeyChars : List Char
+mKeyChars =
+    [ 'm', 'M' ]
+
+
+semicolonKeyChars : List Char
+semicolonKeyChars =
+    [ ';', ',' ]
+
+
+colonKeyChars : List Char
+colonKeyChars =
+    [ ':', '.' ]
+
+
+underscoreKeyChars : List Char
+underscoreKeyChars =
+    [ '_', '-' ]
+
+
+altGrlChars : List Char
+altGrlChars =
+    [ '¬', '\\', '~', '^', '`' ]
+
+
 keyboard : Model -> Html Msg
 keyboard model =
     let
@@ -1020,32 +1287,27 @@ keyboard model =
                 _ ->
                     False
 
-        currentCharIs : Either Char (List Char) -> Bool
-        currentCharIs val =
-            case val of
-                Left char ->
-                    Char.toLower char == currentChar || char == currentChar
+        currentCharIs : List Char -> Bool
+        currentCharIs chars =
+            case List.Extra.find (\l -> l == currentChar) chars of
+                Just _ ->
+                    True
 
-                Right chars ->
-                    case List.Extra.find (\l -> Char.toLower l == currentChar || l == currentChar) chars of
-                        Just _ ->
-                            True
-
-                        Nothing ->
-                            False
+                Nothing ->
+                    False
     in
     div [ class "keyboard-container" ]
         [ div [ class "keyboard-row" ]
             [ div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Right [ '|', '°', '¬' ]) then
+                    if currentCharIs degreeKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.pinky
 
-                  else if currentCharIs (Right [ '|', '°', '¬' ]) then
+                  else if currentCharIs degreeKeyChars then
                     class "key--highlighted"
 
                   else
@@ -1077,13 +1339,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Right [ '1', '!' ]) then
+                    if currentCharIs numberKey1Chars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.pinky
 
-                  else if currentCharIs (Right [ '1', '!' ]) then
+                  else if currentCharIs numberKey1Chars then
                     class "key--highlighted"
 
                   else
@@ -1116,13 +1378,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Right [ '2', '"' ]) then
+                    if currentCharIs numberKey2Chars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.ringFinger
 
-                  else if currentCharIs (Right [ '2', '"' ]) then
+                  else if currentCharIs numberKey2Chars then
                     class "key--highlighted"
 
                   else
@@ -1154,13 +1416,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Right [ '3', '#' ]) then
+                    if currentCharIs numberKey3Chars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.ringFinger
 
-                  else if currentCharIs (Right [ '3', '#' ]) then
+                  else if currentCharIs numberKey3Chars then
                     class "key--highlighted"
 
                   else
@@ -1192,13 +1454,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Right [ '4', '$' ]) then
+                    if currentCharIs numberKey4Chars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.indexLeftHand
 
-                  else if currentCharIs (Right [ '4', '$' ]) then
+                  else if currentCharIs numberKey4Chars then
                     class "key--highlighted"
 
                   else
@@ -1224,13 +1486,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Right [ '5', '%' ]) then
+                    if currentCharIs numberKey5Chars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.indexLeftHand
 
-                  else if currentCharIs (Right [ '5', '%' ]) then
+                  else if currentCharIs numberKey5Chars then
                     class "key--highlighted"
 
                   else
@@ -1256,13 +1518,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Right [ '6', '&' ]) then
+                    if currentCharIs numberKey6Chars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.indexRightHand
 
-                  else if currentCharIs (Right [ '6', '&' ]) then
+                  else if currentCharIs numberKey6Chars then
                     class "key--highlighted"
 
                   else
@@ -1288,13 +1550,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Right [ '7', '/' ]) then
+                    if currentCharIs numberKey7Chars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.indexRightHand
 
-                  else if currentCharIs (Right [ '7', '/' ]) then
+                  else if currentCharIs numberKey7Chars then
                     class "key--highlighted"
 
                   else
@@ -1320,13 +1582,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Right [ '8', '(' ]) then
+                    if currentCharIs numberKey8Chars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.middleFinger
 
-                  else if currentCharIs (Right [ '8', '(' ]) then
+                  else if currentCharIs numberKey8Chars then
                     class "key--highlighted"
 
                   else
@@ -1352,13 +1614,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Right [ '9', ')' ]) then
+                    if currentCharIs numberKey9Chars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.ringFinger
 
-                  else if currentCharIs (Right [ '9', ')' ]) then
+                  else if currentCharIs numberKey9Chars then
                     class "key--highlighted"
 
                   else
@@ -1384,13 +1646,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Right [ '0', '=' ]) then
+                    if currentCharIs numberKey0Chars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.pinky
 
-                  else if currentCharIs (Right [ '0', '=' ]) then
+                  else if currentCharIs numberKey0Chars then
                     class "key--highlighted"
 
                   else
@@ -1416,13 +1678,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Right [ '?', '\'', '\\' ]) then
+                    if currentCharIs questionMarkKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.pinky
 
-                  else if currentCharIs (Right [ '?', '\'', '\\' ]) then
+                  else if currentCharIs questionMarkKeyChars then
                     class "key--highlighted"
 
                   else
@@ -1448,13 +1710,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Right [ '¿', '¡' ]) then
+                    if currentCharIs startQuestionMarkKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.pinky
 
-                  else if currentCharIs (Right [ '¿', '¡' ]) then
+                  else if currentCharIs startQuestionMarkKeyChars then
                     class "key--highlighted"
 
                   else
@@ -1492,13 +1754,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Left 'Q') then
+                    if currentCharIs qKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.pinky
 
-                  else if currentCharIs (Left 'Q') then
+                  else if currentCharIs qKeyChars then
                     class "key--highlighted"
 
                   else
@@ -1508,13 +1770,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Left 'W') then
+                    if currentCharIs wKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.ringFinger
 
-                  else if currentCharIs (Left 'W') then
+                  else if currentCharIs wKeyChars then
                     class "key--highlighted"
 
                   else
@@ -1524,13 +1786,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Right [ 'E', 'É', 'Ë', 'é', 'ë' ]) then
+                    if currentCharIs eKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.middleFinger
 
-                  else if currentCharIs (Right [ 'E', 'É', 'Ë', 'é', 'ë' ]) then
+                  else if currentCharIs eKeyChars then
                     class "key--highlighted"
 
                   else
@@ -1563,13 +1825,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Left 'R') then
+                    if currentCharIs rKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.indexLeftHand
 
-                  else if currentCharIs (Left 'R') then
+                  else if currentCharIs rKeyChars then
                     class "key--highlighted"
 
                   else
@@ -1579,13 +1841,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Left 'T') then
+                    if currentCharIs tKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.indexLeftHand
 
-                  else if currentCharIs (Left 'T') then
+                  else if currentCharIs tKeyChars then
                     class "key--highlighted"
 
                   else
@@ -1595,13 +1857,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Left 'Y') then
+                    if currentCharIs yKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.indexRightHand
 
-                  else if currentCharIs (Left 'Y') then
+                  else if currentCharIs yKeyChars then
                     class "key--highlighted"
 
                   else
@@ -1611,13 +1873,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Right [ 'U', 'Ú', 'Ü', 'ú', 'ü' ]) then
+                    if currentCharIs uKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.indexRightHand
 
-                  else if currentCharIs (Right [ 'U', 'Ú', 'Ü', 'ú', 'ü' ]) then
+                  else if currentCharIs uKeyChars then
                     class "key--highlighted"
 
                   else
@@ -1627,13 +1889,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Right [ 'I', 'Í', 'Ï', 'í', 'ï' ]) then
+                    if currentCharIs iKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.middleFinger
 
-                  else if currentCharIs (Right [ 'I', 'Í', 'Ï', 'í', 'ï' ]) then
+                  else if currentCharIs iKeyChars then
                     class "key--highlighted"
 
                   else
@@ -1643,13 +1905,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Right [ 'O', 'Ó', 'Ö', 'ó', 'ö' ]) then
+                    if currentCharIs oKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.ringFinger
 
-                  else if currentCharIs (Right [ 'O', 'Ó', 'Ö', 'ó', 'ö' ]) then
+                  else if currentCharIs oKeyChars then
                     class "key--highlighted"
 
                   else
@@ -1659,13 +1921,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Left 'P') then
+                    if currentCharIs pKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.pinky
 
-                  else if currentCharIs (Left 'P') then
+                  else if currentCharIs pKeyChars then
                     class "key--highlighted"
 
                   else
@@ -1675,31 +1937,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if
-                        currentCharIs (Right [ '´', '¨', 'á', 'é', 'í', 'ó', 'ú', 'ä', 'ë', 'ï', 'ö', 'ü' ])
-                            || (case List.Extra.find (\l -> l == currentChar) [ 'Ä', 'Ë', 'Ï', 'Ö', 'Ü', 'Á', 'É', 'Í', 'Ó', 'Ú' ] of
-                                    Just _ ->
-                                        True
-
-                                    Nothing ->
-                                        False
-                               )
-                    then
+                    if currentCharIs umlautKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.pinky
 
-                  else if
-                    currentCharIs (Right [ '´', '¨', 'á', 'é', 'í', 'ó', 'ú', 'ä', 'ë', 'ï', 'ö', 'ü' ])
-                        || (case List.Extra.find (\l -> l == currentChar) [ 'Ä', 'Ë', 'Ï', 'Ö', 'Ü', 'Á', 'É', 'Í', 'Ó', 'Ú' ] of
-                                Just _ ->
-                                    True
-
-                                Nothing ->
-                                    False
-                           )
-                  then
+                  else if currentCharIs umlautKeyChars then
                     class "key--highlighted"
 
                   else
@@ -1731,13 +1975,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Right [ '+', '*', '~' ]) then
+                    if currentCharIs tildeKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.pinky
 
-                  else if currentCharIs (Right [ '+', '*', '~' ]) then
+                  else if currentCharIs tildeKeyChars then
                     class "key--highlighted"
 
                   else
@@ -1795,13 +2039,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Right [ 'A', 'á', 'ä', 'Á', 'Ä' ]) then
+                    if currentCharIs aKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.pinky
 
-                  else if currentCharIs (Right [ 'A', 'á', 'ä', 'Á', 'Ä' ]) then
+                  else if currentCharIs aKeyChars then
                     class "key--highlighted"
 
                   else
@@ -1811,13 +2055,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Left 'S') then
+                    if currentCharIs sKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.ringFinger
 
-                  else if currentCharIs (Left 'S') then
+                  else if currentCharIs sKeyChars then
                     class "key--highlighted"
 
                   else
@@ -1827,13 +2071,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Left 'D') then
+                    if currentCharIs dKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.middleFinger
 
-                  else if currentCharIs (Left 'D') then
+                  else if currentCharIs dKeyChars then
                     class "key--highlighted"
 
                   else
@@ -1843,13 +2087,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Left 'F') then
+                    if currentCharIs fKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.indexLeftHand
 
-                  else if currentCharIs (Left 'F') then
+                  else if currentCharIs fKeyChars then
                     class "key--highlighted"
 
                   else
@@ -1867,13 +2111,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Left 'G') then
+                    if currentCharIs gKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.indexLeftHand
 
-                  else if currentCharIs (Left 'G') then
+                  else if currentCharIs gKeyChars then
                     class "key--highlighted"
 
                   else
@@ -1883,13 +2127,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Left 'H') then
+                    if currentCharIs hKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.indexRightHand
 
-                  else if currentCharIs (Left 'H') then
+                  else if currentCharIs hKeyChars then
                     class "key--highlighted"
 
                   else
@@ -1899,13 +2143,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Left 'J') then
+                    if currentCharIs jKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.indexRightHand
 
-                  else if currentCharIs (Left 'J') then
+                  else if currentCharIs jKeyChars then
                     class "key--highlighted"
 
                   else
@@ -1923,13 +2167,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Left 'K') then
+                    if currentCharIs kKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.middleFinger
 
-                  else if currentCharIs (Left 'K') then
+                  else if currentCharIs kKeyChars then
                     class "key--highlighted"
 
                   else
@@ -1939,13 +2183,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Left 'L') then
+                    if currentCharIs lKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.ringFinger
 
-                  else if currentCharIs (Left 'L') then
+                  else if currentCharIs lKeyChars then
                     class "key--highlighted"
 
                   else
@@ -1955,13 +2199,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Left 'Ñ') then
+                    if currentCharIs ñKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.pinky
 
-                  else if currentCharIs (Left 'Ñ') then
+                  else if currentCharIs ñKeyChars then
                     class "key--highlighted"
 
                   else
@@ -1971,13 +2215,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Right [ '{', '[', '^' ]) then
+                    if currentCharIs leftSquareBracketKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.pinky
 
-                  else if currentCharIs (Right [ '{', '[', '^' ]) then
+                  else if currentCharIs leftSquareBracketKeyChars then
                     class "key--highlighted"
 
                   else
@@ -2010,13 +2254,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Right [ '}', ']', '`' ]) then
+                    if currentCharIs rightSquareBracketKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.pinky
 
-                  else if currentCharIs (Right [ '}', ']', '`' ]) then
+                  else if currentCharIs rightSquareBracketKeyChars then
                     class "key--highlighted"
 
                   else
@@ -2079,31 +2323,13 @@ keyboard model =
                 --
                 [ class "key key--lshift"
                 , if isTutorActive then
-                    if
-                        currentCharIs (Right [ '°', '!', '"', '#', '$', '%', '&', '/', '(', ')', '=', '?', '¡', '¨', '*', '[', ']', '_', ':', ';', '>', 'ä', 'ë', 'ï', 'ö', 'ü' ])
-                            || (case List.Extra.find (\l -> l == currentChar) [ 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ñ', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'Ä', 'Ë', 'Ï', 'Ö', 'Ü', 'Á', 'É', 'Í', 'Ó', 'Ú' ] of
-                                    Just _ ->
-                                        True
-
-                                    Nothing ->
-                                        False
-                               )
-                    then
+                    if currentCharIs lShiftKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.pinky
 
-                  else if
-                    currentCharIs (Right [ '°', '!', '"', '#', '$', '%', '&', '/', '(', ')', '=', '?', '¡', '¨', '*', '[', ']', '_', ':', ';', '>', 'ä', 'ë', 'ï', 'ö', 'ü' ])
-                        || (case List.Extra.find (\l -> l == currentChar) [ 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ñ', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'Ä', 'Ë', 'Ï', 'Ö', 'Ü', 'Á', 'É', 'Í', 'Ó', 'Ú' ] of
-                                Just _ ->
-                                    True
-
-                                Nothing ->
-                                    False
-                           )
-                  then
+                  else if currentCharIs lShiftKeyChars then
                     class "key--highlighted"
 
                   else
@@ -2113,13 +2339,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Right [ '<', '>' ]) then
+                    if currentCharIs lgThenKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.pinky
 
-                  else if currentCharIs (Right [ '<', '>' ]) then
+                  else if currentCharIs lgThenKeyChars then
                     class "key--highlighted"
 
                   else
@@ -2137,13 +2363,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Left 'Z') then
+                    if currentCharIs zKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.pinky
 
-                  else if currentCharIs (Left 'Z') then
+                  else if currentCharIs zKeyChars then
                     class "key--highlighted"
 
                   else
@@ -2153,13 +2379,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Left 'X') then
+                    if currentCharIs xKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.ringFinger
 
-                  else if currentCharIs (Left 'X') then
+                  else if currentCharIs xKeyChars then
                     class "key--highlighted"
 
                   else
@@ -2169,13 +2395,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Left 'C') then
+                    if currentCharIs cKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.middleFinger
 
-                  else if currentCharIs (Left 'C') then
+                  else if currentCharIs cKeyChars then
                     class "key--highlighted"
 
                   else
@@ -2185,13 +2411,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Left 'V') then
+                    if currentCharIs vKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.indexLeftHand
 
-                  else if currentCharIs (Left 'V') then
+                  else if currentCharIs vKeyChars then
                     class "key--highlighted"
 
                   else
@@ -2201,13 +2427,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Left 'B') then
+                    if currentCharIs bKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.indexLeftHand
 
-                  else if currentCharIs (Left 'B') then
+                  else if currentCharIs bKeyChars then
                     class "key--highlighted"
 
                   else
@@ -2217,13 +2443,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Left 'N') then
+                    if currentCharIs nKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.indexRightHand
 
-                  else if currentCharIs (Left 'N') then
+                  else if currentCharIs nKeyChars then
                     class "key--highlighted"
 
                   else
@@ -2233,13 +2459,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Left 'M') then
+                    if currentCharIs mKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.indexRightHand
 
-                  else if currentCharIs (Left 'M') then
+                  else if currentCharIs mKeyChars then
                     class "key--highlighted"
 
                   else
@@ -2249,13 +2475,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Right [ ';', ',' ]) then
+                    if currentCharIs semicolonKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.middleFinger
 
-                  else if currentCharIs (Right [ ';', ',' ]) then
+                  else if currentCharIs semicolonKeyChars then
                     class "key--highlighted"
 
                   else
@@ -2275,13 +2501,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Right [ ':', '.' ]) then
+                    if currentCharIs colonKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.ringFinger
 
-                  else if currentCharIs (Right [ ':', '.' ]) then
+                  else if currentCharIs colonKeyChars then
                     class "key--highlighted"
 
                   else
@@ -2301,13 +2527,13 @@ keyboard model =
             , div
                 [ class "key"
                 , if isTutorActive then
-                    if currentCharIs (Right [ '_', '-' ]) then
+                    if currentCharIs underscoreKeyChars then
                         class "key--highlighted"
 
                     else
                         style "background-color" keyFingerColors.pinky
 
-                  else if currentCharIs (Right [ '_', '-' ]) then
+                  else if currentCharIs underscoreKeyChars then
                     class "key--highlighted"
 
                   else
@@ -2359,13 +2585,13 @@ keyboard model =
             , div
                 [ class "key key--alt-grl"
                 , if isTutorActive then
-                    if currentCharIs (Right [ '¬', '\\', '~', '^', '`' ]) then
+                    if currentCharIs altGrlChars then
                         class "key--highlighted"
 
                     else
                         empty
 
-                  else if currentCharIs (Right [ '¬', '\\', '~', '^', '`' ]) then
+                  else if currentCharIs altGrlChars then
                     class "key--highlighted"
 
                   else
