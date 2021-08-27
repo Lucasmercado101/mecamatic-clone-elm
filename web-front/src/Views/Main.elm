@@ -174,6 +174,19 @@ keyFingerColors =
     }
 
 
+
+-- TODO map each key to it's error finger & hand, default to index
+-- type KeyFingerErrors
+--     = Pinky
+--     | RingFinger
+--     | MiddleFinger
+--     | IndexLeftHand
+--     | IndexRightHand
+-- type KeyHandError
+--     = LeftHand KeyFingerErrors
+--     | RightHand KeyFingerErrors
+
+
 type alias Model =
     { userData : UserData
     , exercise : Exercise
