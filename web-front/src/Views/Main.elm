@@ -695,7 +695,7 @@ centerText =
 
 
 
--- TODO add "title" property with descriptiosn to info boxes
+-- TODO add "title" property with descriptions to info boxes
 
 
 infoPanel : Model -> Html Msg
