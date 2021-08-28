@@ -794,10 +794,10 @@ view model =
                     , keyboard model
                     , case model.exercise of
                         ExerciseSelected _ state ->
-                            fingerErrors state.errors
+                            fingerErrors (Just state.errors)
 
                         _ ->
-                            fingerErrors exerciseStatusNotStartedInit.errors
+                            fingerErrors Nothing
                     ]
                 ]
             , infoPanel model
@@ -1050,43 +1050,106 @@ fingerTutorIndicators data state =
         ]
 
 
-fingerErrors : HandTypingErrors -> Html Msg
-fingerErrors errors =
+fingerErrors : Maybe HandTypingErrors -> Html Msg
+fingerErrors typingErrors =
     div [ class "error-fingers-container", class "flex-row" ]
         [ div [ class "flex-col", style "text-align" "center" ]
-            [ div [ class "error-finger-count-box" ] [ p [] [ text (String.fromInt errors.leftPinky) ] ]
+            [ div [ class "error-finger-count-box" ]
+                [ case typingErrors of
+                    Just errors ->
+                        p [] [ text (String.fromInt errors.leftPinky) ]
+
+                    Nothing ->
+                        text ""
+                ]
             , p [ class "finger-errors-text" ] [ text "Meñique" ]
             ]
         , div [ class "flex-col", style "text-align" "center" ]
-            [ div [ class "error-finger-count-box" ] [ p [] [ text (String.fromInt errors.leftRing) ] ]
+            [ div [ class "error-finger-count-box" ]
+                [ case typingErrors of
+                    Just errors ->
+                        p [] [ text (String.fromInt errors.leftRing) ]
+
+                    Nothing ->
+                        text ""
+                ]
             , p [ class "finger-errors-text" ] [ text "Anular" ]
             ]
         , div [ class "flex-col", style "text-align" "center" ]
-            [ div [ class "error-finger-count-box" ] [ p [] [ text (String.fromInt errors.leftMiddle) ] ]
+            [ div [ class "error-finger-count-box" ]
+                [ case typingErrors of
+                    Just errors ->
+                        p [] [ text (String.fromInt errors.leftMiddle) ]
+
+                    Nothing ->
+                        text ""
+                ]
             , p [ class "finger-errors-text" ] [ text "Medio" ]
             ]
         , div [ class "flex-col", style "text-align" "center" ]
-            [ div [ class "error-finger-count-box" ] [ p [] [ text (String.fromInt errors.leftIndex) ] ]
+            [ div [ class "error-finger-count-box" ]
+                [ case typingErrors of
+                    Just errors ->
+                        p [] [ text (String.fromInt errors.leftIndex) ]
+
+                    Nothing ->
+                        text ""
+                ]
             , p [ class "finger-errors-text" ] [ text "Indice" ]
             ]
         , div [ class "flex-col", style "text-align" "center" ]
-            [ div [ class "error-finger-count-box" ] [ p [] [ text (String.fromInt errors.thumbs) ] ]
+            [ div [ class "error-finger-count-box" ]
+                [ case typingErrors of
+                    Just errors ->
+                        p [] [ text (String.fromInt errors.thumbs) ]
+
+                    Nothing ->
+                        text ""
+                ]
             , p [ class "finger-errors-text" ] [ text "Pulgares" ]
             ]
         , div [ class "flex-col", style "text-align" "center" ]
-            [ div [ class "error-finger-count-box" ] [ p [] [ text (String.fromInt errors.rightIndex) ] ]
+            [ div [ class "error-finger-count-box" ]
+                [ case typingErrors of
+                    Just errors ->
+                        p [] [ text (String.fromInt errors.rightIndex) ]
+
+                    Nothing ->
+                        text ""
+                ]
             , p [ class "finger-errors-text" ] [ text "Indice" ]
             ]
         , div [ class "flex-col", style "text-align" "center" ]
-            [ div [ class "error-finger-count-box" ] [ p [] [ text (String.fromInt errors.rightMiddle) ] ]
+            [ div [ class "error-finger-count-box" ]
+                [ case typingErrors of
+                    Just errors ->
+                        p [] [ text (String.fromInt errors.rightMiddle) ]
+
+                    Nothing ->
+                        text ""
+                ]
             , p [ class "finger-errors-text" ] [ text "Medio" ]
             ]
         , div [ class "flex-col", style "text-align" "center" ]
-            [ div [ class "error-finger-count-box" ] [ p [] [ text (String.fromInt errors.rightRing) ] ]
+            [ div [ class "error-finger-count-box" ]
+                [ case typingErrors of
+                    Just errors ->
+                        p [] [ text (String.fromInt errors.rightRing) ]
+
+                    Nothing ->
+                        text ""
+                ]
             , p [ class "finger-errors-text" ] [ text "Anular" ]
             ]
         , div [ class "flex-col", style "text-align" "center" ]
-            [ div [ class "error-finger-count-box" ] [ p [] [ text (String.fromInt errors.rightPinky) ] ]
+            [ div [ class "error-finger-count-box" ]
+                [ case typingErrors of
+                    Just errors ->
+                        p [] [ text (String.fromInt errors.rightPinky) ]
+
+                    Nothing ->
+                        text ""
+                ]
             , p [ class "finger-errors-text" ] [ text "Meñique" ]
             ]
         ]
