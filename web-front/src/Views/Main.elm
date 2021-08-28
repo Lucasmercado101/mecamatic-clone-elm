@@ -83,9 +83,9 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ case model.exercise of
-            ExerciseSelected _ status ->
-                case status of
-                    Ongoing _ _ ->
+            ExerciseSelected _ state ->
+                case state.status of
+                    Ongoing ->
                         Time.every 1000 (always SecondHasElapsed)
 
                     _ ->
@@ -113,12 +113,49 @@ subscriptions model =
 -- * MODEL
 
 
-type ExerciseStatus
+type ExerciseProgress
     = NotStarted
-    | Ongoing Int Int -- Cursor, errors committed
-    | Paused Int Int -- Cursor, errors committed
-    | ExerciseFinishedSuccessfully Int Int -- Cursor, errors committed
-    | ExerciseFailed Int Int String -- Cursor, errrors committed, error message
+    | Ongoing
+    | Paused
+    | ExerciseFinishedSuccessfully
+    | ExerciseFailed String
+
+
+type alias HandTypingErrors =
+    { leftPinky : Int
+    , leftRing : Int
+    , leftMiddle : Int
+    , leftIndex : Int
+    , thumbs : Int
+    , rightPinky : Int
+    , rightRing : Int
+    , rightMiddle : Int
+    , rightIndex : Int
+    }
+
+
+type alias ExerciseStatus =
+    { status : ExerciseProgress
+    , cursor : Int
+    , errors : HandTypingErrors
+    }
+
+
+exerciseStatusNotStartedInit =
+    { status = NotStarted
+    , cursor = -1
+    , errors =
+        { leftPinky = 0
+        , leftRing = 0
+        , leftMiddle = 0
+        , leftIndex = 0
+        , thumbs = 0
+        , rightPinky = 0
+        , rightRing = 0
+        , rightMiddle = 0
+        , rightIndex = 0
+        }
+    }
 
 
 type alias ExerciseData =
@@ -134,7 +171,7 @@ type alias ExerciseData =
 
 type Exercise
     = ExerciseNotSelected
-    | FailedToLoadEData
+    | FailedToLoadData
     | ExerciseSelected ExerciseData ExerciseStatus
 
 
@@ -175,19 +212,6 @@ keyFingerColors =
     }
 
 
-
--- TODO map each key to it's error finger & hand, default to index
--- type KeyFingerErrors
---     = Pinky
---     | RingFinger
---     | MiddleFinger
---     | IndexLeftHand
---     | IndexRightHand
--- type KeyHandError
---     = LeftHand KeyFingerErrors
---     | RightHand KeyFingerErrors
-
-
 type alias Model =
     { userData : UserData
     , exercise : Exercise
@@ -220,7 +244,13 @@ update msg model =
             ( model, Cmd.none )
 
         ReceivedExerciseData exerciseData ->
-            ( { model | exercise = ExerciseSelected exerciseData NotStarted, elapsedSeconds = 0 }, Cmd.none )
+            ( { model
+                | exercise =
+                    ExerciseSelected exerciseData exerciseStatusNotStartedInit
+                , elapsedSeconds = 0
+              }
+            , Cmd.none
+            )
 
         FailedToLoadExerciseData ->
             -- TODO handle happens when an exercise is already selected and we try to load another one and fail
@@ -229,16 +259,16 @@ update msg model =
                     ( model, Cmd.none )
 
                 _ ->
-                    ( { model | exercise = FailedToLoadEData }, Cmd.none )
+                    ( { model | exercise = FailedToLoadData }, Cmd.none )
 
         -- TODO handle time has run out
         SecondHasElapsed ->
             let
                 elapsedSeconds =
                     case model.exercise of
-                        ExerciseSelected _ status ->
-                            case status of
-                                Ongoing _ _ ->
+                        ExerciseSelected _ state ->
+                            case state.status of
+                                Ongoing ->
                                     model.elapsedSeconds + 1
 
                                 _ ->
@@ -248,13 +278,15 @@ update msg model =
                             model.elapsedSeconds
             in
             case model.exercise of
-                ExerciseSelected data status ->
-                    case status of
-                        Ongoing cursor errors ->
+                ExerciseSelected data state ->
+                    case state.status of
+                        Ongoing ->
                             if elapsedSeconds == model.userData.userSettings.timeLimitInSeconds then
                                 ( { model
                                     | elapsedSeconds = elapsedSeconds
-                                    , exercise = ExerciseSelected data (ExerciseFailed cursor errors "Ha superado el\nlimite de tiempo\nestablecido")
+                                    , exercise =
+                                        ExerciseSelected data
+                                            { state | status = ExerciseFailed "Ha superado el\nlimite de tiempo\nestablecido" }
                                   }
                                 , Cmd.none
                                 )
@@ -271,7 +303,7 @@ update msg model =
         RestartExercise ->
             case model.exercise of
                 ExerciseSelected data status ->
-                    ( { model | exercise = ExerciseSelected data NotStarted, elapsedSeconds = 0 }
+                    ( { model | exercise = ExerciseSelected data exerciseStatusNotStartedInit, elapsedSeconds = 0 }
                     , Task.attempt (\_ -> NoOp) (Dom.setViewportOf "text-box-container-id" 0 0)
                     )
 
@@ -290,10 +322,10 @@ update msg model =
             ( { model
                 | exercise =
                     case exercise of
-                        ExerciseSelected data status ->
-                            case status of
-                                Ongoing cursor errors ->
-                                    ExerciseSelected data (Paused cursor errors)
+                        ExerciseSelected data state ->
+                            case state.status of
+                                Ongoing ->
+                                    ExerciseSelected data { state | status = Paused }
 
                                 _ ->
                                     exercise
@@ -312,10 +344,10 @@ update msg model =
             ( { model
                 | exercise =
                     case exercise of
-                        ExerciseSelected data status ->
-                            case status of
-                                Paused cursor errors ->
-                                    ExerciseSelected data (Ongoing cursor errors)
+                        ExerciseSelected data state ->
+                            case state.status of
+                                Paused ->
+                                    ExerciseSelected data { state | status = Ongoing }
 
                                 _ ->
                                     exercise
@@ -363,21 +395,47 @@ update msg model =
                 ExerciseNotSelected ->
                     ( { model | exercise = exercise }, Cmd.none )
 
-                FailedToLoadEData ->
+                FailedToLoadData ->
                     ( { model | exercise = exercise }, Cmd.none )
 
-                ExerciseSelected exerciseData status ->
+                ExerciseSelected exerciseData state ->
                     case event.key of
                         Just keyPressed ->
-                            case status of
+                            let
+                                cursor =
+                                    state.cursor
+
+                                totalErrors =
+                                    state.errors.leftPinky
+                                        + state.errors.leftPinky
+                                        + state.errors.leftRing
+                                        + state.errors.leftMiddle
+                                        + state.errors.leftIndex
+                                        + state.errors.thumbs
+                                        + state.errors.rightPinky
+                                        + state.errors.rightRing
+                                        + state.errors.rightMiddle
+                                        + state.errors.rightIndex
+                            in
+                            case state.status of
                                 NotStarted ->
                                     if keyPressed == "Enter" then
-                                        ( { model | exercise = ExerciseSelected exerciseData (Ongoing 0 0) }, Cmd.none )
+                                        ( { model
+                                            | exercise =
+                                                ExerciseSelected exerciseData
+                                                    { state
+                                                        | status = Ongoing
+                                                        , cursor = 0
+                                                        , errors = exerciseStatusNotStartedInit.errors
+                                                    }
+                                          }
+                                        , Cmd.none
+                                        )
 
                                     else
                                         ( { model | exercise = exercise }, Cmd.none )
 
-                                Ongoing cursor errors ->
+                                Ongoing ->
                                     let
                                         textCharsList : List ( Int, Char )
                                         textCharsList =
@@ -443,25 +501,177 @@ update msg model =
                                                 let
                                                     pctErrorsCommited : Int
                                                     pctErrorsCommited =
-                                                        round (calculatePercentageOfErrors errors cursor)
+                                                        round (calculatePercentageOfErrors totalErrors cursor)
                                                 in
                                                 if pctErrorsCommited > round (Maybe.withDefault userDefaults.errorsCoefficient model.userData.userSettings.errorsCoefficient) then
-                                                    ( { model | exercise = ExerciseSelected exerciseData (ExerciseFailed (cursor + 1) errors "Ha superado el % maximo de errores permitidos") }, Cmd.none )
+                                                    ( { model
+                                                        | exercise =
+                                                            ExerciseSelected exerciseData
+                                                                { state | status = ExerciseFailed "Ha superado el % maximo de errores permitidos", cursor = cursor + 1 }
+                                                      }
+                                                    , Cmd.none
+                                                    )
 
-                                                else if calcNetWPM cursor model.elapsedSeconds errors < userDefaults.minimumSpeed then
-                                                    ( { model | exercise = ExerciseSelected exerciseData (ExerciseFailed (cursor + 1) errors "No ha superado la velocidad minima") }, Cmd.none )
+                                                else if calcNetWPM cursor model.elapsedSeconds totalErrors < userDefaults.minimumSpeed then
+                                                    ( { model
+                                                        | exercise =
+                                                            ExerciseSelected exerciseData
+                                                                { state | status = ExerciseFailed "No ha superado la velocidad minima", cursor = cursor + 1 }
+                                                      }
+                                                    , Cmd.none
+                                                    )
 
                                                 else
-                                                    ( { model | exercise = ExerciseSelected exerciseData (ExerciseFinishedSuccessfully cursor errors) }, Cmd.none )
+                                                    ( { model | exercise = ExerciseSelected exerciseData { state | status = ExerciseFinishedSuccessfully } }, Cmd.none )
 
                                             else if keyPressed == String.fromChar char then
-                                                ( { model | exercise = ExerciseSelected exerciseData (Ongoing (cursor + 1) errors) }, sendScrollHighlightedKeyIntoView () )
+                                                ( { model | exercise = ExerciseSelected exerciseData { state | status = Ongoing, cursor = cursor + 1 } }, sendScrollHighlightedKeyIntoView () )
 
                                             else if isModifierKey keyPressed then
-                                                ( { model | exercise = ExerciseSelected exerciseData (Ongoing cursor errors) }, Cmd.none )
+                                                ( { model | exercise = ExerciseSelected exerciseData { state | status = Ongoing } }, Cmd.none )
 
                                             else
-                                                ( { model | exercise = ExerciseSelected exerciseData (Ongoing cursor (errors + 1)) }, Cmd.none )
+                                                ( { model
+                                                    | exercise =
+                                                        ExerciseSelected exerciseData
+                                                            { state
+                                                                | status = Ongoing
+                                                                , errors =
+                                                                    let
+                                                                        errors =
+                                                                            state.errors
+
+                                                                        currentCharIn charsLists =
+                                                                            case List.Extra.find (\l -> l == char) charsLists of
+                                                                                Just _ ->
+                                                                                    True
+
+                                                                                Nothing ->
+                                                                                    False
+
+                                                                        bind fn bool =
+                                                                            if bool == False then
+                                                                                fn
+
+                                                                            else
+                                                                                True
+                                                                    in
+                                                                    { leftPinky =
+                                                                        if
+                                                                            -- currentCharIn aKeyChars
+                                                                            currentCharIn degreeKeyChars
+                                                                                |> bind (currentCharIn numberKey1Chars)
+                                                                                |> bind (currentCharIn qKeyChars)
+                                                                                |> bind (currentCharIn aKeyChars)
+                                                                                |> bind (currentCharIn lgThenKeyChars)
+                                                                                |> bind (currentCharIn zKeyChars)
+                                                                        then
+                                                                            errors.leftPinky + 1
+
+                                                                        else
+                                                                            errors.leftPinky
+                                                                    , leftRing =
+                                                                        if
+                                                                            currentCharIn numberKey2Chars
+                                                                                |> bind (currentCharIn wKeyChars)
+                                                                                |> bind (currentCharIn sKeyChars)
+                                                                                |> bind (currentCharIn xKeyChars)
+                                                                        then
+                                                                            errors.leftRing + 1
+
+                                                                        else
+                                                                            errors.leftRing
+                                                                    , leftMiddle =
+                                                                        if
+                                                                            currentCharIn numberKey3Chars
+                                                                                |> bind (currentCharIn eKeyChars)
+                                                                                |> bind (currentCharIn dKeyChars)
+                                                                                |> bind (currentCharIn cKeyChars)
+                                                                        then
+                                                                            errors.leftMiddle + 1
+
+                                                                        else
+                                                                            errors.leftMiddle
+                                                                    , leftIndex =
+                                                                        if
+                                                                            currentCharIn numberKey4Chars
+                                                                                |> bind (currentCharIn rKeyChars)
+                                                                                |> bind (currentCharIn fKeyChars)
+                                                                                |> bind (currentCharIn vKeyChars)
+                                                                                |> bind (currentCharIn numberKey5Chars)
+                                                                                |> bind (currentCharIn tKeyChars)
+                                                                                |> bind (currentCharIn gKeyChars)
+                                                                                |> bind (currentCharIn bKeyChars)
+                                                                        then
+                                                                            errors.leftIndex + 1
+
+                                                                        else
+                                                                            errors.leftIndex
+                                                                    , rightIndex =
+                                                                        if
+                                                                            currentCharIn numberKey6Chars
+                                                                                |> bind (currentCharIn yKeyChars)
+                                                                                |> bind (currentCharIn hKeyChars)
+                                                                                |> bind (currentCharIn nKeyChars)
+                                                                                |> bind (currentCharIn numberKey7Chars)
+                                                                                |> bind (currentCharIn uKeyChars)
+                                                                                |> bind (currentCharIn jKeyChars)
+                                                                                |> bind (currentCharIn mKeyChars)
+                                                                        then
+                                                                            errors.rightIndex + 1
+
+                                                                        else
+                                                                            errors.rightIndex
+                                                                    , rightMiddle =
+                                                                        if
+                                                                            currentCharIn numberKey8Chars
+                                                                                |> bind (currentCharIn iKeyChars)
+                                                                                |> bind (currentCharIn kKeyChars)
+                                                                                |> bind (currentCharIn semicolonKeyChars)
+                                                                        then
+                                                                            errors.rightMiddle + 1
+
+                                                                        else
+                                                                            errors.rightMiddle
+                                                                    , rightRing =
+                                                                        if
+                                                                            currentCharIn numberKey9Chars
+                                                                                |> bind (currentCharIn oKeyChars)
+                                                                                |> bind (currentCharIn lKeyChars)
+                                                                                |> bind (currentCharIn colonKeyChars)
+                                                                        then
+                                                                            errors.rightRing + 1
+
+                                                                        else
+                                                                            errors.rightRing
+                                                                    , rightPinky =
+                                                                        if
+                                                                            currentCharIn numberKey0Chars
+                                                                                |> bind (currentCharIn pKeyChars)
+                                                                                |> bind (currentCharIn ñKeyChars)
+                                                                                |> bind (currentCharIn underscoreKeyChars)
+                                                                                |> bind (currentCharIn questionMarkKeyChars)
+                                                                                |> bind (currentCharIn umlautKeyChars)
+                                                                                |> bind (currentCharIn leftSquareBracketKeyChars)
+                                                                                |> bind (currentCharIn startQuestionMarkKeyChars)
+                                                                                |> bind (currentCharIn tildeKeyChars)
+                                                                                |> bind (currentCharIn rightSquareBracketKeyChars)
+                                                                        then
+                                                                            errors.rightPinky + 1
+
+                                                                        else
+                                                                            errors.rightPinky
+                                                                    , thumbs =
+                                                                        if currentCharIn [ ' ' ] then
+                                                                            errors.thumbs + 1
+
+                                                                        else
+                                                                            errors.thumbs
+                                                                    }
+                                                            }
+                                                  }
+                                                , Cmd.none
+                                                )
 
                                         Nothing ->
                                             ( { model | exercise = exercise }, Cmd.none )
@@ -483,13 +693,13 @@ view model =
         [ class "main-view"
         , tabindex 0
         , case model.exercise of
-            ExerciseSelected _ status ->
-                case status of
+            ExerciseSelected _ state ->
+                case state.status of
                     NotStarted ->
                         on "keydown" <|
                             JD.map KeyPressed decodeKeyboardEvent
 
-                    Ongoing _ _ ->
+                    Ongoing ->
                         on "keydown" <|
                             JD.map KeyPressed decodeKeyboardEvent
 
@@ -506,12 +716,12 @@ view model =
                 , button
                     [ class "top-toolbar__menu-item"
                     , case model.exercise of
-                        ExerciseSelected _ status ->
-                            case status of
-                                Ongoing _ _ ->
+                        ExerciseSelected _ state ->
+                            case state.status of
+                                Ongoing ->
                                     onClick PauseTimer
 
-                                Paused _ _ ->
+                                Paused ->
                                     onClick ResumeTimer
 
                                 _ ->
@@ -523,12 +733,12 @@ view model =
                     [ img [ src "./images/stop.png" ] []
                     , text
                         (case model.exercise of
-                            ExerciseSelected _ status ->
-                                case status of
-                                    Ongoing _ _ ->
+                            ExerciseSelected _ state ->
+                                case state.status of
+                                    Ongoing ->
                                         "Pausa"
 
-                                    Paused _ _ ->
+                                    Paused ->
                                         "Reanudar"
 
                                     _ ->
@@ -566,8 +776,61 @@ view model =
             ]
         , div
             [ class "main-view-content" ]
-            [ div [] [ textBox model, keyboard model ]
+            [ div []
+                [ textBox model
+                , div [ class "flex-col" ]
+                    [ keyboard model
+                    , case model.exercise of
+                        ExerciseSelected _ state ->
+                            fingerErrors state.errors
+
+                        _ ->
+                            fingerErrors exerciseStatusNotStartedInit.errors
+                    ]
+                ]
             , infoPanel model
+            ]
+        ]
+
+
+fingerErrors : HandTypingErrors -> Html Msg
+fingerErrors errors =
+    div [ class "error-fingers-container", class "flex-row" ]
+        [ div [ class "flex-col", style "text-align" "center" ]
+            [ div [ class "error-finger-count-box" ] [ p [] [ text (String.fromInt errors.leftPinky) ] ]
+            , p [ class "finger-errors-text" ] [ text "Meñique" ]
+            ]
+        , div [ class "flex-col", style "text-align" "center" ]
+            [ div [ class "error-finger-count-box" ] [ p [] [ text (String.fromInt errors.leftRing) ] ]
+            , p [ class "finger-errors-text" ] [ text "Anular" ]
+            ]
+        , div [ class "flex-col", style "text-align" "center" ]
+            [ div [ class "error-finger-count-box" ] [ p [] [ text (String.fromInt errors.leftMiddle) ] ]
+            , p [ class "finger-errors-text" ] [ text "Medio" ]
+            ]
+        , div [ class "flex-col", style "text-align" "center" ]
+            [ div [ class "error-finger-count-box" ] [ p [] [ text (String.fromInt errors.leftIndex) ] ]
+            , p [ class "finger-errors-text" ] [ text "Indice" ]
+            ]
+        , div [ class "flex-col", style "text-align" "center" ]
+            [ div [ class "error-finger-count-box" ] [ p [] [ text (String.fromInt errors.thumbs) ] ]
+            , p [ class "finger-errors-text" ] [ text "Pulgares" ]
+            ]
+        , div [ class "flex-col", style "text-align" "center" ]
+            [ div [ class "error-finger-count-box" ] [ p [] [ text (String.fromInt errors.rightIndex) ] ]
+            , p [ class "finger-errors-text" ] [ text "Indice" ]
+            ]
+        , div [ class "flex-col", style "text-align" "center" ]
+            [ div [ class "error-finger-count-box" ] [ p [] [ text (String.fromInt errors.rightMiddle) ] ]
+            , p [ class "finger-errors-text" ] [ text "Medio" ]
+            ]
+        , div [ class "flex-col", style "text-align" "center" ]
+            [ div [ class "error-finger-count-box" ] [ p [] [ text (String.fromInt errors.rightRing) ] ]
+            , p [ class "finger-errors-text" ] [ text "Anular" ]
+            ]
+        , div [ class "flex-col", style "text-align" "center" ]
+            [ div [ class "error-finger-count-box" ] [ p [] [ text (String.fromInt errors.rightPinky) ] ]
+            , p [ class "finger-errors-text" ] [ text "Meñique" ]
             ]
         ]
 
@@ -580,17 +843,20 @@ textBox model =
             ExerciseNotSelected ->
                 [ div [ class "text-box__welcome-text" ] [ text "Bienvenido a MecaMatic 3.0" ] ]
 
-            ExerciseSelected data status ->
+            ExerciseSelected data state ->
                 [ div [ class "text-box-chars__container" ]
                     (List.indexedMap
                         (\i el ->
                             let
                                 char =
                                     String.fromChar el
+
+                                cursor =
+                                    state.cursor
                             in
                             span
-                                [ case status of
-                                    Ongoing cursor _ ->
+                                [ case state.status of
+                                    Ongoing ->
                                         -- NOTE this is to make the cursor scroll into view using ports
                                         -- doesn't work with just i == cursor for some reason
                                         if i == cursor || i == cursor - 1 then
@@ -599,14 +865,14 @@ textBox model =
                                         else
                                             empty
 
-                                    Paused cursor _ ->
+                                    Paused ->
                                         if i == cursor || i == cursor - 1 then
                                             id "key-highlighted"
 
                                         else
                                             empty
 
-                                    ExerciseFailed cursor _ _ ->
+                                    ExerciseFailed _ ->
                                         if i == cursor || i == cursor - 1 then
                                             id "key-highlighted"
 
@@ -618,34 +884,34 @@ textBox model =
                                 , classList
                                     [ ( "text-box-chars__char", True )
                                     , ( "text-box-chars__char--highlighted"
-                                      , case status of
-                                            Ongoing cursor _ ->
+                                      , case state.status of
+                                            Ongoing ->
                                                 i == cursor
 
-                                            Paused cursor _ ->
+                                            Paused ->
                                                 i == cursor
 
-                                            ExerciseFailed cursor _ _ ->
+                                            ExerciseFailed _ ->
                                                 i == cursor
 
                                             _ ->
                                                 False
                                       )
                                     , ( "text-box-chars__char--typed"
-                                      , case status of
+                                      , case state.status of
                                             NotStarted ->
                                                 False
 
-                                            Ongoing cursor _ ->
+                                            Ongoing ->
                                                 i < cursor
 
-                                            Paused cursor _ ->
+                                            Paused ->
                                                 i < cursor
 
-                                            ExerciseFailed cursor _ _ ->
+                                            ExerciseFailed _ ->
                                                 i < cursor
 
-                                            ExerciseFinishedSuccessfully _ _ ->
+                                            ExerciseFinishedSuccessfully ->
                                                 True
                                       )
                                     ]
@@ -656,7 +922,7 @@ textBox model =
                     )
                 ]
 
-            FailedToLoadEData ->
+            FailedToLoadData ->
                 -- TODO if there is already an exercise selected and we try to load another one and fails
                 [ div [] [] ]
         )
@@ -731,9 +997,9 @@ infoPanel model =
                 ExerciseNotSelected ->
                     div [ class "info-panel-incidences__red-box" ] [ text "Seleccione un", br [] [], text "ejercicio" ]
 
-                ExerciseSelected _ status ->
-                    case status of
-                        ExerciseFailed _ _ errorMessage ->
+                ExerciseSelected _ state ->
+                    case state.status of
+                        ExerciseFailed errorMessage ->
                             div [ class "info-panel-incidences__red-box" ] [ text errorMessage ]
 
                         _ ->
@@ -766,21 +1032,37 @@ infoPanel model =
                         [ div [ class "info-panel-box-inner-boxes__long-box info-panel-box-inner-boxes__box" ] [ text "P. Brutas" ]
                         , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ]
                             [ case model.exercise of
-                                ExerciseSelected _ status ->
-                                    case status of
+                                ExerciseSelected _ state ->
+                                    let
+                                        cursor =
+                                            state.cursor
+
+                                        errors =
+                                            state.errors.leftPinky
+                                                + state.errors.leftPinky
+                                                + state.errors.leftRing
+                                                + state.errors.leftMiddle
+                                                + state.errors.leftIndex
+                                                + state.errors.thumbs
+                                                + state.errors.rightPinky
+                                                + state.errors.rightRing
+                                                + state.errors.rightMiddle
+                                                + state.errors.rightIndex
+                                    in
+                                    case state.status of
                                         NotStarted ->
                                             text "0"
 
-                                        Ongoing cursor errors ->
+                                        Ongoing ->
                                             text (String.fromInt (totalGrossKeystrokesTyped cursor errors))
 
-                                        Paused cursor errors ->
+                                        Paused ->
                                             text (String.fromInt (totalGrossKeystrokesTyped cursor errors))
 
-                                        ExerciseFinishedSuccessfully cursor errors ->
+                                        ExerciseFinishedSuccessfully ->
                                             text (String.fromInt (totalGrossKeystrokesTyped cursor errors))
 
-                                        ExerciseFailed cursor errors _ ->
+                                        ExerciseFailed _ ->
                                             text (String.fromInt (totalGrossKeystrokesTyped cursor errors))
 
                                 _ ->
@@ -791,21 +1073,37 @@ infoPanel model =
                         [ div [ class "info-panel-box-inner-boxes__long-box info-panel-box-inner-boxes__box" ] [ text "P. Netas" ]
                         , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ]
                             [ case model.exercise of
-                                ExerciseSelected _ status ->
-                                    case status of
+                                ExerciseSelected _ state ->
+                                    let
+                                        cursor =
+                                            state.cursor
+
+                                        errors =
+                                            state.errors.leftPinky
+                                                + state.errors.leftPinky
+                                                + state.errors.leftRing
+                                                + state.errors.leftMiddle
+                                                + state.errors.leftIndex
+                                                + state.errors.thumbs
+                                                + state.errors.rightPinky
+                                                + state.errors.rightRing
+                                                + state.errors.rightMiddle
+                                                + state.errors.rightIndex
+                                    in
+                                    case state.status of
                                         NotStarted ->
                                             text "0"
 
-                                        Ongoing cursor errors ->
+                                        Ongoing ->
                                             text (String.fromInt (totalNetKeystrokesTyped cursor errors))
 
-                                        Paused cursor errors ->
+                                        Paused ->
                                             text (String.fromInt (totalNetKeystrokesTyped cursor errors))
 
-                                        ExerciseFinishedSuccessfully cursor errors ->
+                                        ExerciseFinishedSuccessfully ->
                                             text (String.fromInt (totalNetKeystrokesTyped cursor errors))
 
-                                        ExerciseFailed cursor errors _ ->
+                                        ExerciseFailed _ ->
                                             text (String.fromInt (totalNetKeystrokesTyped cursor errors))
 
                                 _ ->
@@ -816,21 +1114,34 @@ infoPanel model =
                         [ div [ class "info-panel-box-inner-boxes__long-box info-panel-box-inner-boxes__box" ] [ text "Errores" ]
                         , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ]
                             [ case model.exercise of
-                                ExerciseSelected _ status ->
-                                    case status of
+                                ExerciseSelected _ state ->
+                                    let
+                                        errors =
+                                            state.errors.leftPinky
+                                                + state.errors.leftPinky
+                                                + state.errors.leftRing
+                                                + state.errors.leftMiddle
+                                                + state.errors.leftIndex
+                                                + state.errors.thumbs
+                                                + state.errors.rightPinky
+                                                + state.errors.rightRing
+                                                + state.errors.rightMiddle
+                                                + state.errors.rightIndex
+                                    in
+                                    case state.status of
                                         NotStarted ->
                                             text "0"
 
-                                        Ongoing _ errors ->
+                                        Ongoing ->
                                             text (String.fromInt errors)
 
-                                        Paused _ errors ->
+                                        Paused ->
                                             text (String.fromInt errors)
 
-                                        ExerciseFinishedSuccessfully _ errors ->
+                                        ExerciseFinishedSuccessfully ->
                                             text (String.fromInt errors)
 
-                                        ExerciseFailed _ errors _ ->
+                                        ExerciseFailed _ ->
                                             text (String.fromInt errors)
 
                                 _ ->
@@ -856,46 +1167,45 @@ infoPanel model =
                                         String.fromFloat num
                               in
                               case model.exercise of
-                                ExerciseSelected _ status ->
-                                    case status of
+                                ExerciseSelected _ state ->
+                                    let
+                                        cursor =
+                                            state.cursor
+
+                                        errors =
+                                            state.errors.leftPinky
+                                                + state.errors.leftPinky
+                                                + state.errors.leftRing
+                                                + state.errors.leftMiddle
+                                                + state.errors.leftIndex
+                                                + state.errors.thumbs
+                                                + state.errors.rightPinky
+                                                + state.errors.rightRing
+                                                + state.errors.rightMiddle
+                                                + state.errors.rightIndex
+
+                                        errorPctText =
+                                            if cursor == 0 && errors > 0 then
+                                                "100.00"
+
+                                            else
+                                                getErrorPercentageString (calculatePercentageOfErrors errors cursor)
+                                    in
+                                    case state.status of
                                         NotStarted ->
                                             text "0"
 
-                                        Ongoing cursor errors ->
-                                            text
-                                                (if cursor == 0 && errors > 0 then
-                                                    "100.00"
+                                        Ongoing ->
+                                            text errorPctText
 
-                                                 else
-                                                    getErrorPercentageString (calculatePercentageOfErrors errors cursor)
-                                                )
+                                        Paused ->
+                                            text errorPctText
 
-                                        Paused cursor errors ->
-                                            text
-                                                (if cursor == 0 && errors > 0 then
-                                                    "100.00"
+                                        ExerciseFinishedSuccessfully ->
+                                            text errorPctText
 
-                                                 else
-                                                    getErrorPercentageString (calculatePercentageOfErrors errors cursor)
-                                                )
-
-                                        ExerciseFinishedSuccessfully cursor errors ->
-                                            text
-                                                (if cursor == 0 && errors > 0 then
-                                                    "100.00"
-
-                                                 else
-                                                    getErrorPercentageString (calculatePercentageOfErrors errors cursor)
-                                                )
-
-                                        ExerciseFailed cursor errors _ ->
-                                            text
-                                                (if cursor == 0 && errors > 0 then
-                                                    "100.00"
-
-                                                 else
-                                                    getErrorPercentageString (calculatePercentageOfErrors errors cursor)
-                                                )
+                                        ExerciseFailed _ ->
+                                            text errorPctText
 
                                 _ ->
                                     text ""
@@ -905,25 +1215,41 @@ infoPanel model =
                         [ div [ class "info-panel-box-inner-boxes__long-box info-panel-box-inner-boxes__box" ] [ text "P. p. m." ]
                         , div [ class "info-panel-box-inner-boxes__short-box info-panel-box-inner-boxes__box" ]
                             [ case model.exercise of
-                                ExerciseSelected _ status ->
+                                ExerciseSelected _ state ->
+                                    let
+                                        cursor =
+                                            state.cursor
+
+                                        errors =
+                                            state.errors.leftPinky
+                                                + state.errors.leftPinky
+                                                + state.errors.leftRing
+                                                + state.errors.leftMiddle
+                                                + state.errors.leftIndex
+                                                + state.errors.thumbs
+                                                + state.errors.rightPinky
+                                                + state.errors.rightRing
+                                                + state.errors.rightMiddle
+                                                + state.errors.rightIndex
+                                    in
                                     if model.elapsedSeconds == 0 then
                                         text "0"
 
                                     else
-                                        case status of
+                                        case state.status of
                                             NotStarted ->
                                                 text "0"
 
-                                            Ongoing cursor errors ->
+                                            Ongoing ->
                                                 text (String.fromInt (max 0 (calcNetWPM cursor model.elapsedSeconds errors)))
 
-                                            Paused cursor errors ->
+                                            Paused ->
                                                 text (String.fromInt (max 0 (calcNetWPM cursor model.elapsedSeconds errors)))
 
-                                            ExerciseFinishedSuccessfully cursor errors ->
+                                            ExerciseFinishedSuccessfully ->
                                                 text (String.fromInt (max 0 (calcNetWPM cursor model.elapsedSeconds errors)))
 
-                                            ExerciseFailed cursor errors _ ->
+                                            ExerciseFailed _ ->
                                                 text (String.fromInt (max 0 (calcNetWPM cursor model.elapsedSeconds errors)))
 
                                 _ ->
@@ -1236,8 +1562,8 @@ keyboard model =
     let
         exerciseHasntStarted =
             case model.exercise of
-                ExerciseSelected _ status ->
-                    if status == NotStarted then
+                ExerciseSelected _ state ->
+                    if state.status == NotStarted then
                         True
 
                     else
@@ -1249,16 +1575,20 @@ keyboard model =
         currentChar : Char
         currentChar =
             case model.exercise of
-                ExerciseSelected data status ->
-                    case status of
-                        Ongoing cursor _ ->
+                ExerciseSelected data state ->
+                    let
+                        cursor =
+                            state.cursor
+                    in
+                    case state.status of
+                        Ongoing ->
                             String.toList data.text
                                 |> List.indexedMap Tuple.pair
                                 |> List.Extra.find (\( i, _ ) -> cursor == i)
                                 |> Maybe.withDefault ( 0, '←' )
                                 |> Tuple.second
 
-                        Paused cursor _ ->
+                        Paused ->
                             String.toList data.text
                                 |> List.indexedMap Tuple.pair
                                 |> List.Extra.find (\( i, _ ) -> cursor == i)
