@@ -779,7 +779,19 @@ view model =
             [ div []
                 [ textBox model
                 , div [ class "flex-col" ]
-                    [ keyboard model
+                    [ case
+                        model.exercise
+                      of
+                        ExerciseSelected data state ->
+                            if data.isTutorActive then
+                                fingerTutorIndicators data state
+
+                            else
+                                text ""
+
+                        _ ->
+                            text ""
+                    , keyboard model
                     , case model.exercise of
                         ExerciseSelected _ state ->
                             fingerErrors state.errors
@@ -790,6 +802,251 @@ view model =
                 ]
             , infoPanel model
             ]
+        ]
+
+
+fingerTutorIndicators : ExerciseData -> ExerciseStatus -> Html Msg
+fingerTutorIndicators data state =
+    let
+        currentChar : Char
+        currentChar =
+            let
+                cursor =
+                    state.cursor
+            in
+            case state.status of
+                Ongoing ->
+                    String.toList data.text
+                        |> List.indexedMap Tuple.pair
+                        |> List.Extra.find (\( i, _ ) -> cursor == i)
+                        |> Maybe.withDefault ( 0, '←' )
+                        |> Tuple.second
+
+                Paused ->
+                    String.toList data.text
+                        |> List.indexedMap Tuple.pair
+                        |> List.Extra.find (\( i, _ ) -> cursor == i)
+                        |> Maybe.withDefault ( 0, '←' )
+                        |> Tuple.second
+
+                _ ->
+                    '←'
+
+        currentCharIn charsLists =
+            case List.Extra.find (\l -> l == currentChar) charsLists of
+                Just _ ->
+                    True
+
+                Nothing ->
+                    False
+
+        bind fn bool =
+            if bool == False then
+                fn
+
+            else
+                True
+    in
+    div
+        [ case state.status of
+            NotStarted ->
+                style "height" "36px"
+
+            ExerciseFinishedSuccessfully ->
+                style "height" "36px"
+
+            ExerciseFailed _ ->
+                style "height" "36px"
+
+            Ongoing ->
+                empty
+
+            Paused ->
+                empty
+        , style "max-height" "36px"
+        ]
+        [ div
+            [ class "finger-tutor-indicator-box"
+            , style "background-color" keyFingerColors.pinky
+            , style "width" "57px"
+            , style "margin-left" "24px"
+            , style "display"
+                (if
+                    currentCharIn degreeKeyChars
+                        |> bind (currentCharIn numberKey1Chars)
+                        |> bind (currentCharIn qKeyChars)
+                        |> bind (currentCharIn aKeyChars)
+                        |> bind (currentCharIn lgThenKeyChars)
+                        |> bind (currentCharIn zKeyChars)
+                 then
+                    "block"
+
+                 else
+                    "none"
+                )
+            ]
+            [ p [] [ text "Meñique" ] ]
+        , div
+            [ class "finger-tutor-indicator-box"
+            , style "background-color" keyFingerColors.ringFinger
+            , style "width" "45px"
+            , style "margin-left" "79px"
+            , style "display"
+                (if
+                    currentCharIn numberKey2Chars
+                        |> bind (currentCharIn wKeyChars)
+                        |> bind (currentCharIn sKeyChars)
+                        |> bind (currentCharIn xKeyChars)
+                 then
+                    "block"
+
+                 else
+                    "none"
+                )
+            ]
+            [ p [] [ text "Anular" ] ]
+        , div
+            [ class "finger-tutor-indicator-box"
+            , style "background-color" keyFingerColors.middleFinger
+            , style "width" "45px"
+            , style "margin-left" "116px"
+            , style "display"
+                (if
+                    currentCharIn numberKey3Chars
+                        |> bind (currentCharIn eKeyChars)
+                        |> bind (currentCharIn dKeyChars)
+                        |> bind (currentCharIn cKeyChars)
+                 then
+                    "block"
+
+                 else
+                    "none"
+                )
+            ]
+            [ p [] [ text "Medio" ] ]
+        , div
+            [ class "finger-tutor-indicator-box"
+            , style "background-color" keyFingerColors.indexLeftHand
+            , style "width" "57px"
+            , style "margin-left" "164px"
+            , style "display"
+                (if
+                    currentCharIn numberKey4Chars
+                        |> bind (currentCharIn rKeyChars)
+                        |> bind (currentCharIn fKeyChars)
+                        |> bind (currentCharIn vKeyChars)
+                        |> bind (currentCharIn numberKey5Chars)
+                        |> bind (currentCharIn tKeyChars)
+                        |> bind (currentCharIn gKeyChars)
+                        |> bind (currentCharIn bKeyChars)
+                 then
+                    "block"
+
+                 else
+                    "none"
+                )
+            ]
+            [ p [] [ text "Indice I" ] ]
+        , div
+            [ class "finger-tutor-indicator-box"
+            , style "background-color" "#ffc0c0"
+            , style "margin-left" "196px"
+            , style "width" "137px"
+            , style "display"
+                (if currentChar == ' ' then
+                    "block"
+
+                 else
+                    "none"
+                )
+            ]
+            [ p [] [ text "Pulgar Derecho" ] ]
+        , div
+            [ class "finger-tutor-indicator-box"
+            , style "background-color" keyFingerColors.indexRightHand
+            , style "width" "57px"
+            , style "margin-left" "236px"
+            , style "display"
+                (if
+                    currentCharIn numberKey6Chars
+                        |> bind (currentCharIn yKeyChars)
+                        |> bind (currentCharIn hKeyChars)
+                        |> bind (currentCharIn nKeyChars)
+                        |> bind (currentCharIn numberKey7Chars)
+                        |> bind (currentCharIn uKeyChars)
+                        |> bind (currentCharIn jKeyChars)
+                        |> bind (currentCharIn mKeyChars)
+                 then
+                    "block"
+
+                 else
+                    "none"
+                )
+            ]
+            [ p [] [ text "Indice D" ] ]
+        , div
+            [ class "finger-tutor-indicator-box"
+            , style "background-color" keyFingerColors.middleFinger
+            , style "width" "57px"
+            , style "margin-left" "296px"
+            , style "display"
+                (if
+                    currentCharIn numberKey8Chars
+                        |> bind (currentCharIn iKeyChars)
+                        |> bind (currentCharIn kKeyChars)
+                        |> bind (currentCharIn semicolonKeyChars)
+                 then
+                    "block"
+
+                 else
+                    "none"
+                )
+            ]
+            [ p [] [ text "Medio" ] ]
+        , div
+            [ class "finger-tutor-indicator-box"
+            , style "background-color" keyFingerColors.ringFinger
+            , style "margin-left" "332px"
+            , style "width" "45px"
+            , style "display"
+                (if
+                    currentCharIn numberKey9Chars
+                        |> bind (currentCharIn oKeyChars)
+                        |> bind (currentCharIn lKeyChars)
+                        |> bind (currentCharIn colonKeyChars)
+                 then
+                    "block"
+
+                 else
+                    "none"
+                )
+            ]
+            [ p [] [ text "Anular" ] ]
+        , div
+            [ class "finger-tutor-indicator-box"
+            , style "background-color" keyFingerColors.pinky
+            , style "margin-left" "376px"
+            , style "width" "57px"
+            , style "display"
+                (if
+                    currentCharIn numberKey0Chars
+                        |> bind (currentCharIn pKeyChars)
+                        |> bind (currentCharIn ñKeyChars)
+                        |> bind (currentCharIn underscoreKeyChars)
+                        |> bind (currentCharIn questionMarkKeyChars)
+                        |> bind (currentCharIn umlautKeyChars)
+                        |> bind (currentCharIn leftSquareBracketKeyChars)
+                        |> bind (currentCharIn startQuestionMarkKeyChars)
+                        |> bind (currentCharIn tildeKeyChars)
+                        |> bind (currentCharIn rightSquareBracketKeyChars)
+                 then
+                    "block"
+
+                 else
+                    "none"
+                )
+            ]
+            [ p [] [ text "Meñique" ] ]
         ]
 
 
@@ -1626,7 +1883,19 @@ keyboard model =
                 Nothing ->
                     False
     in
-    div [ class "keyboard-container" ]
+    div
+        [ class "keyboard-container"
+        , case model.exercise of
+            ExerciseSelected data _ ->
+                if data.isTutorActive then
+                    empty
+
+                else
+                    style "margin-top" "36px"
+
+            _ ->
+                style "margin-top" "36px"
+        ]
         [ div [ class "keyboard-row" ]
             [ div
                 [ class "key"
