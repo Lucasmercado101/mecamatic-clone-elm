@@ -15,6 +15,13 @@ import Task
 import Time
 
 
+jumpToBottom : String -> Cmd Msg
+jumpToBottom id =
+    Dom.getViewportOf id
+        |> Task.andThen (\info -> Dom.setViewportOf id 0 info.scene.height)
+        |> Task.attempt (\_ -> NoOp)
+
+
 type alias UserSettings =
     { timeLimitInSeconds : Int
     , errorsCoefficient : Maybe Float
@@ -669,7 +676,11 @@ update msg model =
                                                                     }
                                                             }
                                                   }
-                                                , Cmd.none
+                                                , if exerciseData.isKeyboardVisible == False then
+                                                    jumpToBottom "text-progress-box"
+
+                                                  else
+                                                    Cmd.none
                                                 )
 
                                         Nothing ->
@@ -790,7 +801,24 @@ view model =
 
                         _ ->
                             text ""
-                    , keyboard model
+                    , case
+                        model.exercise
+                      of
+                        ExerciseSelected data state ->
+                            if data.isKeyboardVisible then
+                                keyboard model
+
+                            else
+                                div [ id "text-progress-box" ]
+                                    [ text
+                                        (String.dropRight (String.length data.text - state.cursor) data.text)
+                                    ]
+
+                        ExerciseNotSelected ->
+                            keyboard model
+
+                        FailedToLoadData ->
+                            keyboard model
                     , case model.exercise of
                         ExerciseSelected _ state ->
                             fingerErrors (Just state.errors)
