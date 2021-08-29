@@ -558,7 +558,6 @@ update msg model =
                                                                     in
                                                                     { leftPinky =
                                                                         if
-                                                                            -- currentCharIn aKeyChars
                                                                             currentCharIn degreeKeyChars
                                                                                 |> bind (currentCharIn numberKey1Chars)
                                                                                 |> bind (currentCharIn qKeyChars)
