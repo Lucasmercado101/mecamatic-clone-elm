@@ -268,7 +268,6 @@ update msg model =
                 _ ->
                     ( { model | exercise = FailedToLoadData }, Cmd.none )
 
-        -- TODO handle time has run out
         SecondHasElapsed ->
             let
                 elapsedSeconds =
